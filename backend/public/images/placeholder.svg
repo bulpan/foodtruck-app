@@ -1,0 +1,8 @@
+<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="200" fill="#f0f0f0"/>
+  <rect x="50" y="50" width="200" height="100" fill="#ddd" stroke="#ccc" stroke-width="2"/>
+  <text x="150" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#999">이미지 없음</text>
+  <text x="150" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#ccc">No Image</text>
+</svg>
+
+

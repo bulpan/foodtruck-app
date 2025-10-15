@@ -1,0 +1,412 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F08A1234567890AB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08A1234567890AA /* AppDelegate.swift */; };
+		F08A1234567890AD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08A1234567890AC /* SceneDelegate.swift */; };
+		F08A1234567890B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F08A1234567890B0 /* Assets.xcassets */; };
+		F08A1234567890B4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F08A1234567890B3 /* Preview Assets.xcassets */; };
+		F08A1234567890B7 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08A1234567890B6 /* MainViewController.swift */; };
+		F08A1234567890B9 /* WebViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08A1234567890B8 /* WebViewManager.swift */; };
+		F08A1234567890BC /* BottomNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08A1234567890BB /* BottomNavigationView.swift */; };
+		F08A1234567890BE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F08A1234567890BD /* GoogleService-Info.plist */; };
+		F49C66F22E9A983200D40EEB /* AppTheme 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49C66EF2E9A983200D40EEB /* AppTheme 2.swift */; };
+		F49C66F32E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49C66F02E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift */; };
+		F49C66F42E9A983200D40EEB /* LoadingView 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49C66F12E9A983200D40EEB /* LoadingView 2.swift */; };
+		F49C66F52E9A983200D40EEB /* AppConfig 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49C66EE2E9A983200D40EEB /* AppConfig 2.swift */; };
+		F49C66F82E9A9B6200D40EEB /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F49C66F72E9A9B6200D40EEB /* FirebaseMessaging */; };
+		F4E31D0D2E9FED9600630F03 /* NotificationSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E31D0C2E9FED9600630F03 /* NotificationSettingsViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F08A123456789067 /* FoodTruckApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoodTruckApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F08A1234567890AA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F08A1234567890AC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		F08A1234567890B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F08A1234567890B3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F08A1234567890B6 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		F08A1234567890B8 /* WebViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewManager.swift; sourceTree = "<group>"; };
+		F08A1234567890BB /* BottomNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomNavigationView.swift; sourceTree = "<group>"; };
+		F08A1234567890BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F08A1234567890BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F49C66EE2E9A983200D40EEB /* AppConfig 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppConfig 2.swift"; sourceTree = "<group>"; };
+		F49C66EF2E9A983200D40EEB /* AppTheme 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppTheme 2.swift"; sourceTree = "<group>"; };
+		F49C66F02E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodTruckFirebaseMessagingService 2.swift"; sourceTree = "<group>"; };
+		F49C66F12E9A983200D40EEB /* LoadingView 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadingView 2.swift"; sourceTree = "<group>"; };
+		F4E22FF72E9BEF2E00C8FC0F /* FoodTruckApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FoodTruckApp.entitlements; sourceTree = "<group>"; };
+		F4E31D0C2E9FED9600630F03 /* NotificationSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F08A123456789064 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F49C66F82E9A9B6200D40EEB /* FirebaseMessaging in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F08A12345678905E = {
+			isa = PBXGroup;
+			children = (
+				F08A123456789069 /* FoodTruckApp */,
+				F08A123456789068 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F08A123456789068 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F08A123456789067 /* FoodTruckApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F08A123456789069 /* FoodTruckApp */ = {
+			isa = PBXGroup;
+			children = (
+				F4E31D0C2E9FED9600630F03 /* NotificationSettingsViewController.swift */,
+				F4E22FF72E9BEF2E00C8FC0F /* FoodTruckApp.entitlements */,
+				F49C66EE2E9A983200D40EEB /* AppConfig 2.swift */,
+				F49C66EF2E9A983200D40EEB /* AppTheme 2.swift */,
+				F49C66F02E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift */,
+				F49C66F12E9A983200D40EEB /* LoadingView 2.swift */,
+				F08A1234567890AA /* AppDelegate.swift */,
+				F08A1234567890AC /* SceneDelegate.swift */,
+				F08A1234567890B6 /* MainViewController.swift */,
+				F08A1234567890B8 /* WebViewManager.swift */,
+				F08A1234567890BB /* BottomNavigationView.swift */,
+				F08A1234567890B0 /* Assets.xcassets */,
+				F08A1234567890BD /* GoogleService-Info.plist */,
+				F08A1234567890BF /* Info.plist */,
+				F08A1234567890B2 /* Preview Content */,
+			);
+			path = FoodTruckApp;
+			sourceTree = "<group>";
+		};
+		F08A1234567890B2 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F08A1234567890B3 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F08A123456789066 /* FoodTruckApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F08A123456789070 /* Build configuration list for PBXNativeTarget "FoodTruckApp" */;
+			buildPhases = (
+				F08A123456789063 /* Sources */,
+				F08A123456789064 /* Frameworks */,
+				F08A123456789065 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FoodTruckApp;
+			productName = FoodTruckApp;
+			productReference = F08A123456789067 /* FoodTruckApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F08A12345678905F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					F08A123456789066 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = F08A123456789062 /* Build configuration list for PBXProject "FoodTruckApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ko;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				ko,
+				en,
+				Base,
+			);
+			mainGroup = F08A12345678905E;
+			packageReferences = (
+				F49C66F62E9A9B6200D40EEB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			productRefGroup = F08A123456789068 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F08A123456789066 /* FoodTruckApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F08A123456789065 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F08A1234567890B4 /* Preview Assets.xcassets in Resources */,
+				F08A1234567890B1 /* Assets.xcassets in Resources */,
+				F08A1234567890BE /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F08A123456789063 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F08A1234567890B7 /* MainViewController.swift in Sources */,
+				F08A1234567890B9 /* WebViewManager.swift in Sources */,
+				F08A1234567890BC /* BottomNavigationView.swift in Sources */,
+				F08A1234567890AD /* SceneDelegate.swift in Sources */,
+				F49C66F22E9A983200D40EEB /* AppTheme 2.swift in Sources */,
+				F49C66F32E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift in Sources */,
+				F4E31D0D2E9FED9600630F03 /* NotificationSettingsViewController.swift in Sources */,
+				F49C66F42E9A983200D40EEB /* LoadingView 2.swift in Sources */,
+				F49C66F52E9A983200D40EEB /* AppConfig 2.swift in Sources */,
+				F08A1234567890AB /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F08A12345678906E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F08A12345678906F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F08A123456789071 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FoodTruckApp/FoodTruckApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"FoodTruckApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FoodTruckApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foodtruck.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F08A123456789072 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FoodTruckApp/FoodTruckApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"FoodTruckApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FoodTruckApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foodtruck.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F08A123456789062 /* Build configuration list for PBXProject "FoodTruckApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F08A12345678906E /* Debug */,
+				F08A12345678906F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F08A123456789070 /* Build configuration list for PBXNativeTarget "FoodTruckApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F08A123456789071 /* Debug */,
+				F08A123456789072 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F49C66F62E9A9B6200D40EEB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F49C66F72E9A9B6200D40EEB /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F49C66F62E9A9B6200D40EEB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F08A12345678905F /* Project object */;
+}

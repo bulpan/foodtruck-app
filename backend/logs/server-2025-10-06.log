@@ -1,0 +1,1963 @@
+[2025-10-06T03:28:38.505Z] [INFO] 데이터베이스 테이블 동기화 완료
+[2025-10-06T03:28:38.508Z] [INFO] Food Truck Backend 서버가 포트 3002에서 실행중입니다
+[2025-10-06T03:28:38.508Z] [INFO] 환경: development
+[2025-10-06T03:28:38.508Z] [INFO] 헬스 체크: http://localhost:3002/health
+[2025-10-06T03:28:38.508Z] [INFO] API 문서: http://localhost:3002/api
+[2025-10-06T03:28:38.508Z] [INFO] 서버 URL: http://192.168.219.200:3002
+[2025-10-06T03:28:38.508Z] [INFO] 로그 파일: /Users/home/Documents/truck_new/backend/logs/server-2025-10-06.log
+[2025-10-06T03:28:38.509Z] [INFO] 개발 설정: http://localhost:3002/config
+[2025-10-06T03:28:42.597Z] [INFO] [orok84h79] REQUEST: GET /health
+{
+  "requestId": "orok84h79",
+  "method": "GET",
+  "url": "/health",
+  "originalUrl": "/health",
+  "ip": "127.0.0.1",
+  "userAgent": "curl/8.7.1",
+  "headers": {},
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:28:42.597Z] [INFO] [orok84h79] RESPONSE: 200
+{
+  "requestId": "orok84h79",
+  "statusCode": 200,
+  "duration": "1ms",
+  "responseSize": 154,
+  "headers": {}
+}
+[2025-10-06T03:28:42.598Z] [DEBUG] [orok84h79] RESPONSE DATA:
+{
+  "status": "OK",
+  "timestamp": "2025-10-06T03:28:42.597Z",
+  "service": "foodtruck-backend",
+  "environment": "development",
+  "serverUrl": "http://192.168.219.200:3002"
+}
+[2025-10-06T03:28:42.598Z] [INFO] [orok84h79] RESPONSE: 200
+{
+  "requestId": "orok84h79",
+  "statusCode": 200,
+  "duration": "2ms",
+  "responseSize": 154,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:35.912Z] [INFO] [zx15pyuxf] REQUEST: GET /admin
+{
+  "requestId": "zx15pyuxf",
+  "method": "GET",
+  "url": "/admin",
+  "originalUrl": "/admin",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {},
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:35.960Z] [INFO] [8zi1k4d57] REQUEST: GET /admin/admin.js
+{
+  "requestId": "8zi1k4d57",
+  "method": "GET",
+  "url": "/admin/admin.js",
+  "originalUrl": "/admin/admin.js",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {},
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:36.220Z] [INFO] [i30r2d97n] REQUEST: GET /favicon.ico
+{
+  "requestId": "i30r2d97n",
+  "method": "GET",
+  "url": "/favicon.ico",
+  "originalUrl": "/favicon.ico",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {},
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:36.222Z] [WARN] 404 Not Found: /favicon.ico
+[2025-10-06T03:29:36.226Z] [ERROR] [i30r2d97n] RESPONSE ERROR: 404
+{
+  "requestId": "i30r2d97n",
+  "statusCode": 404,
+  "duration": "6ms",
+  "responseSize": 52,
+  "headers": {}
+}
+[2025-10-06T03:29:36.226Z] [ERROR] [i30r2d97n] ERROR DETAILS:
+{
+  "error": "Endpoint not found",
+  "path": "/favicon.ico"
+}
+[2025-10-06T03:29:36.226Z] [ERROR] [i30r2d97n] RESPONSE ERROR: 404
+{
+  "requestId": "i30r2d97n",
+  "statusCode": 404,
+  "duration": "6ms",
+  "responseSize": 52,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:36.227Z] [ERROR] [i30r2d97n] ERROR DETAILS:
+{
+  "error": "Endpoint not found",
+  "path": "/favicon.ico"
+}
+[2025-10-06T03:29:38.826Z] [INFO] [61cg7tt2s] REQUEST: GET /api/menu
+{
+  "requestId": "61cg7tt2s",
+  "method": "GET",
+  "url": "/api/menu",
+  "originalUrl": "/api/menu",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:38.853Z] [INFO] [61cg7tt2s] RESPONSE: 200
+{
+  "requestId": "61cg7tt2s",
+  "statusCode": 200,
+  "duration": "27ms",
+  "responseSize": 1128,
+  "headers": {}
+}
+[2025-10-06T03:29:38.854Z] [DEBUG] [61cg7tt2s] RESPONSE DATA:
+{
+  "menus": [
+    {
+      "id": "8f0d0d26-82d4-414a-828b-5b585cca8c01",
+      "name": "야채곱창",
+      "description": "일단 양념이 매운편이다\r\n\r\n아이들은 절대 못 먹는 정도로 매콤함\r\n\r\n​\r\n\r\n근데 양념맛은 꽤 맛있음.\r\n\r\n​\r\n\r\n우리 모두가 상상하는\r\n\r\n딱 그 전형적인 곱창볶음 양념인데ㅋ\r\n\r\n당면도 많이 들어있고 깻잎향도 향긋하고 좋았음\r\n\r\n​\r\n\r\n먹다보니 순대랑 곱창이 같이 들어가묜 참 좋겠다..\r\n\r\n는 생각이 들었었는데ㅋ\r\n\r\n아놔 순대곱창볶음이 있는지 몰라서\r\n[출처] 세종시 유미네곱창 (세종 푸드트럭) 순대볶음, 오돌뼈 드뎌 먹어봤음!|작성자 새콤c\r\n\r\n",
+      "price": 18800,
+      "imageUrl": "/uploads/menu/1759661743880-2DSC04071.jpg",
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "085f2c91-b2e9-44a0-b955-f0f7d1b31b40",
+      "name": "조경치킨",
+      "description": "매콤달콤한 조경치킨의 대표 메뉴",
+      "price": 18000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "d56c973f-686b-40ed-817a-5b66d0f35b10",
+      "name": "양념치킨",
+      "description": "달콤한 양념이 일품인 치킨",
+      "price": 17000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "3e8c142c-9183-497c-a2b7-61a568a3252c",
+      "name": "감자튀김",
+      "description": "바삭한 감자튀김",
+      "price": 5000,
+      "imageUrl": null,
+      "category": "side",
+      "isAvailable": true
+    },
+    {
+      "id": "a4f83ee1-c907-48a6-8f44-1dfc186075ee",
+      "name": "콜라",
+      "description": "시원한 콜라",
+      "price": 3000,
+      "imageUrl": null,
+      "category": "beverage",
+      "isAvailable": true
+    }
+  ]
+}
+[2025-10-06T03:29:38.854Z] [INFO] [61cg7tt2s] RESPONSE: 200
+{
+  "requestId": "61cg7tt2s",
+  "statusCode": 200,
+  "duration": "28ms",
+  "responseSize": 1128,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:39.492Z] [INFO] [2t39wukyf] REQUEST: GET /api/fcm/tokens
+{
+  "requestId": "2t39wukyf",
+  "method": "GET",
+  "url": "/api/fcm/tokens",
+  "originalUrl": "/api/fcm/tokens",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:39.494Z] [INFO] [l696jowd7] REQUEST: GET /api/location/current
+{
+  "requestId": "l696jowd7",
+  "method": "GET",
+  "url": "/api/location/current",
+  "originalUrl": "/api/location/current",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:39.497Z] [INFO] [jabl4ax4s] REQUEST: GET /api/menu
+{
+  "requestId": "jabl4ax4s",
+  "method": "GET",
+  "url": "/api/menu",
+  "originalUrl": "/api/menu",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:39.506Z] [INFO] [2t39wukyf] RESPONSE: 200
+{
+  "requestId": "2t39wukyf",
+  "statusCode": 200,
+  "duration": "13ms",
+  "responseSize": 1362,
+  "headers": {}
+}
+[2025-10-06T03:29:39.506Z] [DEBUG] [2t39wukyf] RESPONSE DATA:
+{
+  "tokens": [
+    {
+      "id": "8827e927-0ce9-4100-8ad7-6d2b652bb466",
+      "token": "dKoH7WxcQh6bIS-rSKaggz:APA91bHsTOThTx3e0K6WwUNdJv6nYWwSCNTJkahcJakwZ4Z7ZyN5Ju5fgTI_D5dWOL_p_xK2jqxhfuOIJiAIa9PaBXhEmdr3BwHB-IXTXGfPDFRfeX0rojk",
+      "deviceType": "android",
+      "deviceId": "android_device_1759679052042",
+      "lastUsedAt": "2025-10-05T15:44:12.162Z",
+      "isActive": true
+    },
+    {
+      "id": "f8e9aab6-6c56-49fe-9c14-a9fb6a993394",
+      "token": "fzBdKxpFSQiufDmRu4cx2E:APA91bEVDAKsmFu5pR-0at1cEePEfQyuwJIr9tk3mZ88a-hhhGIFXIvzpqlioHqXEKet35fTfVYRf_qPmOq-Wj_KEJvJT29RfC_dnsb03ZWDJ7uJAk24pK8",
+      "deviceType": "android",
+      "deviceId": "android_device_1759657785970",
+      "lastUsedAt": "2025-10-05T09:49:46.042Z",
+      "isActive": true
+    },
+    {
+      "id": "5a3015c5-3731-4f62-8945-390bfc4a9fae",
+      "token": "cIISiKO2TxqFygu8iTZAd3:APA91bG74pPqoBiPuKhvWZKNpf86f2OZ1d0KJ6o0JcvciBhP9tOtVrfrSdtZe4tphiotu17GJEm3sRAuahPEBjj31v6hvmdMo-lTcNn5Rzqo4mjJT3yxHvs",
+      "deviceType": "android",
+      "deviceId": "android_device_1759656286552",
+      "lastUsedAt": "2025-10-05T09:24:46.670Z",
+      "isActive": true
+    },
+    {
+      "id": "6e0cb04b-f086-464a-8a76-4e58c5196a99",
+      "token": "test-device-token-android-67890",
+      "deviceType": "android",
+      "deviceId": "test-device-002",
+      "lastUsedAt": "2025-10-05T02:17:25.425Z",
+      "isActive": true
+    },
+    {
+      "id": "972e5489-4376-4be0-944c-1afe6432ffca",
+      "token": "test-device-token-12345",
+      "deviceType": "ios",
+      "deviceId": "test-device-001",
+      "lastUsedAt": "2025-10-05T02:17:21.536Z",
+      "isActive": true
+    }
+  ],
+  "count": 5
+}
+[2025-10-06T03:29:39.507Z] [INFO] [2t39wukyf] RESPONSE: 200
+{
+  "requestId": "2t39wukyf",
+  "statusCode": 200,
+  "duration": "15ms",
+  "responseSize": 1362,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:39.508Z] [INFO] [l696jowd7] RESPONSE: 200
+{
+  "requestId": "l696jowd7",
+  "statusCode": 200,
+  "duration": "14ms",
+  "responseSize": 179,
+  "headers": {}
+}
+[2025-10-06T03:29:39.508Z] [DEBUG] [l696jowd7] RESPONSE DATA:
+{
+  "location": {
+    "id": "d605d2e6-900a-4857-8e81-65f97cf0f1b6",
+    "name": "도램마을 20단지",
+    "address": "세종시 아름동 도램마을",
+    "openTime": "17:10:00",
+    "closeTime": "21:00:00",
+    "notice": "오늘은 위치를 약간 조정했습니다.  "
+  }
+}
+[2025-10-06T03:29:39.509Z] [INFO] [l696jowd7] RESPONSE: 200
+{
+  "requestId": "l696jowd7",
+  "statusCode": 200,
+  "duration": "15ms",
+  "responseSize": 179,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:39.510Z] [INFO] [jabl4ax4s] RESPONSE: 200
+{
+  "requestId": "jabl4ax4s",
+  "statusCode": 200,
+  "duration": "13ms",
+  "responseSize": 1128,
+  "headers": {}
+}
+[2025-10-06T03:29:39.510Z] [DEBUG] [jabl4ax4s] RESPONSE DATA:
+{
+  "menus": [
+    {
+      "id": "8f0d0d26-82d4-414a-828b-5b585cca8c01",
+      "name": "야채곱창",
+      "description": "일단 양념이 매운편이다\r\n\r\n아이들은 절대 못 먹는 정도로 매콤함\r\n\r\n​\r\n\r\n근데 양념맛은 꽤 맛있음.\r\n\r\n​\r\n\r\n우리 모두가 상상하는\r\n\r\n딱 그 전형적인 곱창볶음 양념인데ㅋ\r\n\r\n당면도 많이 들어있고 깻잎향도 향긋하고 좋았음\r\n\r\n​\r\n\r\n먹다보니 순대랑 곱창이 같이 들어가묜 참 좋겠다..\r\n\r\n는 생각이 들었었는데ㅋ\r\n\r\n아놔 순대곱창볶음이 있는지 몰라서\r\n[출처] 세종시 유미네곱창 (세종 푸드트럭) 순대볶음, 오돌뼈 드뎌 먹어봤음!|작성자 새콤c\r\n\r\n",
+      "price": 18800,
+      "imageUrl": "/uploads/menu/1759661743880-2DSC04071.jpg",
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "085f2c91-b2e9-44a0-b955-f0f7d1b31b40",
+      "name": "조경치킨",
+      "description": "매콤달콤한 조경치킨의 대표 메뉴",
+      "price": 18000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "d56c973f-686b-40ed-817a-5b66d0f35b10",
+      "name": "양념치킨",
+      "description": "달콤한 양념이 일품인 치킨",
+      "price": 17000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "3e8c142c-9183-497c-a2b7-61a568a3252c",
+      "name": "감자튀김",
+      "description": "바삭한 감자튀김",
+      "price": 5000,
+      "imageUrl": null,
+      "category": "side",
+      "isAvailable": true
+    },
+    {
+      "id": "a4f83ee1-c907-48a6-8f44-1dfc186075ee",
+      "name": "콜라",
+      "description": "시원한 콜라",
+      "price": 3000,
+      "imageUrl": null,
+      "category": "beverage",
+      "isAvailable": true
+    }
+  ]
+}
+[2025-10-06T03:29:39.510Z] [INFO] [jabl4ax4s] RESPONSE: 200
+{
+  "requestId": "jabl4ax4s",
+  "statusCode": 200,
+  "duration": "13ms",
+  "responseSize": 1128,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:39.514Z] [INFO] [fs1o0lfmh] REQUEST: GET /api/push/history-detailed?limit=10
+{
+  "requestId": "fs1o0lfmh",
+  "method": "GET",
+  "url": "/api/push/history-detailed?limit=10",
+  "originalUrl": "/api/push/history-detailed?limit=10",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {
+    "limit": "10"
+  },
+  "params": {}
+}
+[2025-10-06T03:29:39.515Z] [ERROR] [fs1o0lfmh] RESPONSE ERROR: 401
+{
+  "requestId": "fs1o0lfmh",
+  "statusCode": 401,
+  "duration": "1ms",
+  "responseSize": 46,
+  "headers": {}
+}
+[2025-10-06T03:29:39.515Z] [ERROR] [fs1o0lfmh] ERROR DETAILS:
+{
+  "error": "토큰 검증 실패",
+  "details": "jwt malformed"
+}
+[2025-10-06T03:29:39.515Z] [ERROR] [fs1o0lfmh] RESPONSE ERROR: 401
+{
+  "requestId": "fs1o0lfmh",
+  "statusCode": 401,
+  "duration": "1ms",
+  "responseSize": 46,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:39.516Z] [ERROR] [fs1o0lfmh] ERROR DETAILS:
+{
+  "error": "토큰 검증 실패",
+  "details": "jwt malformed"
+}
+[2025-10-06T03:29:39.517Z] [INFO] [dto5dppbs] REQUEST: GET /api/push/today-count
+{
+  "requestId": "dto5dppbs",
+  "method": "GET",
+  "url": "/api/push/today-count",
+  "originalUrl": "/api/push/today-count",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:39.518Z] [ERROR] [dto5dppbs] RESPONSE ERROR: 401
+{
+  "requestId": "dto5dppbs",
+  "statusCode": 401,
+  "duration": "1ms",
+  "responseSize": 46,
+  "headers": {}
+}
+[2025-10-06T03:29:39.518Z] [ERROR] [dto5dppbs] ERROR DETAILS:
+{
+  "error": "토큰 검증 실패",
+  "details": "jwt malformed"
+}
+[2025-10-06T03:29:39.519Z] [ERROR] [dto5dppbs] RESPONSE ERROR: 401
+{
+  "requestId": "dto5dppbs",
+  "statusCode": 401,
+  "duration": "2ms",
+  "responseSize": 46,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:39.519Z] [ERROR] [dto5dppbs] ERROR DETAILS:
+{
+  "error": "토큰 검증 실패",
+  "details": "jwt malformed"
+}
+[2025-10-06T03:29:47.137Z] [INFO] [ss7ffcinr] REQUEST: GET /api/menu
+{
+  "requestId": "ss7ffcinr",
+  "method": "GET",
+  "url": "/api/menu",
+  "originalUrl": "/api/menu",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:47.141Z] [INFO] [ss7ffcinr] RESPONSE: 200
+{
+  "requestId": "ss7ffcinr",
+  "statusCode": 200,
+  "duration": "4ms",
+  "responseSize": 1128,
+  "headers": {}
+}
+[2025-10-06T03:29:47.142Z] [DEBUG] [ss7ffcinr] RESPONSE DATA:
+{
+  "menus": [
+    {
+      "id": "8f0d0d26-82d4-414a-828b-5b585cca8c01",
+      "name": "야채곱창",
+      "description": "일단 양념이 매운편이다\r\n\r\n아이들은 절대 못 먹는 정도로 매콤함\r\n\r\n​\r\n\r\n근데 양념맛은 꽤 맛있음.\r\n\r\n​\r\n\r\n우리 모두가 상상하는\r\n\r\n딱 그 전형적인 곱창볶음 양념인데ㅋ\r\n\r\n당면도 많이 들어있고 깻잎향도 향긋하고 좋았음\r\n\r\n​\r\n\r\n먹다보니 순대랑 곱창이 같이 들어가묜 참 좋겠다..\r\n\r\n는 생각이 들었었는데ㅋ\r\n\r\n아놔 순대곱창볶음이 있는지 몰라서\r\n[출처] 세종시 유미네곱창 (세종 푸드트럭) 순대볶음, 오돌뼈 드뎌 먹어봤음!|작성자 새콤c\r\n\r\n",
+      "price": 18800,
+      "imageUrl": "/uploads/menu/1759661743880-2DSC04071.jpg",
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "085f2c91-b2e9-44a0-b955-f0f7d1b31b40",
+      "name": "조경치킨",
+      "description": "매콤달콤한 조경치킨의 대표 메뉴",
+      "price": 18000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "d56c973f-686b-40ed-817a-5b66d0f35b10",
+      "name": "양념치킨",
+      "description": "달콤한 양념이 일품인 치킨",
+      "price": 17000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "3e8c142c-9183-497c-a2b7-61a568a3252c",
+      "name": "감자튀김",
+      "description": "바삭한 감자튀김",
+      "price": 5000,
+      "imageUrl": null,
+      "category": "side",
+      "isAvailable": true
+    },
+    {
+      "id": "a4f83ee1-c907-48a6-8f44-1dfc186075ee",
+      "name": "콜라",
+      "description": "시원한 콜라",
+      "price": 3000,
+      "imageUrl": null,
+      "category": "beverage",
+      "isAvailable": true
+    }
+  ]
+}
+[2025-10-06T03:29:47.142Z] [INFO] [ss7ffcinr] RESPONSE: 200
+{
+  "requestId": "ss7ffcinr",
+  "statusCode": 200,
+  "duration": "5ms",
+  "responseSize": 1128,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:47.981Z] [INFO] [7r4uxtsvb] REQUEST: GET /api/location/current
+{
+  "requestId": "7r4uxtsvb",
+  "method": "GET",
+  "url": "/api/location/current",
+  "originalUrl": "/api/location/current",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:47.984Z] [INFO] [7r4uxtsvb] RESPONSE: 200
+{
+  "requestId": "7r4uxtsvb",
+  "statusCode": 200,
+  "duration": "3ms",
+  "responseSize": 179,
+  "headers": {}
+}
+[2025-10-06T03:29:47.984Z] [DEBUG] [7r4uxtsvb] RESPONSE DATA:
+{
+  "location": {
+    "id": "d605d2e6-900a-4857-8e81-65f97cf0f1b6",
+    "name": "도램마을 20단지",
+    "address": "세종시 아름동 도램마을",
+    "openTime": "17:10:00",
+    "closeTime": "21:00:00",
+    "notice": "오늘은 위치를 약간 조정했습니다.  "
+  }
+}
+[2025-10-06T03:29:47.984Z] [INFO] [7r4uxtsvb] RESPONSE: 200
+{
+  "requestId": "7r4uxtsvb",
+  "statusCode": 200,
+  "duration": "3ms",
+  "responseSize": 179,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:49.033Z] [INFO] [f7mal7iex] REQUEST: GET /api/menu
+{
+  "requestId": "f7mal7iex",
+  "method": "GET",
+  "url": "/api/menu",
+  "originalUrl": "/api/menu",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:49.035Z] [INFO] [f7mal7iex] RESPONSE: 200
+{
+  "requestId": "f7mal7iex",
+  "statusCode": 200,
+  "duration": "2ms",
+  "responseSize": 1128,
+  "headers": {}
+}
+[2025-10-06T03:29:49.035Z] [DEBUG] [f7mal7iex] RESPONSE DATA:
+{
+  "menus": [
+    {
+      "id": "8f0d0d26-82d4-414a-828b-5b585cca8c01",
+      "name": "야채곱창",
+      "description": "일단 양념이 매운편이다\r\n\r\n아이들은 절대 못 먹는 정도로 매콤함\r\n\r\n​\r\n\r\n근데 양념맛은 꽤 맛있음.\r\n\r\n​\r\n\r\n우리 모두가 상상하는\r\n\r\n딱 그 전형적인 곱창볶음 양념인데ㅋ\r\n\r\n당면도 많이 들어있고 깻잎향도 향긋하고 좋았음\r\n\r\n​\r\n\r\n먹다보니 순대랑 곱창이 같이 들어가묜 참 좋겠다..\r\n\r\n는 생각이 들었었는데ㅋ\r\n\r\n아놔 순대곱창볶음이 있는지 몰라서\r\n[출처] 세종시 유미네곱창 (세종 푸드트럭) 순대볶음, 오돌뼈 드뎌 먹어봤음!|작성자 새콤c\r\n\r\n",
+      "price": 18800,
+      "imageUrl": "/uploads/menu/1759661743880-2DSC04071.jpg",
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "085f2c91-b2e9-44a0-b955-f0f7d1b31b40",
+      "name": "조경치킨",
+      "description": "매콤달콤한 조경치킨의 대표 메뉴",
+      "price": 18000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "d56c973f-686b-40ed-817a-5b66d0f35b10",
+      "name": "양념치킨",
+      "description": "달콤한 양념이 일품인 치킨",
+      "price": 17000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "3e8c142c-9183-497c-a2b7-61a568a3252c",
+      "name": "감자튀김",
+      "description": "바삭한 감자튀김",
+      "price": 5000,
+      "imageUrl": null,
+      "category": "side",
+      "isAvailable": true
+    },
+    {
+      "id": "a4f83ee1-c907-48a6-8f44-1dfc186075ee",
+      "name": "콜라",
+      "description": "시원한 콜라",
+      "price": 3000,
+      "imageUrl": null,
+      "category": "beverage",
+      "isAvailable": true
+    }
+  ]
+}
+[2025-10-06T03:29:49.036Z] [INFO] [f7mal7iex] RESPONSE: 200
+{
+  "requestId": "f7mal7iex",
+  "statusCode": 200,
+  "duration": "3ms",
+  "responseSize": 1128,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:50.791Z] [INFO] [xwlsxd5j1] REQUEST: GET /api/menu/8f0d0d26-82d4-414a-828b-5b585cca8c01
+{
+  "requestId": "xwlsxd5j1",
+  "method": "GET",
+  "url": "/api/menu/8f0d0d26-82d4-414a-828b-5b585cca8c01",
+  "originalUrl": "/api/menu/8f0d0d26-82d4-414a-828b-5b585cca8c01",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:50.795Z] [INFO] [xwlsxd5j1] RESPONSE: 200
+{
+  "requestId": "xwlsxd5j1",
+  "statusCode": 200,
+  "duration": "3ms",
+  "responseSize": 504,
+  "headers": {}
+}
+[2025-10-06T03:29:50.795Z] [DEBUG] [xwlsxd5j1] RESPONSE DATA:
+{
+  "menu": {
+    "id": "8f0d0d26-82d4-414a-828b-5b585cca8c01",
+    "name": "야채곱창",
+    "description": "일단 양념이 매운편이다\r\n\r\n아이들은 절대 못 먹는 정도로 매콤함\r\n\r\n​\r\n\r\n근데 양념맛은 꽤 맛있음.\r\n\r\n​\r\n\r\n우리 모두가 상상하는\r\n\r\n딱 그 전형적인 곱창볶음 양념인데ㅋ\r\n\r\n당면도 많이 들어있고 깻잎향도 향긋하고 좋았음\r\n\r\n​\r\n\r\n먹다보니 순대랑 곱창이 같이 들어가묜 참 좋겠다..\r\n\r\n는 생각이 들었었는데ㅋ\r\n\r\n아놔 순대곱창볶음이 있는지 몰라서\r\n[출처] 세종시 유미네곱창 (세종 푸드트럭) 순대볶음, 오돌뼈 드뎌 먹어봤음!|작성자 새콤c\r\n\r\n",
+    "price": 18800,
+    "imageUrl": "/uploads/menu/1759661743880-2DSC04071.jpg",
+    "category": "main",
+    "isAvailable": true
+  }
+}
+[2025-10-06T03:29:50.795Z] [INFO] [xwlsxd5j1] RESPONSE: 200
+{
+  "requestId": "xwlsxd5j1",
+  "statusCode": 200,
+  "duration": "4ms",
+  "responseSize": 504,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:52.604Z] [INFO] [6seozs2ys] REQUEST: GET /api/fcm/tokens
+{
+  "requestId": "6seozs2ys",
+  "method": "GET",
+  "url": "/api/fcm/tokens",
+  "originalUrl": "/api/fcm/tokens",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:52.609Z] [INFO] [6seozs2ys] RESPONSE: 200
+{
+  "requestId": "6seozs2ys",
+  "statusCode": 200,
+  "duration": "5ms",
+  "responseSize": 1362,
+  "headers": {}
+}
+[2025-10-06T03:29:52.610Z] [DEBUG] [6seozs2ys] RESPONSE DATA:
+{
+  "tokens": [
+    {
+      "id": "8827e927-0ce9-4100-8ad7-6d2b652bb466",
+      "token": "dKoH7WxcQh6bIS-rSKaggz:APA91bHsTOThTx3e0K6WwUNdJv6nYWwSCNTJkahcJakwZ4Z7ZyN5Ju5fgTI_D5dWOL_p_xK2jqxhfuOIJiAIa9PaBXhEmdr3BwHB-IXTXGfPDFRfeX0rojk",
+      "deviceType": "android",
+      "deviceId": "android_device_1759679052042",
+      "lastUsedAt": "2025-10-05T15:44:12.162Z",
+      "isActive": true
+    },
+    {
+      "id": "f8e9aab6-6c56-49fe-9c14-a9fb6a993394",
+      "token": "fzBdKxpFSQiufDmRu4cx2E:APA91bEVDAKsmFu5pR-0at1cEePEfQyuwJIr9tk3mZ88a-hhhGIFXIvzpqlioHqXEKet35fTfVYRf_qPmOq-Wj_KEJvJT29RfC_dnsb03ZWDJ7uJAk24pK8",
+      "deviceType": "android",
+      "deviceId": "android_device_1759657785970",
+      "lastUsedAt": "2025-10-05T09:49:46.042Z",
+      "isActive": true
+    },
+    {
+      "id": "5a3015c5-3731-4f62-8945-390bfc4a9fae",
+      "token": "cIISiKO2TxqFygu8iTZAd3:APA91bG74pPqoBiPuKhvWZKNpf86f2OZ1d0KJ6o0JcvciBhP9tOtVrfrSdtZe4tphiotu17GJEm3sRAuahPEBjj31v6hvmdMo-lTcNn5Rzqo4mjJT3yxHvs",
+      "deviceType": "android",
+      "deviceId": "android_device_1759656286552",
+      "lastUsedAt": "2025-10-05T09:24:46.670Z",
+      "isActive": true
+    },
+    {
+      "id": "6e0cb04b-f086-464a-8a76-4e58c5196a99",
+      "token": "test-device-token-android-67890",
+      "deviceType": "android",
+      "deviceId": "test-device-002",
+      "lastUsedAt": "2025-10-05T02:17:25.425Z",
+      "isActive": true
+    },
+    {
+      "id": "972e5489-4376-4be0-944c-1afe6432ffca",
+      "token": "test-device-token-12345",
+      "deviceType": "ios",
+      "deviceId": "test-device-001",
+      "lastUsedAt": "2025-10-05T02:17:21.536Z",
+      "isActive": true
+    }
+  ],
+  "count": 5
+}
+[2025-10-06T03:29:52.610Z] [INFO] [6seozs2ys] RESPONSE: 200
+{
+  "requestId": "6seozs2ys",
+  "statusCode": 200,
+  "duration": "6ms",
+  "responseSize": 1362,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:53.786Z] [INFO] [y3sycujpy] REQUEST: GET /api/fcm/tokens
+{
+  "requestId": "y3sycujpy",
+  "method": "GET",
+  "url": "/api/fcm/tokens",
+  "originalUrl": "/api/fcm/tokens",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:53.787Z] [INFO] [okfzauqsy] REQUEST: GET /api/push/recent
+{
+  "requestId": "okfzauqsy",
+  "method": "GET",
+  "url": "/api/push/recent",
+  "originalUrl": "/api/push/recent",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:53.788Z] [ERROR] [okfzauqsy] RESPONSE ERROR: 401
+{
+  "requestId": "okfzauqsy",
+  "statusCode": 401,
+  "duration": "1ms",
+  "responseSize": 46,
+  "headers": {}
+}
+[2025-10-06T03:29:53.788Z] [ERROR] [okfzauqsy] ERROR DETAILS:
+{
+  "error": "토큰 검증 실패",
+  "details": "jwt malformed"
+}
+[2025-10-06T03:29:53.789Z] [ERROR] [okfzauqsy] RESPONSE ERROR: 401
+{
+  "requestId": "okfzauqsy",
+  "statusCode": 401,
+  "duration": "2ms",
+  "responseSize": 46,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:53.789Z] [ERROR] [okfzauqsy] ERROR DETAILS:
+{
+  "error": "토큰 검증 실패",
+  "details": "jwt malformed"
+}
+[2025-10-06T03:29:53.790Z] [INFO] [y3sycujpy] RESPONSE: 200
+{
+  "requestId": "y3sycujpy",
+  "statusCode": 200,
+  "duration": "4ms",
+  "responseSize": 1362,
+  "headers": {}
+}
+[2025-10-06T03:29:53.790Z] [DEBUG] [y3sycujpy] RESPONSE DATA:
+{
+  "tokens": [
+    {
+      "id": "8827e927-0ce9-4100-8ad7-6d2b652bb466",
+      "token": "dKoH7WxcQh6bIS-rSKaggz:APA91bHsTOThTx3e0K6WwUNdJv6nYWwSCNTJkahcJakwZ4Z7ZyN5Ju5fgTI_D5dWOL_p_xK2jqxhfuOIJiAIa9PaBXhEmdr3BwHB-IXTXGfPDFRfeX0rojk",
+      "deviceType": "android",
+      "deviceId": "android_device_1759679052042",
+      "lastUsedAt": "2025-10-05T15:44:12.162Z",
+      "isActive": true
+    },
+    {
+      "id": "f8e9aab6-6c56-49fe-9c14-a9fb6a993394",
+      "token": "fzBdKxpFSQiufDmRu4cx2E:APA91bEVDAKsmFu5pR-0at1cEePEfQyuwJIr9tk3mZ88a-hhhGIFXIvzpqlioHqXEKet35fTfVYRf_qPmOq-Wj_KEJvJT29RfC_dnsb03ZWDJ7uJAk24pK8",
+      "deviceType": "android",
+      "deviceId": "android_device_1759657785970",
+      "lastUsedAt": "2025-10-05T09:49:46.042Z",
+      "isActive": true
+    },
+    {
+      "id": "5a3015c5-3731-4f62-8945-390bfc4a9fae",
+      "token": "cIISiKO2TxqFygu8iTZAd3:APA91bG74pPqoBiPuKhvWZKNpf86f2OZ1d0KJ6o0JcvciBhP9tOtVrfrSdtZe4tphiotu17GJEm3sRAuahPEBjj31v6hvmdMo-lTcNn5Rzqo4mjJT3yxHvs",
+      "deviceType": "android",
+      "deviceId": "android_device_1759656286552",
+      "lastUsedAt": "2025-10-05T09:24:46.670Z",
+      "isActive": true
+    },
+    {
+      "id": "6e0cb04b-f086-464a-8a76-4e58c5196a99",
+      "token": "test-device-token-android-67890",
+      "deviceType": "android",
+      "deviceId": "test-device-002",
+      "lastUsedAt": "2025-10-05T02:17:25.425Z",
+      "isActive": true
+    },
+    {
+      "id": "972e5489-4376-4be0-944c-1afe6432ffca",
+      "token": "test-device-token-12345",
+      "deviceType": "ios",
+      "deviceId": "test-device-001",
+      "lastUsedAt": "2025-10-05T02:17:21.536Z",
+      "isActive": true
+    }
+  ],
+  "count": 5
+}
+[2025-10-06T03:29:53.791Z] [INFO] [y3sycujpy] RESPONSE: 200
+{
+  "requestId": "y3sycujpy",
+  "statusCode": 200,
+  "duration": "5ms",
+  "responseSize": 1362,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:29:57.094Z] [INFO] [0f37qaqe3] REQUEST: GET /admin
+{
+  "requestId": "0f37qaqe3",
+  "method": "GET",
+  "url": "/admin",
+  "originalUrl": "/admin",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {},
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:29:57.122Z] [INFO] [191b5quvw] REQUEST: GET /admin/admin.js
+{
+  "requestId": "191b5quvw",
+  "method": "GET",
+  "url": "/admin/admin.js",
+  "originalUrl": "/admin/admin.js",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {},
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:11.316Z] [INFO] [ixppl9u2c] REQUEST: POST /api/auth/login
+{
+  "requestId": "ixppl9u2c",
+  "method": "POST",
+  "url": "/api/auth/login",
+  "originalUrl": "/api/auth/login",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "username": "admin",
+    "password": "admin123"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:11.660Z] [INFO] [ixppl9u2c] RESPONSE: 200
+{
+  "requestId": "ixppl9u2c",
+  "statusCode": 200,
+  "duration": "344ms",
+  "responseSize": 438,
+  "headers": {}
+}
+[2025-10-06T03:30:11.660Z] [DEBUG] [ixppl9u2c] RESPONSE DATA:
+{
+  "message": "로그인 성공",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNlNzYxOWRlLTVkMjEtNGUyOS1iZjA2LTUzZDAyMmY3NDIyNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTk3MjE0MTEsImV4cCI6MTc1OTgwNzgxMX0.dzYmIKOLYMpKxWoInfKcyXzDrHRgLXS9lGvYkuYtjEc",
+  "admin": {
+    "id": "3e7619de-5d21-4e29-bf06-53d022f74227",
+    "username": "admin",
+    "email": "admin@foodtruck.com",
+    "shopName": "세종 유미네 곱창",
+    "shopDescription": "신선한 재료로 만드는 맛있는 음식",
+    "phoneNumber": "010-1234-5678"
+  }
+}
+[2025-10-06T03:30:11.660Z] [INFO] [ixppl9u2c] RESPONSE: 200
+{
+  "requestId": "ixppl9u2c",
+  "statusCode": 200,
+  "duration": "344ms",
+  "responseSize": 438,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:11.666Z] [INFO] [1qd1ghyhu] REQUEST: GET /api/menu
+{
+  "requestId": "1qd1ghyhu",
+  "method": "GET",
+  "url": "/api/menu",
+  "originalUrl": "/api/menu",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:11.666Z] [INFO] [smh4br6ia] REQUEST: GET /api/fcm/tokens
+{
+  "requestId": "smh4br6ia",
+  "method": "GET",
+  "url": "/api/fcm/tokens",
+  "originalUrl": "/api/fcm/tokens",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:11.667Z] [INFO] [o9mm39tiw] REQUEST: GET /api/location/current
+{
+  "requestId": "o9mm39tiw",
+  "method": "GET",
+  "url": "/api/location/current",
+  "originalUrl": "/api/location/current",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:11.668Z] [INFO] [1qd1ghyhu] RESPONSE: 200
+{
+  "requestId": "1qd1ghyhu",
+  "statusCode": 200,
+  "duration": "2ms",
+  "responseSize": 1128,
+  "headers": {}
+}
+[2025-10-06T03:30:11.668Z] [DEBUG] [1qd1ghyhu] RESPONSE DATA:
+{
+  "menus": [
+    {
+      "id": "8f0d0d26-82d4-414a-828b-5b585cca8c01",
+      "name": "야채곱창",
+      "description": "일단 양념이 매운편이다\r\n\r\n아이들은 절대 못 먹는 정도로 매콤함\r\n\r\n​\r\n\r\n근데 양념맛은 꽤 맛있음.\r\n\r\n​\r\n\r\n우리 모두가 상상하는\r\n\r\n딱 그 전형적인 곱창볶음 양념인데ㅋ\r\n\r\n당면도 많이 들어있고 깻잎향도 향긋하고 좋았음\r\n\r\n​\r\n\r\n먹다보니 순대랑 곱창이 같이 들어가묜 참 좋겠다..\r\n\r\n는 생각이 들었었는데ㅋ\r\n\r\n아놔 순대곱창볶음이 있는지 몰라서\r\n[출처] 세종시 유미네곱창 (세종 푸드트럭) 순대볶음, 오돌뼈 드뎌 먹어봤음!|작성자 새콤c\r\n\r\n",
+      "price": 18800,
+      "imageUrl": "/uploads/menu/1759661743880-2DSC04071.jpg",
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "085f2c91-b2e9-44a0-b955-f0f7d1b31b40",
+      "name": "조경치킨",
+      "description": "매콤달콤한 조경치킨의 대표 메뉴",
+      "price": 18000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "d56c973f-686b-40ed-817a-5b66d0f35b10",
+      "name": "양념치킨",
+      "description": "달콤한 양념이 일품인 치킨",
+      "price": 17000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "3e8c142c-9183-497c-a2b7-61a568a3252c",
+      "name": "감자튀김",
+      "description": "바삭한 감자튀김",
+      "price": 5000,
+      "imageUrl": null,
+      "category": "side",
+      "isAvailable": true
+    },
+    {
+      "id": "a4f83ee1-c907-48a6-8f44-1dfc186075ee",
+      "name": "콜라",
+      "description": "시원한 콜라",
+      "price": 3000,
+      "imageUrl": null,
+      "category": "beverage",
+      "isAvailable": true
+    }
+  ]
+}
+[2025-10-06T03:30:11.668Z] [INFO] [1qd1ghyhu] RESPONSE: 200
+{
+  "requestId": "1qd1ghyhu",
+  "statusCode": 200,
+  "duration": "2ms",
+  "responseSize": 1128,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:11.679Z] [INFO] [smh4br6ia] RESPONSE: 200
+{
+  "requestId": "smh4br6ia",
+  "statusCode": 200,
+  "duration": "13ms",
+  "responseSize": 1362,
+  "headers": {}
+}
+[2025-10-06T03:30:11.679Z] [DEBUG] [smh4br6ia] RESPONSE DATA:
+{
+  "tokens": [
+    {
+      "id": "8827e927-0ce9-4100-8ad7-6d2b652bb466",
+      "token": "dKoH7WxcQh6bIS-rSKaggz:APA91bHsTOThTx3e0K6WwUNdJv6nYWwSCNTJkahcJakwZ4Z7ZyN5Ju5fgTI_D5dWOL_p_xK2jqxhfuOIJiAIa9PaBXhEmdr3BwHB-IXTXGfPDFRfeX0rojk",
+      "deviceType": "android",
+      "deviceId": "android_device_1759679052042",
+      "lastUsedAt": "2025-10-05T15:44:12.162Z",
+      "isActive": true
+    },
+    {
+      "id": "f8e9aab6-6c56-49fe-9c14-a9fb6a993394",
+      "token": "fzBdKxpFSQiufDmRu4cx2E:APA91bEVDAKsmFu5pR-0at1cEePEfQyuwJIr9tk3mZ88a-hhhGIFXIvzpqlioHqXEKet35fTfVYRf_qPmOq-Wj_KEJvJT29RfC_dnsb03ZWDJ7uJAk24pK8",
+      "deviceType": "android",
+      "deviceId": "android_device_1759657785970",
+      "lastUsedAt": "2025-10-05T09:49:46.042Z",
+      "isActive": true
+    },
+    {
+      "id": "5a3015c5-3731-4f62-8945-390bfc4a9fae",
+      "token": "cIISiKO2TxqFygu8iTZAd3:APA91bG74pPqoBiPuKhvWZKNpf86f2OZ1d0KJ6o0JcvciBhP9tOtVrfrSdtZe4tphiotu17GJEm3sRAuahPEBjj31v6hvmdMo-lTcNn5Rzqo4mjJT3yxHvs",
+      "deviceType": "android",
+      "deviceId": "android_device_1759656286552",
+      "lastUsedAt": "2025-10-05T09:24:46.670Z",
+      "isActive": true
+    },
+    {
+      "id": "6e0cb04b-f086-464a-8a76-4e58c5196a99",
+      "token": "test-device-token-android-67890",
+      "deviceType": "android",
+      "deviceId": "test-device-002",
+      "lastUsedAt": "2025-10-05T02:17:25.425Z",
+      "isActive": true
+    },
+    {
+      "id": "972e5489-4376-4be0-944c-1afe6432ffca",
+      "token": "test-device-token-12345",
+      "deviceType": "ios",
+      "deviceId": "test-device-001",
+      "lastUsedAt": "2025-10-05T02:17:21.536Z",
+      "isActive": true
+    }
+  ],
+  "count": 5
+}
+[2025-10-06T03:30:11.679Z] [INFO] [smh4br6ia] RESPONSE: 200
+{
+  "requestId": "smh4br6ia",
+  "statusCode": 200,
+  "duration": "13ms",
+  "responseSize": 1362,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:11.683Z] [INFO] [o9mm39tiw] RESPONSE: 200
+{
+  "requestId": "o9mm39tiw",
+  "statusCode": 200,
+  "duration": "16ms",
+  "responseSize": 179,
+  "headers": {}
+}
+[2025-10-06T03:30:11.684Z] [DEBUG] [o9mm39tiw] RESPONSE DATA:
+{
+  "location": {
+    "id": "d605d2e6-900a-4857-8e81-65f97cf0f1b6",
+    "name": "도램마을 20단지",
+    "address": "세종시 아름동 도램마을",
+    "openTime": "17:10:00",
+    "closeTime": "21:00:00",
+    "notice": "오늘은 위치를 약간 조정했습니다.  "
+  }
+}
+[2025-10-06T03:30:11.684Z] [INFO] [o9mm39tiw] RESPONSE: 200
+{
+  "requestId": "o9mm39tiw",
+  "statusCode": 200,
+  "duration": "17ms",
+  "responseSize": 179,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:11.696Z] [INFO] [q5nqtmzvl] REQUEST: GET /api/push/history-detailed?limit=10
+{
+  "requestId": "q5nqtmzvl",
+  "method": "GET",
+  "url": "/api/push/history-detailed?limit=10",
+  "originalUrl": "/api/push/history-detailed?limit=10",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {
+    "limit": "10"
+  },
+  "params": {}
+}
+[2025-10-06T03:30:11.697Z] [INFO] [spoqjgt6h] REQUEST: GET /api/push/today-count
+{
+  "requestId": "spoqjgt6h",
+  "method": "GET",
+  "url": "/api/push/today-count",
+  "originalUrl": "/api/push/today-count",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:11.710Z] [INFO] [q5nqtmzvl] RESPONSE: 200
+{
+  "requestId": "q5nqtmzvl",
+  "statusCode": 200,
+  "duration": "14ms",
+  "responseSize": 4706,
+  "headers": {}
+}
+[2025-10-06T03:30:11.710Z] [DEBUG] [q5nqtmzvl] RESPONSE DATA:
+{
+  "histories": [
+    {
+      "id": "3f82c3fa-d073-45ea-85fa-e9dd3ab11eda",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:57:59.616Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "f0f8c4f9-ce39-49de-9985-5abd906b19a3",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:54:18.898Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "9468c0d4-efb7-4b9f-a544-e165d4702701",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:17:15.628Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "5dbff896-521b-4855-954f-f8515ebad7d5",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:14:35.646Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "0c336339-0497-4dc3-b06a-7cdf224183c8",
+      "title": "안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:12:18.055Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "afaac0a0-29e9-4f68-8a43-71e0555cf4a5",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:09:58.722Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "32552767-47c4-4db8-84bd-7eb366660388",
+      "title": "1새 푸시 알림 작성",
+      "body": "1새 푸시 알림 작성1새 푸시 알림 작성1새 푸시 알림 작성1새 푸시 알림 작성1새 푸시 알림 작성1새 푸시 알림 작성",
+      "target": "all",
+      "createdAt": "2025-10-05T15:06:48.201Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "3c50acd2-c682-4bb8-8c13-4bf108efb6e6",
+      "title": "총 등록된 디바이스",
+      "body": "총 등록된 디바이스총 등록된 디바이스총 등록된 디바이스총 등록된 디바이스총 등록된 디바이스총 등록된 디바이스",
+      "target": "all",
+      "createdAt": "2025-10-05T14:46:57.201Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "5330ff67-14d5-4750-997c-77f7cc72b253",
+      "title": "444이제 잘되네 ",
+      "body": "444이제 잘되네 444이제 잘되네 444이제 잘되네 444이제 잘되네 444이제 잘되네 444이제 잘되네 ",
+      "target": "all",
+      "createdAt": "2025-10-05T14:43:27.043Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "b268371d-6d78-4a88-8579-636a64b4a608",
+      "title": "7안녕하세요! 유미네 곱창입니다.",
+      "body": "7안녕하세요! 유미네 곱창입니다.7안녕하세요! 유미네 곱창입니다.7안녕하세요! 유미네 곱창입니다.7안녕하세요! 유미네 곱창입니다.7안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T14:36:55.270Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    }
+  ]
+}
+[2025-10-06T03:30:11.710Z] [INFO] [q5nqtmzvl] RESPONSE: 200
+{
+  "requestId": "q5nqtmzvl",
+  "statusCode": 200,
+  "duration": "14ms",
+  "responseSize": 4706,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:11.711Z] [INFO] [spoqjgt6h] RESPONSE: 200
+{
+  "requestId": "spoqjgt6h",
+  "statusCode": 200,
+  "duration": "14ms",
+  "responseSize": 20,
+  "headers": {}
+}
+[2025-10-06T03:30:11.712Z] [DEBUG] [spoqjgt6h] RESPONSE DATA:
+{
+  "todayPushCount": 7
+}
+[2025-10-06T03:30:11.712Z] [INFO] [spoqjgt6h] RESPONSE: 200
+{
+  "requestId": "spoqjgt6h",
+  "statusCode": 200,
+  "duration": "15ms",
+  "responseSize": 20,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:16.505Z] [INFO] [9ql9wq0vp] REQUEST: GET /api/location/current
+{
+  "requestId": "9ql9wq0vp",
+  "method": "GET",
+  "url": "/api/location/current",
+  "originalUrl": "/api/location/current",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:16.508Z] [INFO] [9ql9wq0vp] RESPONSE: 200
+{
+  "requestId": "9ql9wq0vp",
+  "statusCode": 200,
+  "duration": "3ms",
+  "responseSize": 179,
+  "headers": {}
+}
+[2025-10-06T03:30:16.509Z] [DEBUG] [9ql9wq0vp] RESPONSE DATA:
+{
+  "location": {
+    "id": "d605d2e6-900a-4857-8e81-65f97cf0f1b6",
+    "name": "도램마을 20단지",
+    "address": "세종시 아름동 도램마을",
+    "openTime": "17:10:00",
+    "closeTime": "21:00:00",
+    "notice": "오늘은 위치를 약간 조정했습니다.  "
+  }
+}
+[2025-10-06T03:30:16.509Z] [INFO] [9ql9wq0vp] RESPONSE: 200
+{
+  "requestId": "9ql9wq0vp",
+  "statusCode": 200,
+  "duration": "4ms",
+  "responseSize": 179,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:17.727Z] [INFO] [jhrr01uvp] REQUEST: GET /api/menu
+{
+  "requestId": "jhrr01uvp",
+  "method": "GET",
+  "url": "/api/menu",
+  "originalUrl": "/api/menu",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:17.729Z] [INFO] [s4y7v4j8l] REQUEST: GET /api/location/current
+{
+  "requestId": "s4y7v4j8l",
+  "method": "GET",
+  "url": "/api/location/current",
+  "originalUrl": "/api/location/current",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:17.731Z] [INFO] [jhrr01uvp] RESPONSE: 200
+{
+  "requestId": "jhrr01uvp",
+  "statusCode": 200,
+  "duration": "4ms",
+  "responseSize": 1128,
+  "headers": {}
+}
+[2025-10-06T03:30:17.731Z] [DEBUG] [jhrr01uvp] RESPONSE DATA:
+{
+  "menus": [
+    {
+      "id": "8f0d0d26-82d4-414a-828b-5b585cca8c01",
+      "name": "야채곱창",
+      "description": "일단 양념이 매운편이다\r\n\r\n아이들은 절대 못 먹는 정도로 매콤함\r\n\r\n​\r\n\r\n근데 양념맛은 꽤 맛있음.\r\n\r\n​\r\n\r\n우리 모두가 상상하는\r\n\r\n딱 그 전형적인 곱창볶음 양념인데ㅋ\r\n\r\n당면도 많이 들어있고 깻잎향도 향긋하고 좋았음\r\n\r\n​\r\n\r\n먹다보니 순대랑 곱창이 같이 들어가묜 참 좋겠다..\r\n\r\n는 생각이 들었었는데ㅋ\r\n\r\n아놔 순대곱창볶음이 있는지 몰라서\r\n[출처] 세종시 유미네곱창 (세종 푸드트럭) 순대볶음, 오돌뼈 드뎌 먹어봤음!|작성자 새콤c\r\n\r\n",
+      "price": 18800,
+      "imageUrl": "/uploads/menu/1759661743880-2DSC04071.jpg",
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "085f2c91-b2e9-44a0-b955-f0f7d1b31b40",
+      "name": "조경치킨",
+      "description": "매콤달콤한 조경치킨의 대표 메뉴",
+      "price": 18000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "d56c973f-686b-40ed-817a-5b66d0f35b10",
+      "name": "양념치킨",
+      "description": "달콤한 양념이 일품인 치킨",
+      "price": 17000,
+      "imageUrl": null,
+      "category": "main",
+      "isAvailable": true
+    },
+    {
+      "id": "3e8c142c-9183-497c-a2b7-61a568a3252c",
+      "name": "감자튀김",
+      "description": "바삭한 감자튀김",
+      "price": 5000,
+      "imageUrl": null,
+      "category": "side",
+      "isAvailable": true
+    },
+    {
+      "id": "a4f83ee1-c907-48a6-8f44-1dfc186075ee",
+      "name": "콜라",
+      "description": "시원한 콜라",
+      "price": 3000,
+      "imageUrl": null,
+      "category": "beverage",
+      "isAvailable": true
+    }
+  ]
+}
+[2025-10-06T03:30:17.731Z] [INFO] [jhrr01uvp] RESPONSE: 200
+{
+  "requestId": "jhrr01uvp",
+  "statusCode": 200,
+  "duration": "4ms",
+  "responseSize": 1128,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:17.732Z] [INFO] [rnq9e2j32] REQUEST: GET /api/fcm/tokens
+{
+  "requestId": "rnq9e2j32",
+  "method": "GET",
+  "url": "/api/fcm/tokens",
+  "originalUrl": "/api/fcm/tokens",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:17.733Z] [INFO] [s4y7v4j8l] RESPONSE: 200
+{
+  "requestId": "s4y7v4j8l",
+  "statusCode": 200,
+  "duration": "4ms",
+  "responseSize": 179,
+  "headers": {}
+}
+[2025-10-06T03:30:17.734Z] [DEBUG] [s4y7v4j8l] RESPONSE DATA:
+{
+  "location": {
+    "id": "d605d2e6-900a-4857-8e81-65f97cf0f1b6",
+    "name": "도램마을 20단지",
+    "address": "세종시 아름동 도램마을",
+    "openTime": "17:10:00",
+    "closeTime": "21:00:00",
+    "notice": "오늘은 위치를 약간 조정했습니다.  "
+  }
+}
+[2025-10-06T03:30:17.734Z] [INFO] [s4y7v4j8l] RESPONSE: 200
+{
+  "requestId": "s4y7v4j8l",
+  "statusCode": 200,
+  "duration": "5ms",
+  "responseSize": 179,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:17.736Z] [INFO] [rnq9e2j32] RESPONSE: 200
+{
+  "requestId": "rnq9e2j32",
+  "statusCode": 200,
+  "duration": "4ms",
+  "responseSize": 1362,
+  "headers": {}
+}
+[2025-10-06T03:30:17.737Z] [DEBUG] [rnq9e2j32] RESPONSE DATA:
+{
+  "tokens": [
+    {
+      "id": "8827e927-0ce9-4100-8ad7-6d2b652bb466",
+      "token": "dKoH7WxcQh6bIS-rSKaggz:APA91bHsTOThTx3e0K6WwUNdJv6nYWwSCNTJkahcJakwZ4Z7ZyN5Ju5fgTI_D5dWOL_p_xK2jqxhfuOIJiAIa9PaBXhEmdr3BwHB-IXTXGfPDFRfeX0rojk",
+      "deviceType": "android",
+      "deviceId": "android_device_1759679052042",
+      "lastUsedAt": "2025-10-05T15:44:12.162Z",
+      "isActive": true
+    },
+    {
+      "id": "f8e9aab6-6c56-49fe-9c14-a9fb6a993394",
+      "token": "fzBdKxpFSQiufDmRu4cx2E:APA91bEVDAKsmFu5pR-0at1cEePEfQyuwJIr9tk3mZ88a-hhhGIFXIvzpqlioHqXEKet35fTfVYRf_qPmOq-Wj_KEJvJT29RfC_dnsb03ZWDJ7uJAk24pK8",
+      "deviceType": "android",
+      "deviceId": "android_device_1759657785970",
+      "lastUsedAt": "2025-10-05T09:49:46.042Z",
+      "isActive": true
+    },
+    {
+      "id": "5a3015c5-3731-4f62-8945-390bfc4a9fae",
+      "token": "cIISiKO2TxqFygu8iTZAd3:APA91bG74pPqoBiPuKhvWZKNpf86f2OZ1d0KJ6o0JcvciBhP9tOtVrfrSdtZe4tphiotu17GJEm3sRAuahPEBjj31v6hvmdMo-lTcNn5Rzqo4mjJT3yxHvs",
+      "deviceType": "android",
+      "deviceId": "android_device_1759656286552",
+      "lastUsedAt": "2025-10-05T09:24:46.670Z",
+      "isActive": true
+    },
+    {
+      "id": "6e0cb04b-f086-464a-8a76-4e58c5196a99",
+      "token": "test-device-token-android-67890",
+      "deviceType": "android",
+      "deviceId": "test-device-002",
+      "lastUsedAt": "2025-10-05T02:17:25.425Z",
+      "isActive": true
+    },
+    {
+      "id": "972e5489-4376-4be0-944c-1afe6432ffca",
+      "token": "test-device-token-12345",
+      "deviceType": "ios",
+      "deviceId": "test-device-001",
+      "lastUsedAt": "2025-10-05T02:17:21.536Z",
+      "isActive": true
+    }
+  ],
+  "count": 5
+}
+[2025-10-06T03:30:17.737Z] [INFO] [rnq9e2j32] RESPONSE: 200
+{
+  "requestId": "rnq9e2j32",
+  "statusCode": 200,
+  "duration": "5ms",
+  "responseSize": 1362,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:17.742Z] [INFO] [okhgein43] REQUEST: GET /api/push/today-count
+{
+  "requestId": "okhgein43",
+  "method": "GET",
+  "url": "/api/push/today-count",
+  "originalUrl": "/api/push/today-count",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {},
+  "params": {}
+}
+[2025-10-06T03:30:17.744Z] [INFO] [ok1kzhoiz] REQUEST: GET /api/push/history-detailed?limit=10
+{
+  "requestId": "ok1kzhoiz",
+  "method": "GET",
+  "url": "/api/push/history-detailed?limit=10",
+  "originalUrl": "/api/push/history-detailed?limit=10",
+  "ip": "192.168.219.123",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+  "headers": {
+    "authorization": "Bearer ***"
+  },
+  "query": {
+    "limit": "10"
+  },
+  "params": {}
+}
+[2025-10-06T03:30:17.746Z] [INFO] [okhgein43] RESPONSE: 200
+{
+  "requestId": "okhgein43",
+  "statusCode": 200,
+  "duration": "4ms",
+  "responseSize": 20,
+  "headers": {}
+}
+[2025-10-06T03:30:17.747Z] [DEBUG] [okhgein43] RESPONSE DATA:
+{
+  "todayPushCount": 7
+}
+[2025-10-06T03:30:17.747Z] [INFO] [okhgein43] RESPONSE: 200
+{
+  "requestId": "okhgein43",
+  "statusCode": 200,
+  "duration": "5ms",
+  "responseSize": 20,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-06T03:30:17.748Z] [INFO] [ok1kzhoiz] RESPONSE: 200
+{
+  "requestId": "ok1kzhoiz",
+  "statusCode": 200,
+  "duration": "5ms",
+  "responseSize": 4706,
+  "headers": {}
+}
+[2025-10-06T03:30:17.748Z] [DEBUG] [ok1kzhoiz] RESPONSE DATA:
+{
+  "histories": [
+    {
+      "id": "3f82c3fa-d073-45ea-85fa-e9dd3ab11eda",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:57:59.616Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "f0f8c4f9-ce39-49de-9985-5abd906b19a3",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:54:18.898Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "9468c0d4-efb7-4b9f-a544-e165d4702701",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:17:15.628Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "5dbff896-521b-4855-954f-f8515ebad7d5",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:14:35.646Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "0c336339-0497-4dc3-b06a-7cdf224183c8",
+      "title": "안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:12:18.055Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "afaac0a0-29e9-4f68-8a43-71e0555cf4a5",
+      "title": "ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "body": "ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.ㅋㅋ안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T15:09:58.722Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "32552767-47c4-4db8-84bd-7eb366660388",
+      "title": "1새 푸시 알림 작성",
+      "body": "1새 푸시 알림 작성1새 푸시 알림 작성1새 푸시 알림 작성1새 푸시 알림 작성1새 푸시 알림 작성1새 푸시 알림 작성",
+      "target": "all",
+      "createdAt": "2025-10-05T15:06:48.201Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "3c50acd2-c682-4bb8-8c13-4bf108efb6e6",
+      "title": "총 등록된 디바이스",
+      "body": "총 등록된 디바이스총 등록된 디바이스총 등록된 디바이스총 등록된 디바이스총 등록된 디바이스총 등록된 디바이스",
+      "target": "all",
+      "createdAt": "2025-10-05T14:46:57.201Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "5330ff67-14d5-4750-997c-77f7cc72b253",
+      "title": "444이제 잘되네 ",
+      "body": "444이제 잘되네 444이제 잘되네 444이제 잘되네 444이제 잘되네 444이제 잘되네 444이제 잘되네 ",
+      "target": "all",
+      "createdAt": "2025-10-05T14:43:27.043Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    },
+    {
+      "id": "b268371d-6d78-4a88-8579-636a64b4a608",
+      "title": "7안녕하세요! 유미네 곱창입니다.",
+      "body": "7안녕하세요! 유미네 곱창입니다.7안녕하세요! 유미네 곱창입니다.7안녕하세요! 유미네 곱창입니다.7안녕하세요! 유미네 곱창입니다.7안녕하세요! 유미네 곱창입니다.",
+      "target": "all",
+      "createdAt": "2025-10-05T14:36:55.270Z",
+      "iosTokensCount": 1,
+      "iosSuccessCount": 0,
+      "iosFailureCount": 1,
+      "androidTokensCount": 4,
+      "androidSuccessCount": 1,
+      "androidFailureCount": 3,
+      "totalTokensCount": 5,
+      "totalSuccessCount": 1,
+      "totalFailureCount": 4,
+      "successRate": "20.00",
+      "status": "partial"
+    }
+  ]
+}
+[2025-10-06T03:30:17.748Z] [INFO] [ok1kzhoiz] RESPONSE: 200
+{
+  "requestId": "ok1kzhoiz",
+  "statusCode": 200,
+  "duration": "5ms",
+  "responseSize": 4706,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}

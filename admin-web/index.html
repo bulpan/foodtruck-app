@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>푸드트럭 관리자 페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 기본 레이아웃 */
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: transform 0.3s ease;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 4px 0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        .main-content {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        /* 모바일 네비게이션 */
+        .mobile-nav {
+            display: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .mobile-nav .nav-tabs {
+            border: none;
+            justify-content: center;
+        }
+        .mobile-nav .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 8px;
+            margin: 0 5px;
+            padding: 8px 16px;
+            transition: all 0.3s;
+        }
+        .mobile-nav .nav-link:hover,
+        .mobile-nav .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 모바일에서 사이드바 숨기기 */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .mobile-nav {
+                display: block;
+            }
+            .main-content {
+                margin-top: 60px;
+            }
+            .container-fluid {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+
+        /* 로그인 섹션 스타일 */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* 토스트 알림 스타일 */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .toast {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            min-width: 300px;
+            max-width: 400px;
+            border-left: 4px solid;
+            animation: slideInRight 0.3s ease-out;
+        }
+        .toast.success {
+            border-left-color: #28a745;
+        }
+        .toast.error {
+            border-left-color: #dc3545;
+        }
+        .toast.warning {
+            border-left-color: #ffc107;
+        }
+        .toast.info {
+            border-left-color: #17a2b8;
+        }
+        .toast-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .toast-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin: 0;
+        }
+        .toast-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        .toast-body {
+            font-size: 13px;
+            color: #495057;
+            line-height: 1.4;
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border-radius: 12px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+        }
+        .page-section {
+            display: none;
+        }
+        .page-section.active {
+            display: block;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+        .recent-push-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+        .recent-push-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- 토스트 알림 컨테이너 -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- 로그인 섹션 (기본 표시) -->
+    <div id="login-section" class="login-container">
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <h3 class="text-primary">
+                    <i class="fas fa-truck me-2"></i>
+                    푸드트럭 관리자
+                </h3>
+                <p class="text-muted">관리자 로그인이 필요합니다</p>
+            </div>
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="username" class="form-label">사용자명</label>
+                    <input type="text" class="form-control" id="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i>로그인
+                </button>
+            </form>
+            <div id="login-alert" class="mt-3"></div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 (로그인 후 표시) -->
+    <div id="main-content" style="display: none;">
+        <!-- 모바일 네비게이션 -->
+        <div class="mobile-nav">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" onclick="showSection('dashboard')">
+                        <i class="fas fa-tachometer-alt me-1"></i>대시보드
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('menu')">
+                        <i class="fas fa-utensils me-1"></i>메뉴
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('location')">
+                        <i class="fas fa-map-marker-alt me-1"></i>위치
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('push')">
+                        <i class="fas fa-bell me-1"></i>푸시
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('tokens')">
+                        <i class="fas fa-mobile-alt me-1"></i>토큰
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt me-1"></i>로그아웃
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- PC 사이드바 -->
+                <div class="col-md-3 col-lg-2 sidebar p-0">
+                    <div class="p-3">
+                        <h4 class="text-white mb-4">
+                            <i class="fas fa-truck me-2"></i>
+                            푸드트럭 관리
+                        </h4>
+                        <nav class="nav flex-column">
+                            <a class="nav-link" href="#" onclick="showSection('dashboard')">
+                                <i class="fas fa-tachometer-alt me-2"></i>대시보드
+                            </a>
+                            <a class="nav-link" href="#" onclick="showSection('menu')">
+                                <i class="fas fa-utensils me-2"></i>메뉴 관리
+                            </a>
+                            <a class="nav-link" href="#" onclick="showSection('location')">
+                                <i class="fas fa-map-marker-alt me-2"></i>위치 관리
+                            </a>
+                            <a class="nav-link" href="#" onclick="showSection('push')">
+                                <i class="fas fa-bell me-2"></i>푸시 알림
+                            </a>
+                            <a class="nav-link" href="#" onclick="showSection('tokens')">
+                                <i class="fas fa-mobile-alt me-2"></i>토큰 관리
+                            </a>
+                            <hr class="text-white-50">
+                            <a class="nav-link" href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt me-2"></i>로그아웃
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- 메인 콘텐츠 영역 -->
+                <div class="col-md-9 col-lg-10 main-content">
+                    <div class="container-fluid py-4">
+                        <!-- Dashboard Section -->
+                        <div id="dashboard-section" class="page-section active">
+                        <h2 class="mb-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>대시보드
+                        </h2>
+                        <div class="row mb-4">
+                            <div class="col-md-3 mb-3">
+                                <div class="card stats-card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-mobile-alt fa-2x mb-2"></i>
+                                        <h4 id="total-devices">0</h4>
+                                        <p class="mb-0">등록된 디바이스</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card stats-card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-utensils fa-2x mb-2"></i>
+                                        <h4 id="total-menus">0</h4>
+                                        <p class="mb-0">등록된 메뉴</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card stats-card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-bell fa-2x mb-2"></i>
+                                        <h4 id="today-pushes">0</h4>
+                                        <p class="mb-0">금일 발송된 푸시</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card stats-card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-map-marker-alt fa-2x mb-2"></i>
+                                        <h4 id="current-location">1</h4>
+                                        <p class="mb-0">현재 위치</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-chart-line me-2"></i>최근 푸시 발송 현황</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="push-stats-chart">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>발송시각</th>
+                                                            <th>메시지제목</th>
+                                                            <th>iOS</th>
+                                                            <th>Android</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="push-history-table">
+                                                        <tr>
+                                                            <td colspan="4" class="text-center text-muted">최근 발송된 푸시 알림이 없습니다.</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-list me-2"></i>최근 활동</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="recent-activities">
+                                            <p class="text-muted">최근 활동이 없습니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Menu Management Section -->
+                    <div id="menu-section" class="page-section">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2><i class="fas fa-utensils me-2"></i>메뉴 관리</h2>
+                            <button class="btn btn-primary" onclick="showAddMenuForm()">
+                                <i class="fas fa-plus me-2"></i>메뉴 추가
+                            </button>
+                        </div>
+                        
+                        <!-- Add/Edit Menu Form -->
+                        <div id="menu-form" class="card mb-4" style="display: none;">
+                            <div class="card-header">
+                                <h5 id="menu-form-title">메뉴 추가</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="menu-form-element">
+                                    <input type="hidden" id="menu-id">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="menu-name" class="form-label">메뉴명</label>
+                                                <input type="text" class="form-control" id="menu-name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="menu-price" class="form-label">가격 (원)</label>
+                                                <input type="number" class="form-control" id="menu-price" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="menu-description" class="form-label">설명</label>
+                                        <textarea class="form-control" id="menu-description" rows="3"></textarea>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="menu-category" class="form-label">카테고리</label>
+                                                <select class="form-select" id="menu-category">
+                                                    <option value="메인">메인</option>
+                                                    <option value="사이드">사이드</option>
+                                                    <option value="음료">음료</option>
+                                                    <option value="디저트">디저트</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="menu-available" class="form-label">판매 상태</label>
+                                                <select class="form-select" id="menu-available">
+                                                    <option value="true">판매중</option>
+                                                    <option value="false">품절</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="menu-image" class="form-label">메뉴 이미지</label>
+                                        
+                                        <!-- 기존 이미지 미리보기 -->
+                                        <div id="current-image-preview" class="mb-3" style="display: none;">
+                                            <label class="form-label">현재 이미지:</label>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img id="current-image" src="" alt="현재 이미지" style="max-width: 150px; max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
+                                                <div>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCurrentImage()">
+                                                        <i class="fas fa-trash me-1"></i>이미지 제거
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 새 이미지 업로드 -->
+                                        <div id="new-image-upload">
+                                            <input type="file" class="form-control" id="menu-image" accept="image/*">
+                                            <div class="form-text">새로운 이미지 파일을 선택하거나 아래에 URL을 입력하세요.</div>
+                                            <input type="text" class="form-control mt-2" id="menu-image-url" placeholder="또는 이미지 URL 입력 (https://example.com/image.jpg)">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i>저장
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" onclick="hideMenuForm()">
+                                            <i class="fas fa-times me-2"></i>취소
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Menu List -->
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>메뉴명</th>
+                                                <th>가격</th>
+                                                <th>카테고리</th>
+                                                <th>상태</th>
+                                                <th>작업</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="menu-list">
+                                            <!-- 메뉴 목록이 여기에 동적으로 추가됩니다 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Management Section -->
+                    <div id="location-section" class="page-section">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2><i class="fas fa-map-marker-alt me-2"></i>위치 관리</h2>
+                            <button class="btn btn-primary" onclick="showAddLocationForm()">
+                                <i class="fas fa-plus me-2"></i>위치 추가
+                            </button>
+                        </div>
+
+                        <!-- Add/Edit Location Form -->
+                        <div id="location-form" class="card mb-4" style="display: none;">
+                            <div class="card-header">
+                                <h5 id="location-form-title">위치 추가</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="location-form-element">
+                                    <input type="hidden" id="location-id">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="location-name" class="form-label">위치명</label>
+                                                <input type="text" class="form-control" id="location-name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="location-address" class="form-label">주소</label>
+                                                <input type="text" class="form-control" id="location-address" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="location-open-time" class="form-label">영업 시작 시간</label>
+                                                <input type="time" class="form-control" id="location-open-time" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="location-close-time" class="form-label">영업 종료 시간</label>
+                                                <input type="time" class="form-control" id="location-close-time" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="location-notice" class="form-label">공지사항</label>
+                                        <textarea class="form-control" id="location-notice" rows="3"></textarea>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i>저장
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" onclick="hideLocationForm()">
+                                            <i class="fas fa-times me-2"></i>취소
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Location List -->
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>위치명</th>
+                                                <th>주소</th>
+                                                <th>영업시간</th>
+                                                <th>상태</th>
+                                                <th>작업</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="location-list">
+                                            <!-- 위치 목록이 여기에 동적으로 추가됩니다 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Push Notification Section -->
+                    <div id="push-section" class="page-section">
+                        <h2 class="mb-4">
+                            <i class="fas fa-bell me-2"></i>푸시 알림 발송
+                        </h2>
+                        
+                        <!-- 최근 발송한 푸시 알림 목록 -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-history me-2"></i>최근 발송한 푸시 알림 (2주간)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="recent-push-list" class="row">
+                                    <!-- 최근 발송한 푸시 알림이 여기에 동적으로 추가됩니다 -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>새 푸시 알림 작성</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="push-form">
+                                            <div class="mb-3">
+                                                <label for="push-title" class="form-label">제목</label>
+                                                <input type="text" class="form-control" id="push-title" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="push-body" class="form-label">내용</label>
+                                                <textarea class="form-control" id="push-body" rows="4" required></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="push-target" class="form-label">발송 대상</label>
+                                                <select class="form-select" id="push-target">
+                                                    <option value="all">모든 사용자</option>
+                                                    <option value="android">Android 사용자만</option>
+                                                    <option value="ios">iOS 사용자만</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="push-type" class="form-label">알림 유형</label>
+                                                <select class="form-select" id="push-type">
+                                                    <option value="menu">메뉴 알림</option>
+                                                    <option value="location">위치 알림</option>
+                                                    <option value="general">일반 알림</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-paper-plane me-2"></i>푸시 발송
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>발송 통계</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <small class="text-muted">총 등록된 디바이스</small>
+                                            <h4 id="total-devices-stats">0</h4>
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">Android 디바이스</small>
+                                            <h5 id="android-devices">0</h5>
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">iOS 디바이스</small>
+                                            <h5 id="ios-devices">0</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Token Management Section -->
+                    <div id="tokens-section" class="page-section">
+                        <h2 class="mb-4">
+                            <i class="fas fa-mobile-alt me-2"></i>토큰 관리
+                        </h2>
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>등록된 디바이스 목록</h5>
+                                <button class="btn btn-outline-primary btn-sm" onclick="refreshTokens()">
+                                    <i class="fas fa-sync me-2"></i>새로고침
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>디바이스 타입</th>
+                                                <th>디바이스 ID</th>
+                                                <th>마지막 사용</th>
+                                                <th>상태</th>
+                                                <th>작업</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="token-list">
+                                            <!-- 토큰 목록이 여기에 동적으로 추가됩니다 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/admin/admin.js?v=202501110210"></script>
+</body>
+</html>

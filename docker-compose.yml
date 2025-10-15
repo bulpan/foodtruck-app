@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 데이터베이스
+  postgres:
+    image: postgres:15
+    container_name: foodtruck-postgres
+    environment:
+      POSTGRES_DB: foodtruck_db
+      POSTGRES_USER: foodtruck_admin
+      POSTGRES_PASSWORD: foodtruck_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/src/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    networks:
+      - foodtruck-network
+
+  # Node.js 백엔드 API 서버
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: foodtruck-backend
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: foodtruck_db
+      DB_USER: foodtruck_admin
+      DB_PASSWORD: foodtruck_password
+      JWT_SECRET: your-super-secret-jwt-key
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - foodtruck-network
+
+  # 관리자 웹 프론트엔드 (React)
+  admin-web:
+    build:
+      context: ./admin-web
+      dockerfile: Dockerfile
+    container_name: foodtruck-admin-web
+    environment:
+      REACT_APP_API_URL: http://localhost:3000/api
+      CHOKIDAR_USEPOLLING: true
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./admin-web:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - foodtruck-network
+
+  # Redis (푸시 알림 및 캐싱용)
+  redis:
+    image: redis:7-alpine
+    container_name: foodtruck-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - foodtruck-network
+
+  # Firebase Admin SDK (푸시 알림용)
+  firebase-admin:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+    container_name: foodtruck-firebase
+    volumes:
+      - ./backend/serviceAccount.json:/serviceAccount.json
+    restart: unless-stopped
+    networks:
+      - foodtruck-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  foodtruck-network:
+    driver: bridge
+

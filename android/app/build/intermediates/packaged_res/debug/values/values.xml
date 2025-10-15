@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <color name="black">#FF000000</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">세종유미곱창트럭</string>
+    <string name="gcm_defaultSenderId" translatable="false">777839217821</string>
+    <string name="google_api_key" translatable="false">AIzaSyCQRBxy3pavd-C0RPcsukmSx5mkLtXlRxA</string>
+    <string name="google_app_id" translatable="false">1:777839217821:android:3d6a1d0dbced5aadb49874</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCQRBxy3pavd-C0RPcsukmSx5mkLtXlRxA</string>
+    <string name="google_storage_bucket" translatable="false">truckspot-9031e.firebasestorage.app</string>
+    <string name="project_id" translatable="false">truckspot-9031e</string>
+    <style name="Theme.FoodTruckApp" parent="Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/teal_200</item>
+        <item name="android:statusBarColor" ns1:targetApi="l">@color/purple_700</item>
+    </style>
+</resources>

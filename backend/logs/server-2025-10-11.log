@@ -1,0 +1,54 @@
+[2025-10-11T05:15:45.908Z] [INFO] 데이터베이스 테이블 동기화 완료
+[2025-10-11T05:15:45.912Z] [INFO] Food Truck Backend 서버가 포트 3002에서 실행중입니다
+[2025-10-11T05:15:45.912Z] [INFO] 환경: development
+[2025-10-11T05:15:45.912Z] [INFO] 헬스 체크: http://localhost:3002/health
+[2025-10-11T05:15:45.912Z] [INFO] API 문서: http://localhost:3002/api
+[2025-10-11T05:15:45.912Z] [INFO] 서버 URL: http://192.168.219.200:3002
+[2025-10-11T05:15:45.912Z] [INFO] 로그 파일: /Users/home/Documents/truck_new/backend/logs/server-2025-10-11.log
+[2025-10-11T05:15:45.913Z] [INFO] 개발 설정: http://localhost:3002/config
+[2025-10-11T05:15:49.500Z] [INFO] [7t61kslfo] REQUEST: GET /health
+{
+  "requestId": "7t61kslfo",
+  "method": "GET",
+  "url": "/health",
+  "originalUrl": "/health",
+  "ip": "127.0.0.1",
+  "userAgent": "curl/8.7.1",
+  "headers": {},
+  "query": {},
+  "params": {}
+}
+[2025-10-11T05:15:49.501Z] [INFO] [7t61kslfo] RESPONSE: 200
+{
+  "requestId": "7t61kslfo",
+  "statusCode": 200,
+  "duration": "1ms",
+  "responseSize": 154,
+  "headers": {}
+}
+[2025-10-11T05:15:49.501Z] [DEBUG] [7t61kslfo] RESPONSE DATA:
+{
+  "status": "OK",
+  "timestamp": "2025-10-11T05:15:49.501Z",
+  "service": "foodtruck-backend",
+  "environment": "development",
+  "serverUrl": "http://192.168.219.200:3002"
+}
+[2025-10-11T05:15:49.501Z] [INFO] [7t61kslfo] RESPONSE: 200
+{
+  "requestId": "7t61kslfo",
+  "statusCode": 200,
+  "duration": "1ms",
+  "responseSize": 154,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}
+[2025-10-11T05:16:31.639Z] [INFO] 데이터베이스 테이블 동기화 완료
+[2025-10-11T05:16:31.640Z] [INFO] Food Truck Backend 서버가 포트 3002에서 실행중입니다
+[2025-10-11T05:16:31.640Z] [INFO] 환경: development
+[2025-10-11T05:16:31.640Z] [INFO] 헬스 체크: http://localhost:3002/health
+[2025-10-11T05:16:31.641Z] [INFO] API 문서: http://localhost:3002/api
+[2025-10-11T05:16:31.641Z] [INFO] 서버 URL: http://192.168.219.200:3002
+[2025-10-11T05:16:31.641Z] [INFO] 로그 파일: /Users/home/Documents/truck_new/backend/logs/server-2025-10-11.log
+[2025-10-11T05:16:31.641Z] [INFO] 개발 설정: http://localhost:3002/config

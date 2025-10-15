@@ -1,0 +1,32 @@
+{
+  "project_info": {
+    "project_number": "777839217821",
+    "project_id": "truckspot-9031e",
+    "storage_bucket": "truckspot-9031e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777839217821:android:3d6a1d0dbced5aadb49874",
+        "android_client_info": {
+          "package_name": "com.foodtruck.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQRBxy3pavd-C0RPcsukmSx5mkLtXlRxA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+
+
+

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="세종유미곱창트럭">
+    
+    <!-- 캐시 설정 (프로덕션용) -->
+    <meta http-equiv="Cache-Control" content="public, max-age=3600">
+    <meta http-equiv="Expires" content="3600">
+    
+    <title>세종유미곱창트럭</title>
+    
+    <!-- PWA 설정 -->
+    <link rel="manifest" href="/mobile/manifest.json">
+    <link rel="icon" type="image/png" href="/mobile/images/icon-192x192.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/mobile/css/style.css?v=202510110140&t=1736484000">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <header class="app-header">
+        <h1 class="app-title">세종유미곱창트럭</h1>
+        <div class="header-spacer"></div>
+    </header>
+
+    <!-- 필요한 노치 공간 -->
+    <div class="notch-spacer"></div>
+    
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="app-content">
+        <!-- 홈 화면 -->
+        <div class="screen active" id="home-screen">
+            
+            <div class="current-location" id="currentLocation">
+                <div class="location-header">
+                    <h3>오늘은 여기에서 합니다!</h3>
+                    <button class="location-refresh" onclick="refreshLocation()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="location-content">
+                    <div class="location-name"></div>
+                    <div class="location-address"></div>
+                    <div class="location-hours"></div>
+                    <div class="location-notice"></div>
+                </div>
+            </div>
+
+            <!-- 인기메뉴 섹션 -->
+            <div class="popular-menu-section">
+                <h2 class="popular-menu-title">인기메뉴</h2>
+                <div class="popular-menu-grid" id="popularMenuGrid">
+                    <!-- 인기메뉴 아이템들이 동적으로 로드됩니다 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 메뉴 화면 -->
+        <div class="screen" id="menu-screen">
+            <div class="section-header">
+                <h2>MENU</h2>
+            </div>
+            <!--
+            <div class="menu-categories">
+                <button class="category-btn active" data-category="all">전체</button>
+                <button class="category-btn" data-category="main">메인</button>
+                <button class="category-btn" data-category="side">사이드</button>
+                        <button class="category-btn" data-category="beverage">음료</button>
+            </div>
+            -->
+
+            <div class="menu-grid" id="menuGrid">
+                <!-- 메뉴 아이템들이 동적으로 로드됩니다 -->
+            </div>
+        </div>
+
+        <!-- 위치 화면 -->
+        <div class="screen" id="location-screen">
+            <div class="section-header">
+                <h2>위치 정보</h2>
+                <button class="refresh-btn" onclick="refreshLocation()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            
+            <div class="location-details" id="locationDetails">
+                <!-- 위치 정보가 동적으로 로드됩니다 -->
+            </div>
+
+            <div class="map-container" id="mapContainer">
+                <!-- 지도가 여기에 표시됩니다 -->
+                <div class="map-placeholder">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p>지도를 불러오는 중...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 알림설정 화면 -->
+        <div class="screen" id="notification-screen">
+            <div class="section-header">
+                <h2>알림설정</h2>
+            </div>
+            
+            <div class="notification-settings">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>푸시 알림</h4>
+                        <p>새 메뉴와 위치 정보를 받아보세요</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pushToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>위치 알림</h4>
+                        <p>영업 장소 변경 시 알림을 받습니다</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="locationToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>메뉴 알림</h4>
+                        <p>새로운 메뉴 소식을 받아봅시다</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="menuToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="contact-btn" onclick="callCustomer()">
+                <i class="fas fa-phone"></i>
+                고객문의 전화하기
+            </button>
+        </div>
+    </main>
+
+    <!-- 상단 이동 버튼 -->
+    <button class="scroll-top" id="scrollTopBtn">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- 로딩 스피너 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- 스크립트 -->
+    <script src="/mobile/js/app.js?v=202510110130&t=1736484000"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</body>
+</html>
