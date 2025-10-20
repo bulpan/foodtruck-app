@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:2:1-60:12
-INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:2:1-60:12
-INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:2:1-60:12
-INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:2:1-60:12
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:2:1-66:12
+INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:2:1-66:12
+INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:2:1-66:12
+INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:2:1-66:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /Users/home/.gradle/caches/transforms-3/864736d475799ee37327b355e7b7ebdf/transformed/jetified-appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/home/.gradle/caches/transforms-3/458eba1cfb8112a6cc5cb9e8bbe7d343/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.webkit:webkit:1.8.0] /Users/home/.gradle/caches/transforms-3/05574fdb87e00c1f3db48b26f098b968/transformed/webkit-1.8.0/AndroidManifest.xml:2:1-7:12
@@ -152,8 +152,8 @@ MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/home/.gradle/
 	android:name
 		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:7:22-74
 application
-ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:9:5-58:19
-INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:9:5-58:19
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:9:5-64:19
+INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:9:5-64:19
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/home/.gradle/caches/transforms-3/d47da2e278b60cf30544b19241e0e5cb/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:28:5-64:19
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/home/.gradle/caches/transforms-3/d47da2e278b60cf30544b19241e0e5cb/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:28:5-64:19
 MERGED from [com.google.firebase:firebase-analytics:21.5.0] /Users/home/.gradle/caches/transforms-3/5099cb8df9ce3fa2f62dc8aa7394017a/transformed/jetified-firebase-analytics-21.5.0/AndroidManifest.xml:7:5-20
@@ -265,37 +265,51 @@ ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.
 	android:name
 		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:36:13-83
 activity#com.foodtruck.app.MainActivity
-ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:39:9-48:20
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:39:9-54:20
 	android:label
 		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:42:13-45
+	android:launchMode
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:43:13-43
+	android:windowSoftInputMode
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:45:13-55
 	android:exported
 		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:41:13-36
 	android:theme
-		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:43:13-54
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:44:13-54
 	android:name
 		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:40:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:44:13-47:29
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:46:13-49:29
 action#android.intent.action.MAIN
-ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:45:17-69
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:47:17-69
 	android:name
-		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:45:25-66
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:47:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:46:17-77
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:48:17-77
 	android:name
-		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:46:27-74
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:48:27-74
+intent-filter#action:name:FOODTRUCK_NOTIFICATION_CLICK+category:name:android.intent.category.DEFAULT
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:50:13-53:29
+action#FOODTRUCK_NOTIFICATION_CLICK
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:51:17-71
+	android:name
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:51:25-68
+category#android.intent.category.DEFAULT
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:52:17-76
+	android:name
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:52:27-73
 service#com.foodtruck.app.services.FoodTruckFirebaseMessagingService
-ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:51:9-57:19
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:57:9-63:19
 	android:exported
-		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:53:13-37
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:59:13-37
 	android:name
-		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:52:13-71
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:58:13-71
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:54:13-56:29
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:60:13-62:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:55:17-78
+ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:61:17-78
 	android:name
-		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:55:25-75
+		ADDED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml:61:25-75
 uses-sdk
 INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/home/Documents/truck_new/android/app/src/main/AndroidManifest.xml

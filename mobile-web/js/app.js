@@ -11,9 +11,15 @@ let selectedCategory = 'all';
 
 // 앱 초기화
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM 로드 완료');
     initializeApp();
     setupEventListeners();
-    loadInitialData();
+    
+    // DOM이 완전히 로드된 후 데이터 로드
+    setTimeout(() => {
+        console.log('데이터 로드 시작');
+        loadInitialData();
+    }, 100);
 });
 
 // 앱 설정
@@ -116,17 +122,38 @@ async function loadMenuData() {
 async function loadLocationData() {
     try {
         console.log('위치 데이터 로드 시도:', `${CONFIG.API_BASE_URL}/location/current`);
+        
+        // DOM 요소가 존재하는지 확인
+        const locationName = document.querySelector('#currentLocation .location-name');
+        console.log('위치명 DOM 요소 확인:', locationName);
+        
+        if (!locationName) {
+            console.error('위치명 DOM 요소를 찾을 수 없음');
+            return;
+        }
+        
         const response = await axios.get(`${CONFIG.API_BASE_URL}/location/current`);
         console.log('위치 API 응답:', response.data);
+        
+        // 위치가 없는 경우 메시지 표시
+        if (!response.data.location) {
+            console.log('위치가 없음 - 메시지 표시');
+            currentLocationData = null;
+            showNoLocationMessage(response.data.message || '아직 어디로 갈지 몰라요');
+            return;
+        }
+        
         currentLocationData = response.data.location;
         console.log('로드된 위치 데이터:', currentLocationData);
+        console.log('위치 표시 업데이트 시작');
         updateLocationDisplay();
+        console.log('위치 표시 업데이트 완료');
     } catch (error) {
         console.error('위치 데이터 로드 실패:', error);
         console.error('오류 상세:', error.response?.data || error.message);
-        // 샘플 데이터로 fallback
-        currentLocationData = getSampleLocationData();
-        updateLocationDisplay();
+        // 오류 시에도 메시지 표시
+        currentLocationData = null;
+        showNoLocationMessage('아직 어디로 갈지 몰라요');
     }
 }
 
@@ -218,15 +245,34 @@ function renderMenuGrid() {
 
 // 위치 디스플레이 업데이트
 function updateLocationDisplay() {
-    if (!currentLocationData) return;
+    console.log('updateLocationDisplay 호출됨');
+    console.log('currentLocationData:', currentLocationData);
+    
+    if (!currentLocationData) {
+        console.log('위치 데이터가 없음 - 함수 종료');
+        return;
+    }
     
     const locationName = document.querySelector('#currentLocation .location-name');
     const locationAddress = document.querySelector('#currentLocation .location-address');
     const locationHours = document.querySelector('#currentLocation .location-hours');
     const locationNotice = document.querySelector('#currentLocation .location-notice');
     
-    if (locationName) locationName.textContent = currentLocationData.name;
-    if (locationAddress) locationAddress.textContent = currentLocationData.address;
+    console.log('DOM 요소들:', {
+        locationName,
+        locationAddress,
+        locationHours,
+        locationNotice
+    });
+    
+    if (locationName) {
+        locationName.textContent = currentLocationData.name;
+        console.log('위치명 설정:', currentLocationData.name);
+    }
+    if (locationAddress) {
+        locationAddress.textContent = currentLocationData.address;
+        console.log('주소 설정:', currentLocationData.address);
+    }
     
     // 시간을 시:분 형식으로 변환
     const formatTime = (timeString) => {
@@ -239,12 +285,78 @@ function updateLocationDisplay() {
         const openTime = formatTime(currentLocationData.openTime) || '11:00';
         const closeTime = formatTime(currentLocationData.closeTime) || '22:00';
         locationHours.textContent = `영업시간: ${openTime} - ${closeTime}`;
+        console.log('영업시간 설정:', `영업시간: ${openTime} - ${closeTime}`);
     }
     
-    if (locationNotice) locationNotice.textContent = currentLocationData.notice || '';
+    if (locationNotice) {
+        locationNotice.textContent = currentLocationData.notice || '';
+        console.log('공지사항 설정:', currentLocationData.notice || '');
+    }
     
     // 지도 컨테이너도 업데이트
     updateMapDisplay();
+}
+
+// 위치가 없을 때 메시지 표시
+function showNoLocationMessage(message) {
+    console.log('showNoLocationMessage 호출됨:', message);
+    
+    // 여러 번 시도하여 DOM 요소 찾기
+    let attempts = 0;
+    const maxAttempts = 10;
+    
+    const trySetMessage = () => {
+        attempts++;
+        console.log(`DOM 요소 찾기 시도 ${attempts}/${maxAttempts}`);
+        
+        const locationName = document.querySelector('#currentLocation .location-name');
+        const locationAddress = document.querySelector('#currentLocation .location-address');
+        const locationHours = document.querySelector('#currentLocation .location-hours');
+        const locationNotice = document.querySelector('#currentLocation .location-notice');
+        
+        console.log('DOM 요소들:', {
+            locationName,
+            locationAddress,
+            locationHours,
+            locationNotice
+        });
+        
+        if (locationName) {
+            locationName.textContent = message;
+            locationName.style.color = '#666';
+            locationName.style.fontStyle = 'italic';
+            console.log('메시지 설정 완료:', message);
+            
+            if (locationAddress) {
+                locationAddress.textContent = '';
+                locationAddress.style.display = 'none';
+            }
+            if (locationHours) {
+                locationHours.textContent = '';
+                locationHours.style.display = 'none';
+            }
+            if (locationNotice) {
+                locationNotice.textContent = '';
+                locationNotice.style.display = 'none';
+            }
+            
+            // 지도 숨기기
+            const mapContainer = document.querySelector('#mapContainer');
+            if (mapContainer) {
+                mapContainer.style.display = 'none';
+                console.log('지도 숨김');
+            }
+            
+            return true;
+        } else if (attempts < maxAttempts) {
+            console.log('DOM 요소를 찾을 수 없음, 재시도...');
+            setTimeout(trySetMessage, 100);
+        } else {
+            console.error('DOM 요소를 찾을 수 없음 - 최대 시도 횟수 초과');
+        }
+    };
+    
+    trySetMessage();
 }
 
 // 지도 표시 업데이트

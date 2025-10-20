@@ -67,15 +67,11 @@ class BottomNavigationView: UIView {
         navigationItems = [
             NavigationItem(
                 screen: "home",
-                title: "Home",
-                icon: UIImage(systemName: "house"),
-                selectedIcon: UIImage(systemName: "house.fill")
+                title: "Home"
             ),
             NavigationItem(
                 screen: "notification",
-                title: "알림설정",
-                icon: UIImage(systemName: "bell"),
-                selectedIcon: UIImage(systemName: "bell.fill")
+                title: "알림설정"
             )
         ]
         
@@ -106,23 +102,14 @@ class BottomNavigationView: UIView {
         button.backgroundColor = UIColor.clear
         button.isUserInteractionEnabled = true
         
-        // 버튼 설정
-        button.setImage(item.icon, for: .normal)
-        button.setImage(item.selectedIcon, for: .selected)
+        // 버튼 설정 - 이미지 제거하고 텍스트만 사용
         button.setTitle(item.title, for: .normal)
         button.setTitleColor(UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 0.6), for: .normal)
         button.setTitleColor(UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0), for: .selected)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: itemFontSize, weight: .medium)
-        button.titleLabel?.textAlignment = .center
         
-        // 버튼 이미지와 텍스트 레이아웃 설정
-        button.imageView?.contentMode = .scaleAspectFit
+        // 글자 크기를 2단계 크게 하고 볼드체로 설정
+        button.titleLabel?.font = UIFont.systemFont(ofSize: itemFontSize + 8, weight: .bold)
         button.titleLabel?.textAlignment = .center
-        
-        // 버튼 이미지 크기 제한
-        button.imageView?.translatesAutoresizingMaskIntoConstraints = false
-        button.imageView?.widthAnchor.constraint(equalToConstant: iconSize).isActive = true
-        button.imageView?.heightAnchor.constraint(equalToConstant: iconSize).isActive = true
         
         // 버튼 액션 추가
         button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
@@ -193,16 +180,16 @@ class BottomNavigationView: UIView {
         button.isSelected = selected
         
         if selected {
-            // 선택된 상태 애니메이션
+            // 선택된 상태 애니메이션 - 텍스트만 사용
             UIView.animate(withDuration: 0.2) {
-                button.imageView?.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+                button.titleLabel?.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
             } completion: { _ in
                 UIView.animate(withDuration: 0.1) {
-                    button.imageView?.transform = .identity
+                    button.titleLabel?.transform = .identity
                 }
             }
         } else {
-            button.imageView?.transform = .identity
+            button.titleLabel?.transform = .identity
         }
     }
     
@@ -229,8 +216,6 @@ class BottomNavigationView: UIView {
 private struct NavigationItem {
     let screen: String
     let title: String
-    let icon: UIImage?
-    let selectedIcon: UIImage?
     var isSelected: Bool = false
 }
 

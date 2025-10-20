@@ -41,6 +41,110 @@ if (!admin.apps.length) {
 
 class PushService {
   /**
+   * 배치 단위로 토큰 발송
+   * @param {Array} tokens - 토큰 배열
+   * @param {string} deviceType - 디바이스 타입 (ios, android)
+   * @param {string} title - 제목
+   * @param {string} body - 내용
+   * @param {Object} data - 추가 데이터
+   */
+  async sendTokensInBatches(tokens, deviceType, title, body, data, progressCallback) {
+    const BATCH_SIZE = 100; // 100개씩 배치 처리
+    const DELAY_BETWEEN_BATCHES = 500; // 0.5초 대기
+    const results = [];
+    let sentCount = 0;
+    
+    console.log(`📦 ${deviceType.toUpperCase()} 토큰을 ${BATCH_SIZE}개씩 배치 처리 시작`);
+    
+    for (let i = 0; i < tokens.length; i += BATCH_SIZE) {
+      const batch = tokens.slice(i, i + BATCH_SIZE);
+      const batchNumber = Math.floor(i / BATCH_SIZE) + 1;
+      const totalBatches = Math.ceil(tokens.length / BATCH_SIZE);
+      
+      console.log(`📤 ${deviceType.toUpperCase()} 배치 ${batchNumber}/${totalBatches} 처리 중 (${batch.length}개 토큰)`);
+      
+      const batchPromises = batch.map(async (token) => {
+        try {
+          const message = this.createMessage(token, deviceType, title, body, data);
+          const result = await admin.messaging().send(message);
+          sentCount++;
+          
+          // 진행 상태 콜백 호출
+          if (progressCallback) {
+            progressCallback(sentCount, tokens.length, `배치 ${batchNumber}/${totalBatches} 처리 중...`);
+          }
+          
+          return { success: true, token, messageId: result };
+        } catch (error) {
+          console.error(`❌ ${deviceType.toUpperCase()} 푸시 발송 실패 (${token.substring(0, 20)}...):`, {
+            error: error.message,
+            code: error.code
+          });
+          return { success: false, token, error: error.message, code: error.code };
+        }
+      });
+      
+      const batchResults = await Promise.all(batchPromises);
+      results.push(...batchResults);
+      
+      // 마지막 배치가 아니면 대기
+      if (i + BATCH_SIZE < tokens.length) {
+        await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_BATCHES));
+      }
+    }
+    
+    console.log(`✅ ${deviceType.toUpperCase()} 배치 처리 완료: ${results.length}개 토큰 처리됨`);
+    return results;
+  }
+
+  /**
+   * 디바이스 타입별 메시지 생성
+   */
+  createMessage(token, deviceType, title, body, data) {
+    const baseMessage = {
+      token,
+      notification: { title, body },
+      data: {
+        ...Object.keys(data).reduce((acc, key) => {
+          acc[key] = data[key].toString();
+          return acc;
+        }, {}),
+        click_action: 'FOODTRUCK_NOTIFICATION_CLICK'
+      }
+    };
+
+    if (deviceType === 'ios') {
+      return {
+        ...baseMessage,
+        apns: {
+          headers: { 'apns-priority': '10' },
+          payload: {
+            aps: {
+              sound: 'default',
+              badge: 1,
+              alert: { title, body }
+            }
+          }
+        }
+      };
+    } else {
+      return {
+        ...baseMessage,
+        android: {
+          notification: {
+            title, body, sound: 'default', priority: 'high',
+            channelId: 'foodtruck_notifications',
+            clickAction: 'FOODTRUCK_NOTIFICATION_CLICK',
+            icon: 'ic_notification', color: '#FF6B35',
+            tag: 'foodtruck_notification'
+          },
+          priority: 'high', ttl: 3600000
+        }
+      };
+    }
+  }
+
+  /**
    * 푸시 알림 발송
    * @param {Object} options - 발송 옵션
    * @param {string} options.title - 제목
@@ -71,104 +175,22 @@ class PushService {
       let successCount = 0;
       let failureCount = 0;
 
-      // iOS 토큰 발송
+      // iOS 토큰 발송 (배치 처리)
       if (tokens.ios?.length > 0) {
         console.log(`📱 iOS 토큰 ${tokens.ios.length}개 발송 시작`);
-        const iosPromises = tokens.ios.map(async (token) => {
-          try {
-            console.log(`📤 iOS 푸시 발송 시도: ${token.substring(0, 20)}...`);
-            const result = await admin.messaging().send({
-              token,
-              notification: {
-                title,
-                body
-              },
-              data: {
-                ...Object.keys(data).reduce((acc, key) => {
-                  acc[key] = data[key].toString();
-                  return acc;
-                }, {}),
-                click_action: 'FLUTTER_NOTIFICATION_CLICK'
-              },
-              apns: {
-                headers: {
-                  'apns-priority': '10'
-                },
-                payload: {
-                  aps: {
-                    sound: 'default',
-                    badge: 1,
-                    alert: {
-                      title: title,
-                      body: body
-                    }
-                  }
-                }
-              }
-            });
-            console.log(`✅ iOS 푸시 발송 성공: ${token.substring(0, 20)}... (MessageId: ${result})`);
-            return { success: true, token, messageId: result };
-          } catch (error) {
-            console.error(`❌ iOS 푸시 발송 실패 (${token.substring(0, 20)}...):`, {
-              error: error.message,
-              code: error.code,
-              details: error.details,
-              stack: error.stack
-            });
-            return { success: false, token, error: error.message, code: error.code };
-          }
+        const iosResults = await this.sendTokensInBatches(tokens.ios, 'ios', title, body, data, (sent, total, status) => {
+          console.log(`📱 iOS 진행상태: ${sent}/${total} - ${status}`);
         });
-        promises.push(...iosPromises);
+        promises.push(...iosResults);
       }
 
-      // Android 토큰 발송
+      // Android 토큰 발송 (배치 처리)
       if (tokens.android?.length > 0) {
         console.log(`🤖 Android 토큰 ${tokens.android.length}개 발송 시작`);
-        const androidPromises = tokens.android.map(async (token) => {
-          try {
-            console.log(`📤 Android 푸시 발송 시도: ${token.substring(0, 20)}...`);
-            const result = await admin.messaging().send({
-              token,
-              notification: {
-                title,
-                body
-              },
-              data: {
-                ...Object.keys(data).reduce((acc, key) => {
-                  acc[key] = data[key].toString();
-                  return acc;
-                }, {}),
-                click_action: 'FLUTTER_NOTIFICATION_CLICK'
-              },
-              android: {
-                notification: {
-                  title: title,
-                  body: body,
-                  sound: 'default',
-                  priority: 'high',
-                  channelId: 'foodtruck_notifications',
-                  clickAction: 'FLUTTER_NOTIFICATION_CLICK',
-                  icon: 'ic_notification',
-                  color: '#FF6B35',
-                  tag: 'foodtruck_notification'
-                },
-                priority: 'high',
-                ttl: 3600000
-              }
-            });
-            console.log(`✅ Android 푸시 발송 성공: ${token.substring(0, 20)}... (MessageId: ${result})`);
-            return { success: true, token, messageId: result };
-          } catch (error) {
-            console.error(`❌ Android 푸시 발송 실패 (${token.substring(0, 20)}...):`, {
-              error: error.message,
-              code: error.code,
-              details: error.details,
-              stack: error.stack
-            });
-            return { success: false, token, error: error.message, code: error.code };
-          }
+        const androidResults = await this.sendTokensInBatches(tokens.android, 'android', title, body, data, (sent, total, status) => {
+          console.log(`🤖 Android 진행상태: ${sent}/${total} - ${status}`);
         });
-        promises.push(...androidPromises);
+        promises.push(...androidResults);
       }
 
       // 모든 발송 결과 처리

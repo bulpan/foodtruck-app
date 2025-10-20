@@ -92,6 +92,9 @@ class MainViewController: UIViewController {
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
         
+        // 캐시 비활성화 설정
+        config.websiteDataStore = WKWebsiteDataStore.nonPersistent()
+        
         // JavaScript 브릿지 설정
         let contentController = WKUserContentController()
         
@@ -140,7 +143,12 @@ class MainViewController: UIViewController {
         print("   - 환경: \(AppConfig.environment)")
         print("   - 서버 URL: \(AppConfig.serverURL)")
         
-        let request = URLRequest(url: url)
+        // 캐시를 무시하는 요청 설정
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        request.setValue("no-cache", forHTTPHeaderField: "Pragma")
+        
         webView.load(request)
     }
     
@@ -212,6 +220,47 @@ class MainViewController: UIViewController {
 
 // MARK: - WKNavigationDelegate
 extension MainViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        guard let url = navigationAction.request.url else {
+            decisionHandler(.allow)
+            return
+        }
+        
+        let urlString = url.absoluteString
+        
+        if urlString.hasPrefix("tel:") {
+            // 전화 걸기
+            if let phoneURL = URL(string: urlString) {
+                if UIApplication.shared.canOpenURL(phoneURL) {
+                    UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+                }
+            }
+            decisionHandler(.cancel)
+            return
+        } else if urlString.hasPrefix("mailto:") {
+            // 이메일
+            if let mailURL = URL(string: urlString) {
+                if UIApplication.shared.canOpenURL(mailURL) {
+                    UIApplication.shared.open(mailURL, options: [:], completionHandler: nil)
+                }
+            }
+            decisionHandler(.cancel)
+            return
+        } else if urlString.hasPrefix("http://") || urlString.hasPrefix("https://") {
+            // 메인 도메인이 아닌 외부 링크만 외부 브라우저에서 열기
+            if !urlString.contains("truck.carrera74.com") {
+                if UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+                decisionHandler(.cancel)
+                return
+            }
+        }
+        
+        // 다른 URL은 WebView에서 처리
+        decisionHandler(.allow)
+    }
+    
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         print("🌐 웹뷰 로딩 시작")
     }

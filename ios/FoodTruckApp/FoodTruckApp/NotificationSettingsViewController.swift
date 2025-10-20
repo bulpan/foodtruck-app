@@ -8,12 +8,10 @@ class NotificationSettingsViewController: UIViewController {
     private var contentView: UIView!
     
     private var pushNotificationSwitch: UISwitch!
-    private var menuNotificationSwitch: UISwitch!
     private var locationNotificationSwitch: UISwitch!
     
     // UserDefaults 키
     private let pushNotificationKey = "isPushNotificationEnabled"
-    private let menuNotificationKey = "isMenuNotificationEnabled"
     private let locationNotificationKey = "isLocationNotificationEnabled"
     
     // MARK: - Lifecycle
@@ -115,14 +113,6 @@ class NotificationSettingsViewController: UIViewController {
         pushNotificationSwitch = pushNotificationCard.1
         stackView.addArrangedSubview(pushNotificationCard.0)
         
-        // 메뉴 알림 설정
-        let menuNotificationCard = createSettingCard(
-            title: "메뉴 알림",
-            subtitle: "새로운 메뉴 등록 알림",
-            switchAction: #selector(menuNotificationChanged(_:))
-        )
-        menuNotificationSwitch = menuNotificationCard.1
-        stackView.addArrangedSubview(menuNotificationCard.0)
         
         // 위치 알림 설정
         let locationNotificationCard = createSettingCard(
@@ -222,17 +212,12 @@ class NotificationSettingsViewController: UIViewController {
         
         // 전체 알림이 꺼지면 하위 알림도 비활성화
         if !sender.isOn {
-            menuNotificationSwitch.isEnabled = false
             locationNotificationSwitch.isEnabled = false
         } else {
-            menuNotificationSwitch.isEnabled = true
             locationNotificationSwitch.isEnabled = true
         }
     }
     
-    @objc private func menuNotificationChanged(_ sender: UISwitch) {
-        print("🍔 메뉴 알림 변경: \(sender.isOn)")
-    }
     
     @objc private func locationNotificationChanged(_ sender: UISwitch) {
         print("📍 위치 알림 변경: \(sender.isOn)")
@@ -261,39 +246,32 @@ class NotificationSettingsViewController: UIViewController {
     // MARK: - Settings Management
     private func loadSettings() {
         let isPushEnabled = UserDefaults.standard.bool(forKey: pushNotificationKey)
-        let isMenuEnabled = UserDefaults.standard.bool(forKey: menuNotificationKey)
         let isLocationEnabled = UserDefaults.standard.bool(forKey: locationNotificationKey)
         
         // 처음 실행 시 기본값 설정
         if !UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
             UserDefaults.standard.set(true, forKey: pushNotificationKey)
-            UserDefaults.standard.set(true, forKey: menuNotificationKey)
             UserDefaults.standard.set(true, forKey: locationNotificationKey)
             UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
             
             pushNotificationSwitch.isOn = true
-            menuNotificationSwitch.isOn = true
             locationNotificationSwitch.isOn = true
         } else {
             pushNotificationSwitch.isOn = isPushEnabled
-            menuNotificationSwitch.isOn = isMenuEnabled
             locationNotificationSwitch.isOn = isLocationEnabled
         }
         
         // 전체 알림이 꺼져있으면 하위 알림 비활성화
-        menuNotificationSwitch.isEnabled = isPushEnabled
         locationNotificationSwitch.isEnabled = isPushEnabled
     }
     
     private func saveSettings() {
         UserDefaults.standard.set(pushNotificationSwitch.isOn, forKey: pushNotificationKey)
-        UserDefaults.standard.set(menuNotificationSwitch.isOn, forKey: menuNotificationKey)
         UserDefaults.standard.set(locationNotificationSwitch.isOn, forKey: locationNotificationKey)
         UserDefaults.standard.synchronize()
         
         print("✅ 알림 설정 저장 완료:")
         print("   - 푸시 알림: \(pushNotificationSwitch.isOn)")
-        print("   - 메뉴 알림: \(menuNotificationSwitch.isOn)")
         print("   - 위치 알림: \(locationNotificationSwitch.isOn)")
     }
     

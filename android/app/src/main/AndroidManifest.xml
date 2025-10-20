@@ -18,7 +18,7 @@
         android:theme="@style/Theme.FoodTruckApp"
         android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
-        tools:targetApi="31">
+        tools:targetApi="35">
         
         <!-- Firebase 자동 알림 표시 비활성화 -->
         <meta-data
@@ -40,10 +40,16 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.FoodTruckApp">
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.FoodTruckApp"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="FOODTRUCK_NOTIFICATION_CLICK" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         

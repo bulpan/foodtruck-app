@@ -222,6 +222,22 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             border-color: #667eea;
         }
+        
+        /* 메뉴 순서 버튼 스타일 */
+        .btn-group-vertical .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .btn-group-vertical .btn:first-child {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .btn-group-vertical .btn:last-child {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
     </style>
 </head>
 <body>
@@ -510,18 +526,24 @@
 
                         <!-- Menu List -->
                         <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">메뉴 목록</h5>
+                                <small class="text-muted">↑↓ 버튼으로 순서를 변경할 수 있습니다</small>
+                            </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>메뉴명</th>
-                                                <th>가격</th>
-                                                <th>카테고리</th>
-                                                <th>상태</th>
-                                                <th>작업</th>
-                                            </tr>
-                                        </thead>
+                        <thead>
+                            <tr>
+                                <th width="80" class="text-center">순서</th>
+                                <th width="100" class="text-center">UP/DOWN</th>
+                                <th>메뉴명</th>
+                                <th>가격</th>
+                                <th>카테고리</th>
+                                <th>상태</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
                                         <tbody id="menu-list">
                                             <!-- 메뉴 목록이 여기에 동적으로 추가됩니다 -->
                                         </tbody>
@@ -565,14 +587,30 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                <label for="location-open-time" class="form-label">영업 시작 시간</label>
-                                                <input type="time" class="form-control" id="location-open-time" required>
+                                                <label for="location-date" class="form-label">날짜</label>
+                                                <input type="date" class="form-control" id="location-date" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
+                                                <label for="location-open-time" class="form-label">영업 시작 시간</label>
+                                                <input type="time" class="form-control" id="location-open-time" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
                                                 <label for="location-close-time" class="form-label">영업 종료 시간</label>
                                                 <input type="time" class="form-control" id="location-close-time" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">최근 입력 이력</label>
+                                                <select class="form-control" id="location-history" onchange="loadLocationFromHistory()">
+                                                    <option value="">이력에서 선택하세요</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -583,6 +621,9 @@
                                     <div class="d-flex gap-2">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-save me-2"></i>저장
+                                        </button>
+                                        <button type="button" class="btn btn-danger" id="delete-location-btn" onclick="deleteLocation()" style="display: none;">
+                                            <i class="fas fa-trash me-2"></i>삭제
                                         </button>
                                         <button type="button" class="btn btn-secondary" onclick="hideLocationForm()">
                                             <i class="fas fa-times me-2"></i>취소
@@ -640,6 +681,25 @@
                                         <h5>새 푸시 알림 작성</h5>
                                     </div>
                                     <div class="card-body">
+                                        <!-- 발송 상태 표시 영역 -->
+                                        <div id="push-progress" class="mb-3" style="display: none;">
+                                            <div class="alert alert-info">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <i class="fas fa-spinner fa-spin me-2"></i>
+                                                        <span id="push-status-text">발송 중...</span>
+                                                    </div>
+                                                    <div>
+                                                        <span id="push-progress-text">( 발송완료 0건 / 총 발송대상 0건 )</span>
+                                                    </div>
+                                                </div>
+                                                <div class="progress mt-2" style="height: 8px;">
+                                                    <div id="push-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                         role="progressbar" style="width: 0%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         <form id="push-form">
                                             <div class="mb-3">
                                                 <label for="push-title" class="form-label">제목</label>
@@ -717,6 +777,7 @@
                                                 <th>디바이스 ID</th>
                                                 <th>마지막 사용</th>
                                                 <th>상태</th>
+                                                <th>알림 설정</th>
                                                 <th>작업</th>
                                             </tr>
                                         </thead>

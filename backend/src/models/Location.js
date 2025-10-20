@@ -23,6 +23,10 @@ const Location = sequelize.define('Location', {
     type: DataTypes.STRING(255),
     allowNull: false
   },
+  date: {
+    type: DataTypes.DATEONLY,
+    allowNull: true
+  },
   openTime: {
     type: DataTypes.TIME,
     allowNull: true
@@ -33,6 +37,10 @@ const Location = sequelize.define('Location', {
   },
   notice: {
     type: DataTypes.TEXT,
+    allowNull: true
+  },
+  deletedAt: {
+    type: DataTypes.DATE,
     allowNull: true
   }
 }, {

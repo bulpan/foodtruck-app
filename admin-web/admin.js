@@ -392,9 +392,24 @@ async function loadMenus() {
         menuList.innerHTML = '';
         
         if (data.menus && data.menus.length > 0) {
-            data.menus.forEach(menu => {
+            data.menus.forEach((menu, index) => {
                 const row = document.createElement('tr');
+                row.dataset.menuId = menu.id;
+                row.dataset.sortOrder = menu.sortOrder || index;
                 row.innerHTML = `
+                    <td class="text-center">
+                        <span class="badge bg-secondary">${menu.sortOrder || index + 1}</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group-vertical" role="group">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="moveMenuUp('${menu.id}')" title="위로 이동">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="moveMenuDown('${menu.id}')" title="아래로 이동">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </td>
                     <td>${menu.name}</td>
                     <td>${menu.price.toLocaleString()}원</td>
                     <td>${menu.category}</td>
@@ -415,11 +430,116 @@ async function loadMenus() {
                 menuList.appendChild(row);
             });
         } else {
-            menuList.innerHTML = '<tr><td colspan="5" class="text-center text-muted">등록된 메뉴가 없습니다.</td></tr>';
+            menuList.innerHTML = '<tr><td colspan="7" class="text-center text-muted">등록된 메뉴가 없습니다.</td></tr>';
         }
     } catch (error) {
         console.error('Load menus error:', error);
         showAlert('메뉴 목록을 불러오는 중 오류가 발생했습니다.', 'danger');
+    }
+}
+
+// 드래그 위치 계산
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('tr[draggable]:not(.dragging)')];
+    
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+// 메뉴 위로 이동
+async function moveMenuUp(menuId) {
+    try {
+        const menuList = document.getElementById('menu-list');
+        const rows = Array.from(menuList.querySelectorAll('tr[data-menu-id]'));
+        const currentIndex = rows.findIndex(row => row.dataset.menuId === menuId);
+        
+        if (currentIndex > 0) {
+            // DOM에서 위치 변경
+            const currentRow = rows[currentIndex];
+            const previousRow = rows[currentIndex - 1];
+            menuList.insertBefore(currentRow, previousRow);
+            
+            // 서버에 순서 업데이트
+            await updateMenuOrder();
+        }
+    } catch (error) {
+        console.error('Move menu up error:', error);
+        showAlert('메뉴 순서 변경 중 오류가 발생했습니다.', 'danger');
+    }
+}
+
+// 메뉴 아래로 이동
+async function moveMenuDown(menuId) {
+    try {
+        const menuList = document.getElementById('menu-list');
+        const rows = Array.from(menuList.querySelectorAll('tr[data-menu-id]'));
+        const currentIndex = rows.findIndex(row => row.dataset.menuId === menuId);
+        
+        if (currentIndex < rows.length - 1) {
+            // DOM에서 위치 변경
+            const currentRow = rows[currentIndex];
+            const nextRow = rows[currentIndex + 1];
+            menuList.insertBefore(currentRow, nextRow.nextSibling);
+            
+            // 서버에 순서 업데이트
+            await updateMenuOrder();
+        }
+    } catch (error) {
+        console.error('Move menu down error:', error);
+        showAlert('메뉴 순서 변경 중 오류가 발생했습니다.', 'danger');
+    }
+}
+
+// 메뉴 순서 업데이트
+async function updateMenuOrder() {
+    try {
+        console.log('updateMenuOrder 시작');
+        const menuList = document.getElementById('menu-list');
+        const rows = menuList.querySelectorAll('tr[data-menu-id]');
+        
+        const menuOrders = Array.from(rows).map((row, index) => ({
+            id: row.dataset.menuId,
+            sortOrder: index + 1
+        }));
+        
+        console.log('업데이트할 메뉴 순서:', menuOrders);
+        
+        const response = await fetch(`${API_BASE_URL}/menu/order`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            },
+            body: JSON.stringify({ menuOrders })
+        });
+        
+        console.log('API 응답 상태:', response.status);
+        
+        if (response.ok) {
+            // 순서 번호 업데이트
+            rows.forEach((row, index) => {
+                const orderBadge = row.querySelector('.badge.bg-secondary');
+                if (orderBadge) {
+                    orderBadge.textContent = index + 1;
+                }
+            });
+            
+            showAlert('메뉴 순서가 업데이트되었습니다.', 'success');
+        } else {
+            const error = await response.json();
+            showAlert(`순서 업데이트 실패: ${error.error}`, 'danger');
+        }
+    } catch (error) {
+        console.error('Update menu order error:', error);
+        showAlert('메뉴 순서 업데이트 중 오류가 발생했습니다.', 'danger');
     }
 }
 
@@ -692,6 +812,14 @@ function showAddLocationForm() {
     document.getElementById('location-form-title').textContent = '위치 추가';
     document.getElementById('location-form-element').reset();
     document.getElementById('location-form').style.display = 'block';
+    document.getElementById('delete-location-btn').style.display = 'none';
+    
+    // 현재 날짜로 설정
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('location-date').value = today;
+    
+    // 이력 로드
+    loadLocationHistory();
 }
 
 // 위치 편집
@@ -714,8 +842,15 @@ async function editLocation(locationId) {
             document.getElementById('location-open-time').value = location.openTime || '';
             document.getElementById('location-close-time').value = location.closeTime || '';
             
+            // 날짜 설정
+            document.getElementById('location-date').value = location.date || new Date().toISOString().split('T')[0];
+            
             document.getElementById('location-notice').value = location.notice || '';
             document.getElementById('location-form').style.display = 'block';
+            document.getElementById('delete-location-btn').style.display = 'inline-block';
+            
+            // 이력 로드
+            loadLocationHistory();
         }
     } catch (error) {
         console.error('Edit location error:', error);
@@ -726,6 +861,7 @@ async function editLocation(locationId) {
 // 위치 폼 숨기기
 function hideLocationForm() {
     document.getElementById('location-form').style.display = 'none';
+    document.getElementById('delete-location-btn').style.display = 'none';
     currentEditingLocationId = null;
 }
 
@@ -742,6 +878,7 @@ async function handleLocationSubmit(e) {
     const formData = {
         name: document.getElementById('location-name').value,
         address: document.getElementById('location-address').value,
+        date: document.getElementById('location-date').value,
         openTime: formatTime(document.getElementById('location-open-time').value),
         closeTime: formatTime(document.getElementById('location-close-time').value),
         notice: document.getElementById('location-notice').value
@@ -749,8 +886,8 @@ async function handleLocationSubmit(e) {
     
     try {
         const url = currentEditingLocationId 
-            ? `${API_BASE_URL}/location/${currentEditingLocationId}`
-            : `${API_BASE_URL}/location`;
+            ? `${API_BASE_URL}/location/admin/${currentEditingLocationId}`
+            : `${API_BASE_URL}/location/admin`;
         
         const method = currentEditingLocationId ? 'PUT' : 'POST';
         
@@ -767,6 +904,10 @@ async function handleLocationSubmit(e) {
         
         if (response.ok) {
             showAlert(currentEditingLocationId ? '위치가 수정되었습니다.' : '위치가 추가되었습니다.', 'success');
+            
+            // 이력에 저장
+            saveLocationToHistory(formData);
+            
             hideLocationForm();
             loadLocations();
         } else {
@@ -775,6 +916,105 @@ async function handleLocationSubmit(e) {
     } catch (error) {
         console.error('Location submit error:', error);
         showAlert('위치 저장 중 오류가 발생했습니다.', 'danger');
+    }
+}
+
+// 위치 삭제
+async function deleteLocation() {
+    if (!currentEditingLocationId) {
+        showAlert('삭제할 위치를 선택해주세요.', 'warning');
+        return;
+    }
+    
+    if (!confirm('정말로 이 위치를 삭제하시겠습니까?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/location/admin/${currentEditingLocationId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            showAlert('위치가 삭제되었습니다.', 'success');
+            hideLocationForm();
+            loadLocations();
+        } else {
+            const data = await response.json();
+            showAlert(data.error || '위치 삭제 중 오류가 발생했습니다.', 'danger');
+        }
+    } catch (error) {
+        console.error('Delete location error:', error);
+        showAlert('위치 삭제 중 오류가 발생했습니다.', 'danger');
+    }
+}
+
+// 위치 이력 저장
+function saveLocationToHistory(locationData) {
+    let history = JSON.parse(localStorage.getItem('locationHistory') || '[]');
+    
+    // 현재 날짜로 설정
+    const today = new Date().toISOString().split('T')[0];
+    locationData.date = today;
+    
+    // 중복 제거 (같은 이름과 주소가 있으면 제거)
+    history = history.filter(item => 
+        !(item.name === locationData.name && item.address === locationData.address)
+    );
+    
+    // 새 항목 추가
+    history.unshift(locationData);
+    
+    // 최대 5개만 유지
+    if (history.length > 5) {
+        history = history.slice(0, 5);
+    }
+    
+    localStorage.setItem('locationHistory', JSON.stringify(history));
+}
+
+// 위치 이력 로드
+function loadLocationHistory() {
+    const history = JSON.parse(localStorage.getItem('locationHistory') || '[]');
+    const select = document.getElementById('location-history');
+    
+    // 기존 옵션 제거 (첫 번째 옵션 제외)
+    while (select.children.length > 1) {
+        select.removeChild(select.lastChild);
+    }
+    
+    // 이력 옵션 추가
+    history.forEach((item, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${item.name} - ${item.address} (${item.date})`;
+        select.appendChild(option);
+    });
+}
+
+// 이력에서 위치 로드
+function loadLocationFromHistory() {
+    const select = document.getElementById('location-history');
+    const history = JSON.parse(localStorage.getItem('locationHistory') || '[]');
+    
+    if (select.value !== '') {
+        const index = parseInt(select.value);
+        const item = history[index];
+        
+        if (item) {
+            document.getElementById('location-name').value = item.name || '';
+            document.getElementById('location-address').value = item.address || '';
+            document.getElementById('location-open-time').value = item.openTime || '';
+            document.getElementById('location-close-time').value = item.closeTime || '';
+            document.getElementById('location-notice').value = item.notice || '';
+            
+            // 날짜는 현재 날짜로 설정
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('location-date').value = today;
+        }
     }
 }
 
@@ -790,9 +1030,14 @@ async function loadPushStats() {
         const androidDevices = data.tokens?.filter(token => token.deviceType === 'android').length || 0;
         const iosDevices = data.tokens?.filter(token => token.deviceType === 'ios').length || 0;
         
+        // 알림 설정이 허용된 디바이스 수 계산
+        const notificationEnabledDevices = data.tokens?.filter(token => token.notificationEnabled).length || 0;
+        const androidNotificationEnabled = data.tokens?.filter(token => token.deviceType === 'android' && token.notificationEnabled).length || 0;
+        const iosNotificationEnabled = data.tokens?.filter(token => token.deviceType === 'ios' && token.notificationEnabled).length || 0;
+        
         document.getElementById('total-devices-stats').textContent = totalDevices;
-        document.getElementById('android-devices').textContent = androidDevices;
-        document.getElementById('ios-devices').textContent = iosDevices;
+        document.getElementById('android-devices').textContent = `${androidDevices} (알림 허용: ${androidNotificationEnabled})`;
+        document.getElementById('ios-devices').textContent = `${iosDevices} (알림 허용: ${iosNotificationEnabled})`;
         
     } catch (error) {
         console.error('Load push stats error:', error);
@@ -808,6 +1053,9 @@ async function handlePushSubmit(e) {
     const target = document.getElementById('push-target').value;
     const type = document.getElementById('push-type').value;
     
+    // 발송 상태 UI 표시
+    showPushProgress();
+    
     try {
         // 먼저 토큰 목록 가져오기
         const tokensResponse = await fetch(`${API_BASE_URL}/fcm/tokens`, {
@@ -816,12 +1064,24 @@ async function handlePushSubmit(e) {
         const tokensData = await tokensResponse.json();
         
         if (!tokensData.tokens || tokensData.tokens.length === 0) {
+            hidePushProgress();
             showAlert('발송할 디바이스가 없습니다.', 'warning');
             return;
         }
         
-        // 서버에서 모든 활성 토큰을 조회하므로 클라이언트에서는 대상 확인만
+        // 알림 설정이 허용된 디바이스 수 확인
+        const notificationEnabledTokens = tokensData.tokens.filter(token => token.notificationEnabled);
         console.log('등록된 토큰 수:', tokensData.tokens.length);
+        console.log('알림 허용된 토큰 수:', notificationEnabledTokens.length);
+        
+        if (notificationEnabledTokens.length === 0) {
+            hidePushProgress();
+            showAlert('알림 설정을 허용한 사용자가 없습니다.', 'warning');
+            return;
+        }
+        
+        // 발송 상태 업데이트
+        updatePushProgress(0, notificationEnabledTokens.length, '발송 준비 중...');
         
         // 푸시 발송 요청
         const pushData = {
@@ -846,20 +1106,64 @@ async function handlePushSubmit(e) {
         const data = await response.json();
         
         if (response.ok) {
-            showAlert(`푸시 알림이 발송되었습니다. (성공: ${data.notification.sentCount}, 실패: ${data.notification.failedCount})`, 'success');
-            document.getElementById('push-form').reset();
+            // 발송 완료 상태 업데이트
+            updatePushProgress(data.notification.sentCount, data.notification.targetCount, '발송 완료!');
             
-            // 푸시 발송 내역과 금일 건수 새로고침
-            await Promise.all([
-                loadPushHistory(),
-                loadTodayPushCount()
-            ]);
+            // 2초 후 상태 UI 숨기기
+            setTimeout(() => {
+                hidePushProgress();
+                showAlert(`푸시 알림이 발송되었습니다. (성공: ${data.notification.sentCount}, 실패: ${data.notification.failedCount})`, 'success');
+                document.getElementById('push-form').reset();
+                
+                // 푸시 발송 내역과 금일 건수 새로고침
+                loadPushHistory();
+                loadTodayPushCount();
+            }, 2000);
         } else {
+            hidePushProgress();
             showAlert(data.error || '푸시 발송 중 오류가 발생했습니다.', 'danger');
         }
     } catch (error) {
         console.error('Push submit error:', error);
+        hidePushProgress();
         showAlert('푸시 발송 중 오류가 발생했습니다.', 'danger');
+    }
+}
+
+// 발송 상태 UI 표시
+function showPushProgress() {
+    const progressDiv = document.getElementById('push-progress');
+    if (progressDiv) {
+        progressDiv.style.display = 'block';
+    }
+}
+
+// 발송 상태 UI 숨기기
+function hidePushProgress() {
+    const progressDiv = document.getElementById('push-progress');
+    if (progressDiv) {
+        progressDiv.style.display = 'none';
+    }
+}
+
+// 발송 상태 업데이트
+function updatePushProgress(sent, total, status) {
+    const statusText = document.getElementById('push-status-text');
+    const progressText = document.getElementById('push-progress-text');
+    const progressBar = document.getElementById('push-progress-bar');
+    
+    if (statusText) {
+        statusText.textContent = status;
+    }
+    
+    if (progressText) {
+        progressText.textContent = `( 발송완료 ${sent}건 / 총 발송대상 ${total}건 )`;
+    }
+    
+    if (progressBar && total > 0) {
+        const percentage = Math.round((sent / total) * 100);
+        progressBar.style.width = `${percentage}%`;
+        progressBar.setAttribute('aria-valuenow', percentage);
     }
 }
 
@@ -892,6 +1196,11 @@ async function loadTokens() {
                         </span>
                     </td>
                     <td>
+                        <span class="badge ${token.notificationEnabled ? 'bg-success' : 'bg-warning'}">
+                            ${token.notificationEnabled ? '알림 켜짐' : '알림 꺼짐'}
+                        </span>
+                    </td>
+                    <td>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteToken('${token.id}')">
                             <i class="fas fa-trash"></i>
                         </button>
@@ -900,7 +1209,7 @@ async function loadTokens() {
                 tokenList.appendChild(row);
             });
         } else {
-            tokenList.innerHTML = '<tr><td colspan="5" class="text-center text-muted">등록된 토큰이 없습니다.</td></tr>';
+            tokenList.innerHTML = '<tr><td colspan="6" class="text-center text-muted">등록된 토큰이 없습니다.</td></tr>';
         }
     } catch (error) {
         console.error('Load tokens error:', error);

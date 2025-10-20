@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <!-- Android 15 TLS 1.2+ 요구사항 -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system"/>
+            <certificates src="user"/>
+        </trust-anchors>
+    </base-config>
+    
+    <!-- 개발 환경 허용 -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">10.0.2.2</domain>
         <domain includeSubdomains="true">192.168.1.100</domain>
         <domain includeSubdomains="true">192.168.219.200</domain>
     </domain-config>
+    
+    <!-- 프로덕션 환경 HTTPS 허용 (하위 SDK 호환) -->
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">truck.carrera74.com</domain>
+        <trust-anchors>
+            <certificates src="system"/>
+            <certificates src="user"/>
+        </trust-anchors>
     </domain-config>
 </network-security-config>

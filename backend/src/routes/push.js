@@ -19,8 +19,11 @@ router.post('/send', [
   try {
     const { title, body, data, scheduledAt, target } = req.body;
 
-    // 활성화된 FCM 토큰들 조회 (대상별 필터링)
-    let whereCondition = { isActive: true };
+    // 활성화되고 알림 설정이 허용된 FCM 토큰들 조회 (대상별 필터링)
+    let whereCondition = { 
+      isActive: true,
+      notificationEnabled: true  // 알림 설정이 허용된 사용자만
+    };
     
     // 대상별 필터링 (선택사항)
     if (target && target !== 'all') {
@@ -34,7 +37,7 @@ router.post('/send', [
 
     if (fcmTokens.length === 0) {
       return res.status(400).json({
-        error: '발송 가능한 활성 토큰이 없습니다'
+        error: '알림 설정을 허용한 활성 사용자가 없습니다'
       });
     }
 

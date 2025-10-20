@@ -13,14 +13,22 @@ const config = {
 // 현재 위치 조회 (공개용 - 고객용)
 router.get('/current', async (req, res) => {
   try {
+    // 오늘 날짜
+    const today = new Date().toISOString().split('T')[0];
+    
     const currentLocation = await Location.findOne({
+      where: {
+        deletedAt: null, // 삭제되지 않은 위치만 조회
+        date: today // 오늘 날짜의 위치만 조회
+      },
       order: [['createdAt', 'DESC']],
-      attributes: ['id', 'name', 'address', 'openTime', 'closeTime', 'notice']
+      attributes: ['id', 'name', 'address', 'openTime', 'closeTime', 'notice', 'date']
     });
 
     if (!currentLocation) {
-      return res.status(404).json({
-        error: '현재 영업 위치가 없습니다'
+      return res.json({
+        location: null,
+        message: '아직 어디로 갈지 몰라요'
       });
     }
 
@@ -31,7 +39,8 @@ router.get('/current', async (req, res) => {
         address: currentLocation.address,
         openTime: currentLocation.openTime,
         closeTime: currentLocation.closeTime,
-        notice: currentLocation.notice
+        notice: currentLocation.notice,
+        date: currentLocation.date
       }
     });
   } catch (error) {
@@ -76,12 +85,13 @@ router.post('/admin', [
   validate(schemas.locationCreate)
 ], async (req, res) => {
   try {
-    const { name, address, openTime, closeTime, notice } = req.body;
+    const { name, address, date, openTime, closeTime, notice } = req.body;
     
     const location = await Location.create({
       adminId: req.admin.id,
       name,
       address,
+      date,
       openTime,
       closeTime,
       notice
@@ -125,11 +135,12 @@ router.put('/admin/:id', [
       });
     }
 
-    const { name, address, openTime, closeTime, notice } = req.body;
+    const { name, address, date, openTime, closeTime, notice } = req.body;
     
     await location.update({
       name: name || location.name,
       address: address || location.address,
+      date: date !== undefined ? date : location.date,
       openTime: openTime !== undefined ? openTime : location.openTime,
       closeTime: closeTime !== undefined ? closeTime : location.closeTime,
       notice: notice !== undefined ? notice : location.notice
@@ -171,7 +182,10 @@ router.delete('/admin/:id', auth, async (req, res) => {
       });
     }
 
-    await location.destroy();
+    // 실제 삭제 (destroy) 대신 소프트 삭제
+    await location.update({
+      deletedAt: new Date()
+    });
 
     res.json({
       message: '위치가 성공적으로 삭제되었습니다'

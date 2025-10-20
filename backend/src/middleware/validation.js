@@ -56,6 +56,7 @@ const schemas = {
   locationCreate: Joi.object({
     name: Joi.string().trim().min(2).max(100).required(),
     address: Joi.string().trim().min(5).max(255).required(),
+    date: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/).optional(),
     openTime: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
     closeTime: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
     notice: Joi.string().trim().max(500).optional()

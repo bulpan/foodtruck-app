@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Menu } = require('../models');
+const { Menu, sequelize } = require('../models');
 const { auth } = require('../middleware/auth');
 const { validate, schemas } = require('../middleware/validation');
 const multer = require('multer');
@@ -65,6 +65,7 @@ const convertCategoryToKorean = (category) => {
 // 메뉴 목록 조회 (공개용 - 인증 불필요)
 router.get('/', async (req, res) => {
   try {
+    console.log('🔍 GET / 라우트가 매칭되었습니다!');
     const menus = await Menu.findAll({
       where: { isAvailable: true },
       order: [['sortOrder', 'ASC'], ['createdAt', 'DESC']],
@@ -207,6 +208,58 @@ router.post('/', [
   }
 });
 
+// 메뉴 순서 업데이트 (드래그 앤 드롭)
+router.put('/order', auth, async (req, res) => {
+  try {
+    console.log('✅ PUT /order 라우트가 매칭되었습니다!');
+    console.log('✅ 요청 본문:', req.body);
+    const { menuOrders } = req.body; // [{ id: 'uuid', sortOrder: 1 }, ...]
+    
+    if (!Array.isArray(menuOrders)) {
+      return res.status(400).json({
+        error: '메뉴 순서 배열이 필요합니다'
+      });
+    }
+    
+    // 트랜잭션으로 모든 순서 업데이트
+    const transaction = await sequelize.transaction();
+    
+    try {
+      for (const menuOrder of menuOrders) {
+        await Menu.update(
+          { sortOrder: menuOrder.sortOrder },
+          { 
+            where: { 
+              id: menuOrder.id,
+              adminId: req.admin.id // 본인 메뉴만 수정 가능
+            },
+            transaction
+          }
+        );
+      }
+      
+      await transaction.commit();
+      
+      res.json({
+        message: '메뉴 순서가 업데이트되었습니다',
+        updatedCount: menuOrders.length
+      });
+      
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
+    
+  } catch (error) {
+    console.error('Update menu order error:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({
+      error: '메뉴 순서 업데이트 중 오류가 발생했습니다',
+      details: config.isDevelopment ? error.message : undefined
+    });
+  }
+});
+
 // 메뉴 수정 (관리자용 - 이미지 업로드 포함)
 router.put('/:id', [
   auth,
@@ -214,6 +267,10 @@ router.put('/:id', [
   validate(schemas.menuCreate)
 ], async (req, res) => {
   try {
+    console.log('❌ PUT /:id 라우트가 매칭되었습니다! ID:', req.params.id);
+    console.log('❌ 요청 URL:', req.url);
+    console.log('❌ 요청 경로:', req.path);
+    console.log('❌ 요청 원본 URL:', req.originalUrl);
     const menu = await Menu.findOne({
       where: { 
         id: req.params.id,

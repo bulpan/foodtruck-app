@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace 'com.foodtruck.app'
-    compileSdk 34
+    compileSdk 35
 
     buildFeatures {
         buildConfig true
@@ -16,13 +16,25 @@ android {
     defaultConfig {
         applicationId "com.foodtruck.app"
         minSdk 24
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        targetSdk 35
+        versionCode 4
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
+        }
+    }
+
+    signingConfigs {
+        debug {
+            // Debug 서명은 기본값 사용
+        }
+        release {
+            storeFile file('keystore.jks')
+            storePassword '246224'
+            keyAlias 'truck_key'
+            keyPassword '246224'
         }
     }
 
@@ -32,6 +44,7 @@ android {
             buildConfigField "String", "DEV_LOCAL_IP", '"192.168.219.200"'
             buildConfigField "String", "DEV_PORT", '"3002"'
             buildConfigField "String", "PROD_BASE_URL", '"https://truck.carrera74.com"'
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
@@ -40,6 +53,7 @@ android {
             buildConfigField "String", "DEV_LOCAL_IP", '""'
             buildConfigField "String", "DEV_PORT", '""'
             buildConfigField "String", "PROD_BASE_URL", '"https://truck.carrera74.com"'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
