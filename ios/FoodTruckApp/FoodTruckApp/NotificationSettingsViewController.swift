@@ -1,5 +1,7 @@
 import UIKit
 import UserNotifications
+import Firebase
+import FirebaseMessaging
 
 class NotificationSettingsViewController: UIViewController {
     
@@ -14,11 +16,22 @@ class NotificationSettingsViewController: UIViewController {
     private let pushNotificationKey = "isPushNotificationEnabled"
     private let locationNotificationKey = "isLocationNotificationEnabled"
     
+    // 서버 API URL
+    private let baseURL = "https://truck.carrera74.com"
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        loadSettings()
+        checkNotificationPermission()
+        loadSettingsFromServer()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 네비게이션 바 설정 재적용
+        setupNavigationBar()
+        // 화면이 나타날 때마다 권한 상태 확인
         checkNotificationPermission()
     }
     
@@ -39,14 +52,19 @@ class NotificationSettingsViewController: UIViewController {
     private func setupNavigationBar() {
         title = "알림 설정"
         
-        // 배경색 설정
+        // 네비게이션 바 설정
         navigationController?.navigationBar.backgroundColor = UIColor(red: 254/255, green: 198/255, blue: 80/255, alpha: 1.0)
         navigationController?.navigationBar.barTintColor = UIColor(red: 254/255, green: 198/255, blue: 80/255, alpha: 1.0)
         navigationController?.navigationBar.tintColor = UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0)
         
-        // 타이틀 색상 설정
+        // 네비게이션 바 스타일 설정
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.prefersLargeTitles = false
+        
+        // 타이틀 색상 및 폰트 설정
         navigationController?.navigationBar.titleTextAttributes = [
-            .foregroundColor: UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0)
+            .foregroundColor: UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0),
+            .font: UIFont.systemFont(ofSize: 18, weight: .semibold)
         ]
         
         // 뒤로가기 버튼
@@ -58,6 +76,19 @@ class NotificationSettingsViewController: UIViewController {
         )
         backButton.tintColor = UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0)
         navigationItem.leftBarButtonItem = backButton
+        
+        // 네비게이션 바 레이아웃 조정
+        if #available(iOS 15.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = UIColor(red: 254/255, green: 198/255, blue: 80/255, alpha: 1.0)
+            appearance.titleTextAttributes = [
+                .foregroundColor: UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0),
+                .font: UIFont.systemFont(ofSize: 18, weight: .semibold)
+            ]
+            navigationController?.navigationBar.standardAppearance = appearance
+            navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        }
     }
     
     private func setupScrollView() {
@@ -196,8 +227,8 @@ class NotificationSettingsViewController: UIViewController {
     @objc private func backButtonTapped() {
         print("🔙 뒤로가기 버튼 클릭")
         
-        // 네비게이션 바 숨기기
-        navigationController?.setNavigationBarHidden(true, animated: true)
+        // 네비게이션 바 숨기기 (애니메이션 제거)
+        navigationController?.setNavigationBarHidden(true, animated: false)
         
         navigationController?.popViewController(animated: true)
     }
@@ -206,41 +237,48 @@ class NotificationSettingsViewController: UIViewController {
         print("🔔 전체 푸시 알림 변경: \(sender.isOn)")
         
         if sender.isOn {
-            // 알림 권한 요청
-            requestNotificationPermission()
-        }
-        
-        // 전체 알림이 꺼지면 하위 알림도 비활성화
-        if !sender.isOn {
-            locationNotificationSwitch.isEnabled = false
+            // 권한 상태 확인
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                DispatchQueue.main.async {
+                    switch settings.authorizationStatus {
+                    case .authorized, .provisional:
+                        // 권한이 허용된 경우 - 정상 동작
+                        self.locationNotificationSwitch.isEnabled = true
+                        // 서버에 설정 저장
+                        self.saveSettingsToServer()
+                    case .denied:
+                        // 권한이 거부된 경우 - OS 설정으로 이동
+                        sender.isOn = false // 스위치를 다시 OFF로
+                        self.showPermissionDeniedAlert()
+                    case .notDetermined:
+                        // 권한이 미결정인 경우 - 권한 요청
+                        self.requestNotificationPermission()
+                    @unknown default:
+                        break
+                    }
+                }
+            }
         } else {
-            locationNotificationSwitch.isEnabled = true
+            // 전체 알림이 꺼지면 하위 알림도 비활성화 및 OFF
+            locationNotificationSwitch.isOn = false
+            locationNotificationSwitch.isEnabled = false
+            // 서버에 설정 저장
+            saveSettingsToServer()
         }
     }
     
     
     @objc private func locationNotificationChanged(_ sender: UISwitch) {
         print("📍 위치 알림 변경: \(sender.isOn)")
+        // 서버에 설정 저장
+        saveSettingsToServer()
     }
     
     @objc private func saveButtonTapped() {
         print("💾 알림 설정 저장")
         
-        // UserDefaults에 설정 저장
-        saveSettings()
-        
-        // 성공 알림
-        let alert = UIAlertController(
-            title: "저장 완료",
-            message: "알림 설정이 저장되었습니다.",
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "확인", style: .default) { [weak self] _ in
-            // 네비게이션 바 숨기기
-            self?.navigationController?.setNavigationBarHidden(true, animated: true)
-            self?.navigationController?.popViewController(animated: true)
-        })
-        present(alert, animated: true)
+        // 서버에 설정 저장
+        saveSettingsToServer()
     }
     
     // MARK: - Settings Management
@@ -282,16 +320,31 @@ class NotificationSettingsViewController: UIViewController {
                 switch settings.authorizationStatus {
                 case .authorized, .provisional:
                     print("✅ 알림 권한 허용됨")
+                    self.enableNotificationControls()
                 case .denied:
                     print("❌ 알림 권한 거부됨")
-                    self.showPermissionDeniedAlert()
+                    self.disableNotificationControls()
                 case .notDetermined:
                     print("⚠️ 알림 권한 미결정")
+                    self.enableNotificationControls()
                 @unknown default:
                     break
                 }
             }
         }
+    }
+    
+    private func enableNotificationControls() {
+        pushNotificationSwitch.isEnabled = true
+        locationNotificationSwitch.isEnabled = true
+    }
+    
+    private func disableNotificationControls() {
+        // 권한이 거부된 경우 모든 스위치를 OFF로 설정하고 비활성화
+        pushNotificationSwitch.isOn = false
+        locationNotificationSwitch.isOn = false
+        pushNotificationSwitch.isEnabled = false
+        locationNotificationSwitch.isEnabled = false
     }
     
     private func requestNotificationPermission() {
@@ -311,8 +364,8 @@ class NotificationSettingsViewController: UIViewController {
     
     private func showPermissionDeniedAlert() {
         let alert = UIAlertController(
-            title: "알림 권한 필요",
-            message: "푸시 알림을 받으려면 설정에서 알림 권한을 허용해주세요.",
+            title: "알림 설정 필요",
+            message: "앱설정에서 푸시설정을 켜야합니다.\n설정 앱에서 알림 권한을 허용해주세요.",
             preferredStyle: .alert
         )
         
@@ -324,6 +377,178 @@ class NotificationSettingsViewController: UIViewController {
         
         alert.addAction(UIAlertAction(title: "취소", style: .cancel))
         
+        present(alert, animated: true)
+    }
+    
+    // MARK: - Server API
+    private func loadSettingsFromServer() {
+        // 먼저 로컬 설정으로 UI 초기화
+        loadSettings()
+        
+        // FCM 토큰 가져오기
+        Messaging.messaging().token { [weak self] (token: String?, error: Error?) in
+            if let error = error {
+                print("❌ FCM 토큰 가져오기 실패: \(error)")
+                return
+            }
+            
+            guard let token = token else {
+                print("❌ FCM 토큰이 nil")
+                return
+            }
+            
+            print("✅ FCM 토큰: \(token)")
+            self?.fetchNotificationSettings(token: token)
+        }
+    }
+    
+    private func fetchNotificationSettings(token: String) {
+        guard let url = URL(string: "\(baseURL)/api/fcm/tokens") else {
+            print("❌ 잘못된 URL")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("FoodTruckApp/1.0.0", forHTTPHeaderField: "User-Agent")
+        
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ 서버 통신 오류: \(error)")
+                    return
+                }
+                
+                guard let data = data else {
+                    print("❌ 응답 데이터 없음")
+                    return
+                }
+                
+                do {
+                    if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                       let tokens = json["tokens"] as? [[String: Any]] {
+                        print("📱 서버에서 받은 토큰 목록: \(json)")
+                        
+                        // 현재 토큰에 해당하는 설정 찾기
+                        var notificationEnabled = true
+                        var locationNotificationEnabled = true
+                        
+                        for tokenData in tokens {
+                            if let tokenValue = tokenData["token"] as? String, tokenValue == token {
+                                notificationEnabled = tokenData["notificationEnabled"] as? Bool ?? true
+                                locationNotificationEnabled = tokenData["locationNotificationEnabled"] as? Bool ?? true
+                                break
+                            }
+                        }
+                        
+                        // UI 업데이트
+                        self?.pushNotificationSwitch.isOn = notificationEnabled
+                        self?.locationNotificationSwitch.isOn = locationNotificationEnabled
+                        self?.locationNotificationSwitch.isEnabled = notificationEnabled
+                        
+                        // 로컬에도 저장
+                        UserDefaults.standard.set(notificationEnabled, forKey: self?.pushNotificationKey ?? "")
+                        UserDefaults.standard.set(locationNotificationEnabled, forKey: self?.locationNotificationKey ?? "")
+                        UserDefaults.standard.synchronize()
+                        
+                        print("✅ 서버에서 알림 설정 로드 완료 - 푸시: \(notificationEnabled), 위치: \(locationNotificationEnabled)")
+                    }
+                } catch {
+                    print("❌ JSON 파싱 오류: \(error)")
+                }
+            }
+        }.resume()
+    }
+    
+    private func saveSettingsToServer() {
+        Messaging.messaging().token { [weak self] (token: String?, error: Error?) in
+            if let error = error {
+                print("❌ FCM 토큰 가져오기 실패: \(error)")
+                self?.showErrorAlert(message: "FCM 토큰을 가져올 수 없습니다.")
+                return
+            }
+            
+            guard let token = token else {
+                print("❌ FCM 토큰이 nil")
+                self?.showErrorAlert(message: "FCM 토큰이 없습니다.")
+                return
+            }
+            
+            self?.updateNotificationSettingsOnServer(token: token)
+        }
+    }
+    
+    private func updateNotificationSettingsOnServer(token: String) {
+        guard let url = URL(string: "\(baseURL)/api/fcm/token/\(token)") else {
+            print("❌ 잘못된 URL")
+            showErrorAlert(message: "잘못된 서버 URL입니다.")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("FoodTruckApp/1.0.0", forHTTPHeaderField: "User-Agent")
+        
+        let requestBody: [String: Any] = [
+            "notificationEnabled": pushNotificationSwitch.isOn,
+            "locationNotificationEnabled": locationNotificationSwitch.isOn
+        ]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
+        } catch {
+            print("❌ JSON 직렬화 오류: \(error)")
+            showErrorAlert(message: "요청 데이터 생성에 실패했습니다.")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ 서버 통신 오류: \(error)")
+                    self?.showErrorAlert(message: "서버 통신에 실패했습니다.")
+                    return
+                }
+                
+                if let httpResponse = response as? HTTPURLResponse {
+                    print("📱 서버 응답 코드: \(httpResponse.statusCode)")
+                    
+                    if httpResponse.statusCode == 200 || httpResponse.statusCode == 201 {
+                        // 성공
+                        self?.saveSettings() // 로컬에도 저장
+                        self?.showSuccessAlert()
+                    } else {
+                        print("❌ 서버 오류: \(httpResponse.statusCode)")
+                        self?.showErrorAlert(message: "서버에서 오류가 발생했습니다.")
+                    }
+                }
+            }
+        }.resume()
+    }
+    
+    private func showSuccessAlert() {
+        let alert = UIAlertController(
+            title: "저장 완료",
+            message: "알림 설정이 저장되었습니다.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+            // 네비게이션 바 숨기기
+            self?.navigationController?.setNavigationBarHidden(true, animated: true)
+            self?.navigationController?.popViewController(animated: true)
+        })
+        present(alert, animated: true)
+    }
+    
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(
+            title: "오류",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
         present(alert, animated: true)
     }
 }

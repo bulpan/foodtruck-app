@@ -101,7 +101,7 @@ router.delete('/token/:token', async (req, res) => {
 // 토큰 상태 업데이트
 router.patch('/token/:token', async (req, res) => {
   try {
-    const { isActive, notificationEnabled } = req.body;
+    const { isActive, notificationEnabled, locationNotificationEnabled } = req.body;
     const fcmToken = await FCMToken.findOne({ 
       where: { token: req.params.token } 
     });
@@ -114,7 +114,8 @@ router.patch('/token/:token', async (req, res) => {
 
     await fcmToken.update({ 
       isActive: isActive !== undefined ? isActive : fcmToken.isActive,
-      notificationEnabled: notificationEnabled !== undefined ? notificationEnabled : fcmToken.notificationEnabled
+      notificationEnabled: notificationEnabled !== undefined ? notificationEnabled : fcmToken.notificationEnabled,
+      locationNotificationEnabled: locationNotificationEnabled !== undefined ? locationNotificationEnabled : fcmToken.locationNotificationEnabled
     });
 
     res.json({
@@ -123,6 +124,7 @@ router.patch('/token/:token', async (req, res) => {
         id: fcmToken.id,
         isActive: fcmToken.isActive,
         notificationEnabled: fcmToken.notificationEnabled,
+        locationNotificationEnabled: fcmToken.locationNotificationEnabled,
         lastUsedAt: fcmToken.lastUsedAt
       }
     });
@@ -139,7 +141,7 @@ router.get('/tokens', async (req, res) => {
   try {
     const tokens = await FCMToken.findAll({
       where: { isActive: true },
-      attributes: ['id', 'token', 'deviceType', 'deviceId', 'lastUsedAt', 'isActive', 'notificationEnabled'],
+      attributes: ['id', 'token', 'deviceType', 'deviceId', 'lastUsedAt', 'isActive', 'notificationEnabled', 'locationNotificationEnabled'],
       order: [['lastUsedAt', 'DESC']]
     });
 

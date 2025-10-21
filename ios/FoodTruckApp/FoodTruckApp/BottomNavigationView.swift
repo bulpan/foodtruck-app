@@ -11,12 +11,9 @@ class BottomNavigationView: UIView {
     private var navigationItems: [NavigationItem] = []
     private var stackView: UIStackView!
     
-    private let itemFontSize: CGFloat = 12
+    private let itemFontSize: CGFloat = 16
     private let iconSize: CGFloat = 24
     private let itemHeight: CGFloat = 60
-    
-    // 중복 실행 방지
-    private var isProcessingTouch = false
     
     // MARK: - Initialization
     override init(frame: CGRect) {
@@ -49,7 +46,7 @@ class BottomNavigationView: UIView {
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.alignment = .center
-        stackView.spacing = 0
+        stackView.spacing = 8  // 버튼 간 간격 추가
         stackView.isUserInteractionEnabled = true  // 스택뷰 터치 활성화
         
         addSubview(stackView)
@@ -102,17 +99,31 @@ class BottomNavigationView: UIView {
         button.backgroundColor = UIColor.clear
         button.isUserInteractionEnabled = true
         
+        // 버튼 기본 설정
+        
         // 버튼 설정 - 이미지 제거하고 텍스트만 사용
         button.setTitle(item.title, for: .normal)
         button.setTitleColor(UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 0.6), for: .normal)
         button.setTitleColor(UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0), for: .selected)
         
-        // 글자 크기를 2단계 크게 하고 볼드체로 설정
-        button.titleLabel?.font = UIFont.systemFont(ofSize: itemFontSize + 8, weight: .bold)
+        // 폰트 설정 - Dynamic Type 대응
+        button.titleLabel?.font = UIFont.systemFont(ofSize: itemFontSize, weight: .medium)
         button.titleLabel?.textAlignment = .center
+        button.titleLabel?.numberOfLines = 1
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.minimumScaleFactor = 0.8
         
-        // 버튼 액션 추가
+        // 버튼 액션 추가 - 여러 터치 이벤트 지원
         button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchDown)
+        
+        // 최소 크기 설정 (터치 영역 확보)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(greaterThanOrEqualToConstant: 50).isActive = true
+        button.widthAnchor.constraint(greaterThanOrEqualToConstant: 100).isActive = true
+        
+        // 터치 영역 확장
+        button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
         
         // 초기 선택 상태 설정
         button.isSelected = (item.screen == "home")
@@ -123,31 +134,17 @@ class BottomNavigationView: UIView {
     
     // MARK: - Actions
     @objc private func buttonTapped(_ sender: UIButton) {
-        // 중복 실행 방지
-        guard !isProcessingTouch else {
-            print("⚠️ 터치 이벤트 처리 중 - 무시됨")
-            return
-        }
-        
-        isProcessingTouch = true
-        
         print("🔘 버튼 터치 이벤트 감지됨!")
         print("🔘 버튼 태그: \(sender.tag)")
         print("🔘 버튼 제목: \(sender.titleLabel?.text ?? "nil")")
         
         guard sender.tag < navigationItems.count else {
             print("❌ 터치 처리 실패: 잘못된 태그 \(sender.tag)")
-            isProcessingTouch = false
             return
         }
         
         let item = navigationItems[sender.tag]
         print("✅ 버튼 터치됨: \(item.screen) - \(item.title)")
-        
-        // 0.5초 후에 다시 터치 허용
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.isProcessingTouch = false
-        }
         
         selectScreen(item.screen)
     }

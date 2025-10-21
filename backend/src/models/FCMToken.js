@@ -32,6 +32,11 @@ const FCMToken = sequelize.define('FCMToken', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
     comment: '사용자의 알림 설정 상태'
+  },
+  locationNotificationEnabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+    comment: '사용자의 위치 알림 설정 상태'
   }
 }, {
   tableName: 'fcm_tokens',
