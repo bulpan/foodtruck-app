@@ -6,8 +6,8 @@ class MainViewController: UIViewController {
     
     // MARK: - Properties
     private var webView: WKWebView!
-    private var bottomNavigationView: BottomNavigationView!
     private var webViewManager: WebViewManager!
+    private var phoneButton: UIButton!
     
     private var currentScreen: String = "home" {
         didSet {
@@ -31,7 +31,8 @@ class MainViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // setupSafeArea() 제거 - 웹뷰 로딩 완료 시에만 호출
+        // 네비게이션 바 설정 재적용
+        setupNavigationBar()
     }
     
     override func viewDidLayoutSubviews() {
@@ -42,39 +43,91 @@ class MainViewController: UIViewController {
         for (index, subview) in view.subviews.enumerated() {
             print("  \(index): \(type(of: subview)) - isUserInteractionEnabled: \(subview.isUserInteractionEnabled)")
         }
-        
-        // 하단 네비게이션 바 위치 및 상태 확인
-        print("📍 BottomNavigationView frame: \(bottomNavigationView.frame)")
-        print("📍 BottomNavigationView isUserInteractionEnabled: \(bottomNavigationView.isUserInteractionEnabled)")
-        print("📍 BottomNavigationView alpha: \(bottomNavigationView.alpha)")
     }
     
     // MARK: - UI Setup
     private func setupUI() {
         view.backgroundColor = UIColor(red: 254/255, green: 198/255, blue: 80/255, alpha: 1.0) // 앱 테마 색상
         
-        // 하단 네비게이션 바 설정
-        setupBottomNavigation()
+        // 네비게이션 바 설정
+        setupNavigationBar()
+        
+        // 하단 전화 버튼 설정
+        setupPhoneButton()
     }
     
     
-    private func setupBottomNavigation() {
-        bottomNavigationView = BottomNavigationView()
-        bottomNavigationView.delegate = self
-        view.addSubview(bottomNavigationView)
+    private func setupNavigationBar() {
+        // 네비게이션 바 표시
+        navigationController?.setNavigationBarHidden(false, animated: false)
         
-        // 제약 조건 설정
-        bottomNavigationView.translatesAutoresizingMaskIntoConstraints = false
+        // 네비게이션 바 스타일 설정
+        navigationController?.navigationBar.backgroundColor = UIColor(red: 254/255, green: 198/255, blue: 80/255, alpha: 1.0)
+        navigationController?.navigationBar.barTintColor = UIColor(red: 254/255, green: 198/255, blue: 80/255, alpha: 1.0)
+        navigationController?.navigationBar.tintColor = UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0)
+        navigationController?.navigationBar.isTranslucent = false
+        
+        // 타이틀 설정
+        title = "세종 유미네 곱창 트럭"
+        navigationController?.navigationBar.titleTextAttributes = [
+            .foregroundColor: UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0),
+            .font: UIFont.systemFont(ofSize: 18, weight: .semibold)
+        ]
+        
+        // 우측 알림 버튼 추가 - 간단한 방법
+        let notificationBarButton = UIBarButtonItem(
+            title: "알림",
+            style: .plain,
+            target: self,
+            action: #selector(notificationButtonTapped)
+        )
+        
+        // 버튼 스타일 설정
+        notificationBarButton.tintColor = .white
+        notificationBarButton.setTitleTextAttributes([
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(ofSize: 14, weight: .medium)
+        ], for: .normal)
+        
+        navigationItem.rightBarButtonItem = notificationBarButton
+        
+        // iOS 15+ 네비게이션 바 설정
+        if #available(iOS 15.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = UIColor(red: 254/255, green: 198/255, blue: 80/255, alpha: 1.0)
+            appearance.titleTextAttributes = [
+                .foregroundColor: UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0),
+                .font: UIFont.systemFont(ofSize: 18, weight: .semibold)
+            ]
+            navigationController?.navigationBar.standardAppearance = appearance
+            navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        }
+    }
+    
+    private func setupPhoneButton() {
+        phoneButton = UIButton(type: .system)
+        phoneButton.backgroundColor = UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0) // 알림 버튼과 동일한 다크 브라운 색상
+        phoneButton.setTitle("📞 주인장에게 전화하기", for: .normal)
+        phoneButton.setTitleColor(.white, for: .normal)
+        phoneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        phoneButton.layer.cornerRadius = 12
+        phoneButton.layer.shadowColor = UIColor.black.cgColor
+        phoneButton.layer.shadowOffset = CGSize(width: 0, height: -2)
+        phoneButton.layer.shadowOpacity = 0.3
+        phoneButton.layer.shadowRadius = 4
+        
+        phoneButton.addTarget(self, action: #selector(phoneButtonTapped), for: .touchUpInside)
+        
+        view.addSubview(phoneButton)
+        phoneButton.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            bottomNavigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            bottomNavigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomNavigationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            bottomNavigationView.heightAnchor.constraint(equalToConstant: 80)
+            phoneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            phoneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            phoneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            phoneButton.heightAnchor.constraint(equalToConstant: 50)
         ])
-        
-        // 터치 이벤트 활성화 확인
-        bottomNavigationView.isUserInteractionEnabled = true
-        print("✅ BottomNavigationView 생성 완료 - isUserInteractionEnabled: \(bottomNavigationView.isUserInteractionEnabled)")
     }
     
     private func setupWebViewConstraints() {
@@ -83,7 +136,7 @@ class MainViewController: UIViewController {
             webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            webView.bottomAnchor.constraint(equalTo: bottomNavigationView.topAnchor)
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
@@ -111,14 +164,8 @@ class MainViewController: UIViewController {
         // 웹뷰 제약 조건 설정
         setupWebViewConstraints()
         
-        // 하단 네비게이션 바가 웹뷰 위에 오도록 보장
-        view.bringSubviewToFront(bottomNavigationView)
-        
-        // 디버깅: 뷰 계층 구조 확인
-        print("🔍 웹뷰 설정 후 뷰 계층 구조:")
-        for (index, subview) in view.subviews.enumerated() {
-            print("  \(index): \(type(of: subview)) - isUserInteractionEnabled: \(subview.isUserInteractionEnabled)")
-        }
+        // 전화 버튼이 웹뷰 위에 오도록 보장
+        view.bringSubviewToFront(phoneButton)
         
         webViewManager = WebViewManager()
     }
@@ -158,17 +205,33 @@ class MainViewController: UIViewController {
         
         let script = """
             document.body.style.paddingTop = '\(max(safeAreaInsets.top - 40, 0))px';
-            document.body.style.paddingBottom = '\(80)px';
         """
         
         webView.evaluateJavaScript(script)
     }
     
+    // MARK: - Actions
+    @objc private func notificationButtonTapped() {
+        print("🔔 알림 버튼 클릭")
+        let notificationVC = NotificationSettingsViewController()
+        navigationController?.pushViewController(notificationVC, animated: true)
+    }
+    
+    @objc private func phoneButtonTapped() {
+        print("📞 전화 버튼 클릭")
+        let phoneNumber = "010-2420-5174"
+        if let url = URL(string: "tel:\(phoneNumber)") {
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                print("❌ 전화 앱을 열 수 없습니다")
+            }
+        }
+    }
+    
     // MARK: - Screen Navigation
     private func updateNavigationUI() {
-        DispatchQueue.main.async { [weak self] in
-            self?.bottomNavigationView.setSelectedScreen(self?.currentScreen ?? "home")
-        }
+        // 하단 네비게이션 바가 제거되어 더 이상 필요 없음
     }
     
     private func updateWebViewScreen() {
@@ -364,63 +427,6 @@ extension MainViewController: WKScriptMessageHandler {
     }
 }
 
-// MARK: - BottomNavigationViewDelegate
-extension MainViewController: BottomNavigationViewDelegate {
-    func didSelectScreen(_ screen: String) {
-        // 중복 실행 방지
-        guard !isNavigating else {
-            print("⚠️ 네비게이션 처리 중 - 무시됨: \(screen)")
-            return
-        }
-        
-        // 같은 화면이면 무시
-        guard currentScreen != screen else {
-            print("⚠️ 같은 화면 - 무시됨: \(screen)")
-            return
-        }
-        
-        isNavigating = true
-        print("📱 화면 전환 요청: \(screen)")
-        currentScreen = screen
-        
-        // notification 화면은 네이티브로 처리
-        if screen == "notification" {
-            showNotificationSettings()
-            return
-        }
-        
-        // 나머지는 웹뷰에서 처리
-        let script = """
-            if (typeof navigateTo === 'function') {
-                navigateTo('\(screen)');
-            } else {
-                window.location.hash = '#\(screen)';
-            }
-        """
-        webView.evaluateJavaScript(script)
-        
-        // 1초 후에 다시 네비게이션 허용
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.isNavigating = false
-        }
-    }
-    
-    private func showNotificationSettings() {
-        print("🔔 알림 설정 화면으로 이동")
-        let notificationVC = NotificationSettingsViewController()
-        
-        // 네비게이션 바 표시
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        
-        navigationController?.pushViewController(notificationVC, animated: true)
-        
-        // currentScreen을 notification으로 설정하지 않음 (웹뷰 화면이 아니므로)
-        // isNavigating 플래그만 리셋
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.isNavigating = false
-        }
-    }
-}
 
 
 

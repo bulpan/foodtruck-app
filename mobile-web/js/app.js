@@ -60,23 +60,9 @@ function setupNavigation() {
     }
 }
 
-// 스크롤 이벤트
+// 스크롤 이벤트 (탑 버튼 제거로 인해 비활성화)
 function setupScrollEvents() {
-    const scrollTopBtn = document.getElementById('scrollTopBtn');
-    
-    window.addEventListener('scroll', function() {
-        const scrollPos = window.scrollY;
-        
-        if (scrollPos > 300) {
-            scrollTopBtn.classList.add('visible');
-        } else {
-            scrollTopBtn.classList.remove('visible');
-        }
-    });
-    
-    scrollTopBtn.addEventListener('click', function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    // 탑 버튼이 제거되어 스크롤 이벤트 불필요
 }
 
 // 초기 데이터 로드
@@ -90,11 +76,10 @@ async function loadInitialData() {
         ]);
         
         updateUI();
-        renderPopularMenu();
         console.log('데이터 로드 완료');
     } catch (error) {
         console.error('데이터 로드 실패:', error);
-        showError('데이터를 불러오는데 실패했습니다.');
+        showError(`데이터 로드 실패: ${error.message || error}`);
     } finally {
         showLoading(false);
     }
@@ -112,6 +97,11 @@ async function loadMenuData() {
     } catch (error) {
         console.error('메뉴 데이터 로드 실패:', error);
         console.error('오류 상세:', error.response?.data || error.message);
+        
+        // 개발 단계에서는 에러를 표시
+        const errorMsg = `메뉴 데이터 로드 실패: ${error.response?.status || '네트워크 오류'} - ${error.message}`;
+        showError(errorMsg);
+        
         // 샘플 데이터로 fallback
         currentMenuData = getSampleMenuData();
         renderMenuGrid();
@@ -129,6 +119,7 @@ async function loadLocationData() {
         
         if (!locationName) {
             console.error('위치명 DOM 요소를 찾을 수 없음');
+            showError('위치 표시 요소를 찾을 수 없습니다.');
             return;
         }
         
@@ -151,6 +142,11 @@ async function loadLocationData() {
     } catch (error) {
         console.error('위치 데이터 로드 실패:', error);
         console.error('오류 상세:', error.response?.data || error.message);
+        
+        // 개발 단계에서는 에러를 표시
+        const errorMsg = `위치 데이터 로드 실패: ${error.response?.status || '네트워크 오류'} - ${error.message}`;
+        showError(errorMsg);
+        
         // 오류 시에도 메시지 표시
         currentLocationData = null;
         showNoLocationMessage('아직 어디로 갈지 몰라요');
@@ -222,7 +218,7 @@ function getSampleLocationData() {
     };
 }
 
-// 메뉴 그리드 렌더링
+// 메뉴 그리드 렌더링 (메인 화면용)
 function renderMenuGrid() {
     const container = document.getElementById('menuGrid');
     if (!container) return;
@@ -242,6 +238,7 @@ function renderMenuGrid() {
         </div>
     `).join('');
 }
+
 
 // 위치 디스플레이 업데이트
 function updateLocationDisplay() {
@@ -284,8 +281,8 @@ function updateLocationDisplay() {
     if (locationHours) {
         const openTime = formatTime(currentLocationData.openTime) || '11:00';
         const closeTime = formatTime(currentLocationData.closeTime) || '22:00';
-        locationHours.textContent = `영업시간: ${openTime} - ${closeTime}`;
-        console.log('영업시간 설정:', `영업시간: ${openTime} - ${closeTime}`);
+        locationHours.textContent = `🕒 ${openTime} ~ ${closeTime}`;
+        console.log('영업시간 설정:', `🕒 ${openTime} ~ ${closeTime}`);
     }
     
     if (locationNotice) {
@@ -400,59 +397,11 @@ function handleImageError(img) {
     };
 }
 
-// 인기메뉴 렌더링
-function renderPopularMenu() {
-    const container = document.getElementById('popularMenuGrid');
-    if (!container) {
-        console.error('popularMenuGrid 컨테이너를 찾을 수 없습니다');
-        return;
-    }
-    
-    console.log('인기메뉴 렌더링 시작, 메뉴 데이터:', currentMenuData);
-    
-    // 이미지가 있는 메뉴만 필터링하고 최대 3개까지 표시
-    const popularMenus = currentMenuData
-        .filter(menu => menu.imageUrl && menu.isAvailable)
-        .slice(0, 3);
-    
-    console.log('필터링된 인기메뉴:', popularMenus);
-    
-    if (popularMenus.length === 0) {
-        console.log('표시할 인기메뉴가 없습니다');
-        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">인기메뉴를 준비중입니다</p>';
-        return;
-    }
-    
-    container.innerHTML = popularMenus.map(menu => {
-        // 이미지 URL을 절대 경로로 변환
-        const imageUrl = menu.imageUrl.startsWith('/') 
-            ? `https://truck.carrera74.com${menu.imageUrl}` 
-            : menu.imageUrl;
-        
-        return `
-            <div class="popular-menu-item" onclick="selectMenu('${menu.id}')">
-                <div class="popular-menu-image">
-                    <img src="${imageUrl}" alt="${menu.name}" onerror="handleImageError(this)">
-                    <div class="popular-menu-heart">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                </div>
-                <div class="popular-menu-info">
-                    <div class="popular-menu-name">${menu.name}</div>
-                    <div class="popular-menu-price">${menu.price.toLocaleString()}원</div>
-                </div>
-            </div>
-        `;
-    }).join('');
-    
-    console.log('인기메뉴 렌더링 완료');
-}
 
 // UI 업데이트
 function updateUI() {
     renderMenuGrid();
     updateLocationDisplay();
-    renderPopularMenu();
 }
 
 
@@ -467,7 +416,6 @@ function navigateTo(screen) {
         targetScreen.classList.add('active');
     }
     
-    
     // 스크롤 맨 위로
     window.scrollTo(0, 0);
     
@@ -476,6 +424,7 @@ function navigateTo(screen) {
         window.FoodTruckInterface.updateNavigation(screen);
     }
 }
+
 
 // 카테고리 변경 처리
 function handleCategoryChange(event) {
@@ -508,27 +457,10 @@ async function refreshLocation() {
     }
 }
 
-// 메뉴 선택
+// 메뉴 선택 (이벤트 제거)
 function selectMenu(menuId) {
-    const menu = currentMenuData.find(m => m.id === menuId);
-    if (!menu) return;
-    
-    // 앱 내에서 메뉴 상세 정보 표시 (간단한 알림으로 대체)
-    if (navigator.vibrate) {
-        navigator.vibrate([100, 50, 100]);
-    }
-    
-    showSuccess(`${menu.name} 선택됨`);
-    
-    // 네이티브 앱에 메뉴 선택 알림
-    if (window.FoodTruckInterface) {
-        window.FoodTruckInterface.onMenuSelected({
-            id: menu.id,
-            name: menu.name,
-            price: menu.price,
-            description: menu.description
-        });
-    }
+    // 메뉴 클릭 시 아무 동작하지 않음
+    return;
 }
 
 // 알림 토글 처리

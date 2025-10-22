@@ -13,14 +13,14 @@
 		F08A1234567890B4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F08A1234567890B3 /* Preview Assets.xcassets */; };
 		F08A1234567890B7 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08A1234567890B6 /* MainViewController.swift */; };
 		F08A1234567890B9 /* WebViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08A1234567890B8 /* WebViewManager.swift */; };
-		F08A1234567890BC /* BottomNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08A1234567890BB /* BottomNavigationView.swift */; };
-		F08A1234567890BE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F08A1234567890BD /* GoogleService-Info.plist */; };
-		F49C66F22E9A983200D40EEB /* AppTheme 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49C66EF2E9A983200D40EEB /* AppTheme 2.swift */; };
-		F49C66F32E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49C66F02E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift */; };
-		F49C66F42E9A983200D40EEB /* LoadingView 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49C66F12E9A983200D40EEB /* LoadingView 2.swift */; };
-		F49C66F52E9A983200D40EEB /* AppConfig 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49C66EE2E9A983200D40EEB /* AppConfig 2.swift */; };
-		F49C66F82E9A9B6200D40EEB /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F49C66F72E9A9B6200D40EEB /* FirebaseMessaging */; };
+		F40DF2D82EA7BB9100B4421E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = F40DF2D72EA7BB9100B4421E /* FirebaseAnalytics */; };
+		F40DF2DA2EA7BB9100B4421E /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F40DF2D92EA7BB9100B4421E /* FirebaseMessaging */; };
+		F42CA4A32EA7C6FD00EF7164 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F42CA4A22EA7C6FD00EF7164 /* GoogleService-Info.plist */; };
 		F4E31D0D2E9FED9600630F03 /* NotificationSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E31D0C2E9FED9600630F03 /* NotificationSettingsViewController.swift */; };
+		F4E31D0E2E9FED9600630F04 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E31D0F2E9FED9600630F04 /* AppConfig.swift */; };
+		F4E31D102E9FED9600630F05 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E31D112E9FED9600630F05 /* AppTheme.swift */; };
+		F4E31D122E9FED9600630F06 /* FoodTruckFirebaseMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E31D132E9FED9600630F06 /* FoodTruckFirebaseMessagingService.swift */; };
+		F4E31D142E9FED9600630F07 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E31D152E9FED9600630F07 /* LoadingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,15 +31,14 @@
 		F08A1234567890B3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F08A1234567890B6 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		F08A1234567890B8 /* WebViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewManager.swift; sourceTree = "<group>"; };
-		F08A1234567890BB /* BottomNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomNavigationView.swift; sourceTree = "<group>"; };
-		F08A1234567890BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F08A1234567890BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F49C66EE2E9A983200D40EEB /* AppConfig 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppConfig 2.swift"; sourceTree = "<group>"; };
-		F49C66EF2E9A983200D40EEB /* AppTheme 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppTheme 2.swift"; sourceTree = "<group>"; };
-		F49C66F02E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodTruckFirebaseMessagingService 2.swift"; sourceTree = "<group>"; };
-		F49C66F12E9A983200D40EEB /* LoadingView 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadingView 2.swift"; sourceTree = "<group>"; };
+		F42CA4A22EA7C6FD00EF7164 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F4E22FF72E9BEF2E00C8FC0F /* FoodTruckApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FoodTruckApp.entitlements; sourceTree = "<group>"; };
 		F4E31D0C2E9FED9600630F03 /* NotificationSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewController.swift; sourceTree = "<group>"; };
+		F4E31D0F2E9FED9600630F04 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		F4E31D112E9FED9600630F05 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		F4E31D132E9FED9600630F06 /* FoodTruckFirebaseMessagingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckFirebaseMessagingService.swift; sourceTree = "<group>"; };
+		F4E31D152E9FED9600630F07 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,7 +46,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F49C66F82E9A9B6200D40EEB /* FirebaseMessaging in Frameworks */,
+				F40DF2DA2EA7BB9100B4421E /* FirebaseMessaging in Frameworks */,
+				F40DF2D82EA7BB9100B4421E /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,17 +75,16 @@
 			children = (
 				F4E31D0C2E9FED9600630F03 /* NotificationSettingsViewController.swift */,
 				F4E22FF72E9BEF2E00C8FC0F /* FoodTruckApp.entitlements */,
-				F49C66EE2E9A983200D40EEB /* AppConfig 2.swift */,
-				F49C66EF2E9A983200D40EEB /* AppTheme 2.swift */,
-				F49C66F02E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift */,
-				F49C66F12E9A983200D40EEB /* LoadingView 2.swift */,
+				F4E31D0F2E9FED9600630F04 /* AppConfig.swift */,
+				F4E31D112E9FED9600630F05 /* AppTheme.swift */,
+				F4E31D132E9FED9600630F06 /* FoodTruckFirebaseMessagingService.swift */,
+				F4E31D152E9FED9600630F07 /* LoadingView.swift */,
 				F08A1234567890AA /* AppDelegate.swift */,
 				F08A1234567890AC /* SceneDelegate.swift */,
 				F08A1234567890B6 /* MainViewController.swift */,
 				F08A1234567890B8 /* WebViewManager.swift */,
-				F08A1234567890BB /* BottomNavigationView.swift */,
 				F08A1234567890B0 /* Assets.xcassets */,
-				F08A1234567890BD /* GoogleService-Info.plist */,
+				F42CA4A22EA7C6FD00EF7164 /* GoogleService-Info.plist */,
 				F08A1234567890BF /* Info.plist */,
 				F08A1234567890B2 /* Preview Content */,
 			);
@@ -146,7 +145,7 @@
 			);
 			mainGroup = F08A12345678905E;
 			packageReferences = (
-				F49C66F62E9A9B6200D40EEB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				F40DF2D62EA7BB9100B4421E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = F08A123456789068 /* Products */;
 			projectDirPath = "";
@@ -164,7 +163,7 @@
 			files = (
 				F08A1234567890B4 /* Preview Assets.xcassets in Resources */,
 				F08A1234567890B1 /* Assets.xcassets in Resources */,
-				F08A1234567890BE /* GoogleService-Info.plist in Resources */,
+				F42CA4A32EA7C6FD00EF7164 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,13 +176,12 @@
 			files = (
 				F08A1234567890B7 /* MainViewController.swift in Sources */,
 				F08A1234567890B9 /* WebViewManager.swift in Sources */,
-				F08A1234567890BC /* BottomNavigationView.swift in Sources */,
 				F08A1234567890AD /* SceneDelegate.swift in Sources */,
-				F49C66F22E9A983200D40EEB /* AppTheme 2.swift in Sources */,
-				F49C66F32E9A983200D40EEB /* FoodTruckFirebaseMessagingService 2.swift in Sources */,
 				F4E31D0D2E9FED9600630F03 /* NotificationSettingsViewController.swift in Sources */,
-				F49C66F42E9A983200D40EEB /* LoadingView 2.swift in Sources */,
-				F49C66F52E9A983200D40EEB /* AppConfig 2.swift in Sources */,
+				F4E31D0E2E9FED9600630F04 /* AppConfig.swift in Sources */,
+				F4E31D102E9FED9600630F05 /* AppTheme.swift in Sources */,
+				F4E31D122E9FED9600630F06 /* FoodTruckFirebaseMessagingService.swift in Sources */,
+				F4E31D142E9FED9600630F07 /* LoadingView.swift in Sources */,
 				F08A1234567890AB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,6 +313,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FoodTruckApp/Preview Content\"";
+				DEVELOPMENT_TEAM = VC58838KPK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = FoodTruckApp/Info.plist;
@@ -328,7 +327,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.foodtruck.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oviwan.foodtruck;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -345,6 +344,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FoodTruckApp/Preview Content\"";
+				DEVELOPMENT_TEAM = VC58838KPK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = FoodTruckApp/Info.plist;
@@ -358,7 +358,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.foodtruck.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oviwan.foodtruck;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -390,7 +390,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F49C66F62E9A9B6200D40EEB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		F40DF2D62EA7BB9100B4421E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
@@ -401,9 +401,14 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F49C66F72E9A9B6200D40EEB /* FirebaseMessaging */ = {
+		F40DF2D72EA7BB9100B4421E /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F49C66F62E9A9B6200D40EEB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = F40DF2D62EA7BB9100B4421E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		F40DF2D92EA7BB9100B4421E /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F40DF2D62EA7BB9100B4421E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */

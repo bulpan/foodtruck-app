@@ -17,7 +17,7 @@ android {
         applicationId "com.foodtruck.app"
         minSdk 24
         targetSdk 35
-        versionCode 4
+        versionCode 7
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -47,7 +47,8 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "IS_DEVELOPMENT", "false"
             buildConfigField "String", "DEV_LOCAL_IP", '""'

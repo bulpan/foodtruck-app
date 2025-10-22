@@ -11,9 +11,21 @@ class FoodTruckFirebaseMessagingService: NSObject {
     private let channelName = "푸드트럭 알림"
     private let channelDescription = "푸드트럭의 메뉴, 위치 정보 알림"
     
+    // 중복 등록 방지를 위한 상태 관리
+    private var isRegistering = false
+    private var lastRegisteredToken: String?
+    private var isInitialized = false
+    
     private override init() {
         super.init()
-        // 알림 채널 생성
+        // 초기화는 지연시킴 - 권한 허용 후에만 실행
+        print("🔧 FoodTruckFirebaseMessagingService 초기화 (지연)")
+    }
+    
+    // 권한 허용 후에만 초기화
+    func initializeIfNeeded() {
+        guard !isInitialized else { return }
+        isInitialized = true
         createNotificationChannel()
     }
     
@@ -37,6 +49,14 @@ class FoodTruckFirebaseMessagingService: NSObject {
     func registerFCMToken() {
         print("🔑 FCM 토큰 등록 요청 중...")
         
+        // 중복 등록 방지
+        if isRegistering {
+            print("⚠️ 이미 토큰 등록 중입니다. 중복 요청을 무시합니다.")
+            return
+        }
+        
+        isRegistering = true
+        
         // 시뮬레이터 환경에서는 제한된 기능
         #if targetEnvironment(simulator)
         print("⚠️ 시뮬레이터 환경에서 실행 중 - FCM 토큰 등록이 제한될 수 있습니다")
@@ -51,6 +71,7 @@ class FoodTruckFirebaseMessagingService: NSObject {
         Messaging.messaging().token { token, error in
             if let error = error {
                 print("❌ FCM 토큰 등록 실패: \(error.localizedDescription)")
+                self.isRegistering = false // 상태 리셋
                 
                 // 오류가 발생해도 서버에 알림
                 print("🔄 오류 발생으로 인한 재시도...")
@@ -58,10 +79,19 @@ class FoodTruckFirebaseMessagingService: NSObject {
                     self.registerFCMToken()
                 }
             } else if let token = token {
+                // 동일한 토큰인지 확인
+                if self.lastRegisteredToken == token {
+                    print("⚠️ 동일한 토큰이 이미 등록되었습니다. 중복 등록을 건너뜁니다.")
+                    self.isRegistering = false
+                    return
+                }
+                
                 print("✅ FCM 토큰 등록 성공: \(token)")
+                self.lastRegisteredToken = token
                 self.sendFCMTokenToServer(token: token)
             } else {
                 print("⚠️ FCM 토큰이 nil입니다")
+                self.isRegistering = false // 상태 리셋
             }
         }
     }
@@ -85,9 +115,7 @@ class FoodTruckFirebaseMessagingService: NSObject {
         let body = [
             "token": token,
             "deviceType": "ios",
-            "deviceId": UIDevice.current.identifierForVendor?.uuidString ?? "",
-            "appVersion": "1.0.0",
-            "platform": "ios"
+            "deviceId": UIDevice.current.identifierForVendor?.uuidString ?? ""
         ]
         
         do {
@@ -124,6 +152,9 @@ class FoodTruckFirebaseMessagingService: NSObject {
                     } else {
                         print("⚠️ 서버 응답 오류 - 상태 코드: \(httpResponse.statusCode)")
                     }
+                    
+                    // 등록 완료 후 상태 리셋
+                    self.isRegistering = false
                 }
                 
                 if let data = data {
@@ -193,7 +224,17 @@ extension FoodTruckFirebaseMessagingService: MessagingDelegate {
         print("🔄 Firebase 토큰 갱신 수신:")
         if let token = fcmToken {
             print("   - 새 토큰: \(token)")
-            sendFCMTokenToServer(token: token)
+            // 권한 상태 확인 후에만 토큰 등록
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                DispatchQueue.main.async {
+                    if settings.authorizationStatus == .authorized {
+                        print("✅ 푸시 알림 권한이 허용되어 토큰 등록 진행")
+                        self.sendFCMTokenToServer(token: token)
+                    } else {
+                        print("❌ 푸시 알림 권한이 거부되어 토큰 등록 건너뜀")
+                    }
+                }
+            }
         } else {
             print("   - 토큰이 nil입니다")
         }

@@ -32,6 +32,9 @@ class WebViewManager: NSObject {
         config.preferences.javaScriptEnabled = true
         config.preferences.javaScriptCanOpenWindowsAutomatically = false
         
+        // 캐시 비활성화 설정
+        config.websiteDataStore = WKWebsiteDataStore.nonPersistent()
+        
         // 사용자 설정
         if #available(iOS 14.0, *) {
             config.defaultWebpagePreferences.allowsContentJavaScript = true

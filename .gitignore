@@ -41,6 +41,10 @@ build/
 captures/
 .externalNativeBuild/
 .cxx/
+android/.gradle/
+android/app/build/
+android/app/build.gradle
+android/app/proguard-rules.pro
 
 # Logs
 logs/

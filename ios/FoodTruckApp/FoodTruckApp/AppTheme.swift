@@ -88,7 +88,7 @@ struct AppTheme {
 // MARK: - UIColor Extension
 extension UIColor {
     static let appPrimary = AppTheme.Colors.primary
-    static let appAccent = AppTheme.Colors.accent
+    static let appAccentColor = AppTheme.Colors.accent
     static let appAccentLight = AppTheme.Colors.accentLight
     static let appNavigationBackground = AppTheme.Colors.navigationBackground
     static let appNavigationText = AppTheme.Colors.navigationText

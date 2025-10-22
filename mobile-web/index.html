@@ -28,28 +28,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- 상단 헤더 -->
-    <header class="app-header">
-        <h1 class="app-title">세종유미곱창트럭</h1>
-        <div class="header-spacer"></div>
-    </header>
-
-    <!-- 필요한 노치 공간 -->
-    <div class="notch-spacer"></div>
     
     <!-- 메인 컨텐츠 영역 -->
     <main class="app-content">
         <!-- 홈 화면 -->
         <div class="screen active" id="home-screen">
             
-            <div class="current-location" id="currentLocation">
-                <div class="location-header">
-                    <h3>오늘은 여기에서 합니다!</h3>
-                    <button class="location-refresh" onclick="refreshLocation()">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
+            <!-- 오늘의 위치 카드 -->
+            <div class="location-card" id="currentLocation">
+                <div class="location-icon">
+                    <i class="fas fa-map-marker-alt"></i>
                 </div>
-                <div class="location-content">
+                <div class="location-info">
                     <div class="location-name"></div>
                     <div class="location-address"></div>
                     <div class="location-hours"></div>
@@ -57,27 +47,25 @@
                 </div>
             </div>
 
-            <!-- 인기메뉴 섹션 -->
-            <div class="popular-menu-section">
-                <h2 class="popular-menu-title">인기메뉴</h2>
-                <div class="popular-menu-grid" id="popularMenuGrid">
-                    <!-- 인기메뉴 아이템들이 동적으로 로드됩니다 -->
+            <!-- 메뉴 섹션 -->
+            <div class="menu-section">
+                <h2 class="section-title">🍴 메뉴</h2>
+                <div class="menu-grid" id="menuGrid">
+                    <!-- 메뉴 아이템들이 동적으로 로드됩니다 -->
                 </div>
             </div>
 
-            <!-- 전화 버튼 -->
-            <div class="contact-section">
-                <a href="tel:01024205174" class="contact-btn" style="display: block; padding: 15px; text-align: center; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 500;">
-                    <i class="fas fa-phone" style="margin-right: 8px;"></i>
-                    주인장에게 전화하기
-                </a>
-            </div>
+
         </div>
 
         <!-- 메뉴 화면 -->
         <div class="screen" id="menu-screen">
             <div class="section-header">
+                <button class="back-btn" onclick="navigateToHome()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
                 <h2>MENU</h2>
+                <div class="header-spacer"></div>
             </div>
             <!--
             <div class="menu-categories">
@@ -88,7 +76,7 @@
             </div>
             -->
 
-            <div class="menu-grid" id="menuGrid">
+            <div class="menu-grid" id="menuScreenGrid">
                 <!-- 메뉴 아이템들이 동적으로 로드됩니다 -->
             </div>
         </div>
@@ -163,10 +151,6 @@
         </div>
     </main>
 
-    <!-- 상단 이동 버튼 -->
-    <button class="scroll-top" id="scrollTopBtn">
-        <i class="fas fa-chevron-up"></i>
-    </button>
 
     <!-- 로딩 스피너 -->
     <div class="loading-overlay" id="loadingOverlay">

@@ -19,31 +19,60 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         print("✅ Firebase 초기화 완료")
         
-        // 푸시 알림 권한 요청 (먼저 실행)
-        print("🔔 푸시 알림 권한 요청 중...")
+        // 푸시 알림 권한 상태 확인
+        print("🔔 푸시 알림 권한 상태 확인 중...")
         UNUserNotificationCenter.current().delegate = self
-        UNUserNotificationCenter.current().requestAuthorization(
-            options: [.alert, .badge, .sound],
-            completionHandler: { granted, error in
-                if granted {
-                    print("✅ 푸시 알림 권한 허용됨")
-                    DispatchQueue.main.async {
-                        application.registerForRemoteNotifications()
-                    }
-                } else {
-                    print("❌ 푸시 알림 권한 거부됨: \(error?.localizedDescription ?? "알 수 없는 오류")")
+        
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                switch settings.authorizationStatus {
+                case .notDetermined:
+                    // 최초 설치 시에만 권한 요청
+                    print("🔔 최초 설치 - 푸시 알림 권한 요청 중...")
+                    UNUserNotificationCenter.current().requestAuthorization(
+                        options: [.alert, .badge, .sound],
+                        completionHandler: { granted, error in
+                            if granted {
+                                print("✅ 푸시 알림 권한 허용됨")
+                                self.setupFirebaseMessaging()
+                                DispatchQueue.main.async {
+                                    application.registerForRemoteNotifications()
+                                }
+                            } else {
+                                print("❌ 푸시 알림 권한 거부됨: \(error?.localizedDescription ?? "알 수 없는 오류")")
+                            }
+                        }
+                    )
+                case .authorized:
+                    // 이미 권한 허용된 경우 - 바로 설정
+                    print("✅ 푸시 알림 권한 이미 허용됨")
+                    self.setupFirebaseMessaging()
+                    application.registerForRemoteNotifications()
+                case .denied, .provisional, .ephemeral:
+                    // 권한 거부된 경우
+                    print("❌ 푸시 알림 권한 거부됨 - 토큰 등록 건너뜀")
+                @unknown default:
+                    print("⚠️ 알 수 없는 권한 상태")
                 }
             }
-        )
+        }
         
         // Firebase Messaging 설정 (APNs 토큰 등록 후에 실행)
         print("📱 Firebase Messaging 설정 시작...")
         Messaging.messaging().delegate = FoodTruckFirebaseMessagingService.shared
-        Messaging.messaging().isAutoInitEnabled = true
+        Messaging.messaging().isAutoInitEnabled = false  // 자동 초기화 비활성화
         print("✅ Firebase Messaging 기본 설정 완료")
         
         print("🎯 앱 초기화 완료")
         return true
+    }
+    
+    // MARK: - Firebase Messaging 설정
+    private func setupFirebaseMessaging() {
+        print("📱 Firebase Messaging 설정 시작...")
+        Messaging.messaging().isAutoInitEnabled = true
+        FoodTruckFirebaseMessagingService.shared.initializeIfNeeded()
+        print("✅ Firebase Messaging 설정 완료")
     }
 
     // MARK: UISceneSession Lifecycle
@@ -62,10 +91,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Messaging.messaging().apnsToken = deviceToken
         print("✅ Firebase에 APNs 토큰 설정 완료")
         
-        // APNs 토큰 설정 후 FCM 토큰 등록 (지연 실행)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            print("🔄 FCM 토큰 등록 시작...")
-            FoodTruckFirebaseMessagingService.shared.registerFCMToken()
+        // 권한 상태 확인 후 FCM 토큰 등록
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .authorized {
+                    print("✅ 푸시 알림 권한이 허용되어 FCM 토큰 등록 진행")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        print("🔄 FCM 토큰 등록 시작...")
+                        FoodTruckFirebaseMessagingService.shared.registerFCMToken()
+                    }
+                } else {
+                    print("❌ 푸시 알림 권한이 거부되어 FCM 토큰 등록 건너뜀")
+                }
+            }
         }
     }
     
