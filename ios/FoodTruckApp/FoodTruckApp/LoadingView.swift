@@ -18,12 +18,9 @@ class LoadingView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = UIColor(red: 254/255, green: 198/255, blue: 80/255, alpha: 1.0) // 앱 테마 색상
+        backgroundColor = UIColor(red: 255/255, green: 255/255, blue: 240/255, alpha: 1.0) // 아이보리 색상
         
-        setupActivityIndicator()
         setupAppIcon()
-        setupAppName()
-        setupLoadingMessage()
         setupConstraints()
     }
     
@@ -35,9 +32,14 @@ class LoadingView: UIView {
     }
     
     private func setupAppIcon() {
-        // 기본 시스템 아이콘 사용 (실제 앱에서는 앱 아이콘 사용)
-        appIconImageView.image = UIImage(systemName: "fork.knife")
-        appIconImageView.tintColor = UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0)
+        // Assets의 앱 아이콘 사용
+        if let appIcon = UIImage(named: "icon") {
+            appIconImageView.image = appIcon
+        } else {
+            // 앱 아이콘이 없으면 기본 아이콘 사용
+            appIconImageView.image = UIImage(systemName: "fork.knife")
+            appIconImageView.tintColor = UIColor(red: 101/255, green: 67/255, blue: 33/255, alpha: 1.0)
+        }
         appIconImageView.contentMode = .scaleAspectFit
         appIconImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(appIconImageView)
@@ -63,29 +65,11 @@ class LoadingView: UIView {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            // Activity Indicator
-            activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -40),
-            activityIndicator.widthAnchor.constraint(equalToConstant: 60),
-            activityIndicator.heightAnchor.constraint(equalToConstant: 60),
-            
-            // App Icon
+            // App Icon - 화면 중앙에 배치
             appIconImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            appIconImageView.topAnchor.constraint(equalTo: activityIndicator.bottomAnchor, constant: 24),
-            appIconImageView.widthAnchor.constraint(equalToConstant: 80),
-            appIconImageView.heightAnchor.constraint(equalToConstant: 80),
-            
-            // App Name
-            appNameLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            appNameLabel.topAnchor.constraint(equalTo: appIconImageView.bottomAnchor, constant: 16),
-            appNameLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 20),
-            appNameLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -20),
-            
-            // Loading Message
-            loadingMessageLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            loadingMessageLabel.topAnchor.constraint(equalTo: appNameLabel.bottomAnchor, constant: 8),
-            loadingMessageLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 20),
-            loadingMessageLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -20)
+            appIconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            appIconImageView.widthAnchor.constraint(equalToConstant: 120),
+            appIconImageView.heightAnchor.constraint(equalToConstant: 120)
         ])
     }
 }

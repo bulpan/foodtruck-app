@@ -158,6 +158,8 @@ class MainViewController: UIViewController {
         webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = self
         webView.scrollView.contentInsetAdjustmentBehavior = .automatic
+        webView.backgroundColor = UIColor.white
+        webView.isOpaque = false
         
         view.addSubview(webView)
         
