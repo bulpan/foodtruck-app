@@ -41,6 +41,8 @@ Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.in
 Executing (default): SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'locations'
 Executing (default): SELECT pk.constraint_type as "Constraint",c.column_name as "Field", c.column_default as "Default",c.is_nullable as "Null", (CASE WHEN c.udt_name = 'hstore' THEN c.udt_name ELSE c.data_type END) || (CASE WHEN c.character_maximum_length IS NOT NULL THEN '(' || c.character_maximum_length || ')' ELSE '' END) as "Type", (SELECT array_agg(e.enumlabel) FROM pg_catalog.pg_type t JOIN pg_catalog.pg_enum e ON t.oid=e.enumtypid WHERE t.typname=c.udt_name) AS "special", (SELECT pgd.description FROM pg_catalog.pg_statio_all_tables AS st INNER JOIN pg_catalog.pg_description pgd on (pgd.objoid=st.relid) WHERE c.ordinal_position=pgd.objsubid AND c.table_name=st.relname) AS "Comment" FROM information_schema.columns c LEFT JOIN (SELECT tc.table_schema, tc.table_name, cu.column_name, tc.constraint_type FROM information_schema.TABLE_CONSTRAINTS tc JOIN information_schema.KEY_COLUMN_USAGE  cu ON tc.table_schema=cu.table_schema and tc.table_name=cu.table_name and tc.constraint_name=cu.constraint_name and tc.constraint_type='PRIMARY KEY') pk ON pk.table_schema=c.table_schema AND pk.table_name=c.table_name AND pk.column_name=c.column_name WHERE c.table_name = 'locations' AND c.table_schema = 'public'
 Executing (default): SELECT DISTINCT tc.constraint_name as constraint_name, tc.constraint_schema as constraint_schema, tc.constraint_catalog as constraint_catalog, tc.table_name as table_name,tc.table_schema as table_schema,tc.table_catalog as table_catalog,tc.initially_deferred as initially_deferred,tc.is_deferrable as is_deferrable,kcu.column_name as column_name,ccu.table_schema  AS referenced_table_schema,ccu.table_catalog  AS referenced_table_catalog,ccu.table_name  AS referenced_table_name,ccu.column_name AS referenced_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = 'locations' AND tc.table_catalog = 'foodtruck_db'
+Executing (default): ALTER TABLE "public"."locations" ADD COLUMN "date" DATE;
+Executing (default): ALTER TABLE "public"."locations" ADD COLUMN "deletedAt" TIMESTAMP WITH TIME ZONE;
 Executing (default): ALTER TABLE "locations" DROP CONSTRAINT "locations_adminId_fkey"
 Executing (default): ALTER TABLE "locations" ALTER COLUMN "adminId" SET NOT NULL;ALTER TABLE "locations"  ADD FOREIGN KEY ("adminId") REFERENCES "admins" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 Executing (default): ALTER TABLE "locations" ALTER COLUMN "name" SET NOT NULL;ALTER TABLE "locations" ALTER COLUMN "name" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "name" TYPE VARCHAR(100);
@@ -55,6 +57,8 @@ Executing (default): SELECT table_name FROM information_schema.tables WHERE tabl
 Executing (default): SELECT t.typname enum_name, array_agg(e.enumlabel ORDER BY enumsortorder) enum_value FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE n.nspname = 'public' AND t.typname='enum_fcm_tokens_deviceType' GROUP BY 1
 Executing (default): SELECT pk.constraint_type as "Constraint",c.column_name as "Field", c.column_default as "Default",c.is_nullable as "Null", (CASE WHEN c.udt_name = 'hstore' THEN c.udt_name ELSE c.data_type END) || (CASE WHEN c.character_maximum_length IS NOT NULL THEN '(' || c.character_maximum_length || ')' ELSE '' END) as "Type", (SELECT array_agg(e.enumlabel) FROM pg_catalog.pg_type t JOIN pg_catalog.pg_enum e ON t.oid=e.enumtypid WHERE t.typname=c.udt_name) AS "special", (SELECT pgd.description FROM pg_catalog.pg_statio_all_tables AS st INNER JOIN pg_catalog.pg_description pgd on (pgd.objoid=st.relid) WHERE c.ordinal_position=pgd.objsubid AND c.table_name=st.relname) AS "Comment" FROM information_schema.columns c LEFT JOIN (SELECT tc.table_schema, tc.table_name, cu.column_name, tc.constraint_type FROM information_schema.TABLE_CONSTRAINTS tc JOIN information_schema.KEY_COLUMN_USAGE  cu ON tc.table_schema=cu.table_schema and tc.table_name=cu.table_name and tc.constraint_name=cu.constraint_name and tc.constraint_type='PRIMARY KEY') pk ON pk.table_schema=c.table_schema AND pk.table_name=c.table_name AND pk.column_name=c.column_name WHERE c.table_name = 'fcm_tokens' AND c.table_schema = 'public'
 Executing (default): SELECT DISTINCT tc.constraint_name as constraint_name, tc.constraint_schema as constraint_schema, tc.constraint_catalog as constraint_catalog, tc.table_name as table_name,tc.table_schema as table_schema,tc.table_catalog as table_catalog,tc.initially_deferred as initially_deferred,tc.is_deferrable as is_deferrable,kcu.column_name as column_name,ccu.table_schema  AS referenced_table_schema,ccu.table_catalog  AS referenced_table_catalog,ccu.table_name  AS referenced_table_name,ccu.column_name AS referenced_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = 'fcm_tokens' AND tc.table_catalog = 'foodtruck_db'
+Executing (default): ALTER TABLE "public"."fcm_tokens" ADD COLUMN "notificationEnabled" BOOLEAN DEFAULT true; COMMENT ON COLUMN "fcm_tokens"."notificationEnabled" IS '사용자의 알림 설정 상태';
+Executing (default): ALTER TABLE "public"."fcm_tokens" ADD COLUMN "locationNotificationEnabled" BOOLEAN DEFAULT true; COMMENT ON COLUMN "fcm_tokens"."locationNotificationEnabled" IS '사용자의 위치 알림 설정 상태';
 Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "token" SET NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "token" DROP DEFAULT;ALTER TABLE "fcm_tokens"  ADD UNIQUE ("token");ALTER TABLE "fcm_tokens" ALTER COLUMN "token" TYPE VARCHAR(500)  ;
 Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceType" SET NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceType" DROP DEFAULT;DO 'BEGIN CREATE TYPE "public"."enum_fcm_tokens_deviceType" AS ENUM(''ios'', ''android''); EXCEPTION WHEN duplicate_object THEN null; END';ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceType" TYPE "public"."enum_fcm_tokens_deviceType" USING ("deviceType"::"public"."enum_fcm_tokens_deviceType");
 Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceId" DROP NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceId" DROP DEFAULT;ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceId" TYPE VARCHAR(100);
@@ -106,17 +110,17 @@ Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "errorMessage" DR
 Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "push_histories" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
 Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "push_histories" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
 Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'push_histories' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
-[2025-10-11T05:15:45.908Z] [INFO] 데이터베이스 테이블 동기화 완료
-[2025-10-11T05:15:45.912Z] [INFO] Food Truck Backend 서버가 포트 3002에서 실행중입니다
-[2025-10-11T05:15:45.912Z] [INFO] 환경: development
-[2025-10-11T05:15:45.912Z] [INFO] 헬스 체크: http://localhost:3002/health
-[2025-10-11T05:15:45.912Z] [INFO] API 문서: http://localhost:3002/api
-[2025-10-11T05:15:45.912Z] [INFO] 서버 URL: http://192.168.219.200:3002
-[2025-10-11T05:15:45.912Z] [INFO] 로그 파일: /Users/home/Documents/truck_new/backend/logs/server-2025-10-11.log
-[2025-10-11T05:15:45.913Z] [INFO] 개발 설정: http://localhost:3002/config
-[2025-10-11T05:15:49.500Z] [INFO] [7t61kslfo] REQUEST: GET /health
+[2025-10-24T14:44:03.247Z] [INFO] 데이터베이스 테이블 동기화 완료
+[2025-10-24T14:44:03.250Z] [INFO] Food Truck Backend 서버가 포트 3002에서 실행중입니다
+[2025-10-24T14:44:03.250Z] [INFO] 환경: development
+[2025-10-24T14:44:03.250Z] [INFO] 헬스 체크: http://localhost:3002/health
+[2025-10-24T14:44:03.250Z] [INFO] API 문서: http://localhost:3002/api
+[2025-10-24T14:44:03.250Z] [INFO] 서버 URL: http://192.168.219.200:3002
+[2025-10-24T14:44:03.250Z] [INFO] 로그 파일: /Users/home/Documents/truck_new/backend/logs/server-2025-10-24.log
+[2025-10-24T14:44:03.251Z] [INFO] 개발 설정: http://localhost:3002/config
+[2025-10-24T14:44:07.029Z] [INFO] [pefj1625z] REQUEST: GET /health
 {
-  "requestId": "7t61kslfo",
+  "requestId": "pefj1625z",
   "method": "GET",
   "url": "/health",
   "originalUrl": "/health",
@@ -126,25 +130,25 @@ Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.in
   "query": {},
   "params": {}
 }
-[2025-10-11T05:15:49.501Z] [INFO] [7t61kslfo] RESPONSE: 200
+[2025-10-24T14:44:07.030Z] [INFO] [pefj1625z] RESPONSE: 200
 {
-  "requestId": "7t61kslfo",
+  "requestId": "pefj1625z",
   "statusCode": 200,
   "duration": "1ms",
   "responseSize": 154,
   "headers": {}
 }
-[36m[2025-10-11T05:15:49.501Z] [DEBUG] [7t61kslfo] RESPONSE DATA:
+[36m[2025-10-24T14:44:07.030Z] [DEBUG] [pefj1625z] RESPONSE DATA:
 {
   "status": "OK",
-  "timestamp": "2025-10-11T05:15:49.501Z",
+  "timestamp": "2025-10-24T14:44:07.030Z",
   "service": "foodtruck-backend",
   "environment": "development",
   "serverUrl": "http://192.168.219.200:3002"
 }[0m
-[2025-10-11T05:15:49.501Z] [INFO] [7t61kslfo] RESPONSE: 200
+[2025-10-24T14:44:07.030Z] [INFO] [pefj1625z] RESPONSE: 200
 {
-  "requestId": "7t61kslfo",
+  "requestId": "pefj1625z",
   "statusCode": 200,
   "duration": "1ms",
   "responseSize": 154,
@@ -152,11 +156,54 @@ Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.in
     "content-type": "application/json; charset=utf-8"
   }
 }
-[32m[nodemon] restarting due to changes...[39m
-[32m[nodemon] starting `node src/server.js`[39m
-[32m[nodemon] restarting due to changes...[39m
-[32m[nodemon] starting `node src/server.js`[39m
-[32m[nodemon] restarting due to changes...[39m
+[2025-10-24T14:53:21.385Z] [INFO] [sk82sm4s4] REQUEST: POST /api/mobile/register-token
+{
+  "requestId": "sk82sm4s4",
+  "method": "POST",
+  "url": "/api/mobile/register-token",
+  "originalUrl": "/api/mobile/register-token",
+  "ip": "127.0.0.1",
+  "userAgent": "curl/8.7.1",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "token": "test-token",
+    "deviceType": "android",
+    "deviceId": "test-device"
+  },
+  "query": {},
+  "params": {}
+}
+[33m[2025-10-24T14:53:21.390Z] [WARN] 404 Not Found: /api/mobile/register-token[0m
+[31m[2025-10-24T14:53:21.390Z] [ERROR] [sk82sm4s4] RESPONSE ERROR: 404
+{
+  "requestId": "sk82sm4s4",
+  "statusCode": 404,
+  "duration": "5ms",
+  "responseSize": 66,
+  "headers": {}
+}[0m
+[31m[2025-10-24T14:53:21.390Z] [ERROR] [sk82sm4s4] ERROR DETAILS:
+{
+  "error": "Endpoint not found",
+  "path": "/api/mobile/register-token"
+}[0m
+[31m[2025-10-24T14:53:21.390Z] [ERROR] [sk82sm4s4] RESPONSE ERROR: 404
+{
+  "requestId": "sk82sm4s4",
+  "statusCode": 404,
+  "duration": "5ms",
+  "responseSize": 66,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}[0m
+[31m[2025-10-24T14:53:21.390Z] [ERROR] [sk82sm4s4] ERROR DETAILS:
+{
+  "error": "Endpoint not found",
+  "path": "/api/mobile/register-token"
+}[0m
 [32m[nodemon] restarting due to changes...[39m
 [32m[nodemon] starting `node src/server.js`[39m
 ✅ Firebase Admin SDK 초기화 성공
@@ -202,6 +249,8 @@ Executing (default): ALTER TABLE "locations" ALTER COLUMN "closeTime" DROP NOT N
 Executing (default): ALTER TABLE "locations" ALTER COLUMN "notice" DROP NOT NULL;ALTER TABLE "locations" ALTER COLUMN "notice" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "notice" TYPE TEXT;
 Executing (default): ALTER TABLE "locations" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "locations" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
 Executing (default): ALTER TABLE "locations" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "locations" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "date" DROP NOT NULL;ALTER TABLE "locations" ALTER COLUMN "date" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "date" TYPE DATE;
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "deletedAt" DROP NOT NULL;ALTER TABLE "locations" ALTER COLUMN "deletedAt" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "deletedAt" TYPE TIMESTAMP WITH TIME ZONE;
 Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'locations' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
 Executing (default): SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'fcm_tokens'
 Executing (default): SELECT t.typname enum_name, array_agg(e.enumlabel ORDER BY enumsortorder) enum_value FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE n.nspname = 'public' AND t.typname='enum_fcm_tokens_deviceType' GROUP BY 1
@@ -214,6 +263,8 @@ Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "isActive" DROP NOT N
 Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "lastUsedAt" DROP NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "lastUsedAt" DROP DEFAULT;ALTER TABLE "fcm_tokens" ALTER COLUMN "lastUsedAt" TYPE TIMESTAMP WITH TIME ZONE;
 Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "fcm_tokens" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
 Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "fcm_tokens" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "notificationEnabled" DROP NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "notificationEnabled" SET DEFAULT true;ALTER TABLE "fcm_tokens" ALTER COLUMN "notificationEnabled" TYPE BOOLEAN ; COMMENT ON COLUMN "fcm_tokens"."notificationEnabled" IS '사용자의 알림 설정 상태';
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "locationNotificationEnabled" DROP NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "locationNotificationEnabled" SET DEFAULT true;ALTER TABLE "fcm_tokens" ALTER COLUMN "locationNotificationEnabled" TYPE BOOLEAN ; COMMENT ON COLUMN "fcm_tokens"."locationNotificationEnabled" IS '사용자의 위치 알림 설정 상태';
 Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'fcm_tokens' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
 Executing (default): SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'push_notifications'
 Executing (default): SELECT t.typname enum_name, array_agg(e.enumlabel ORDER BY enumsortorder) enum_value FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE n.nspname = 'public' AND t.typname='enum_push_notifications_status' GROUP BY 1
@@ -258,11 +309,221 @@ Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "errorMessage" DR
 Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "push_histories" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
 Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "push_histories" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
 Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'push_histories' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
-[2025-10-11T05:16:31.639Z] [INFO] 데이터베이스 테이블 동기화 완료
-[2025-10-11T05:16:31.640Z] [INFO] Food Truck Backend 서버가 포트 3002에서 실행중입니다
-[2025-10-11T05:16:31.640Z] [INFO] 환경: development
-[2025-10-11T05:16:31.640Z] [INFO] 헬스 체크: http://localhost:3002/health
-[2025-10-11T05:16:31.641Z] [INFO] API 문서: http://localhost:3002/api
-[2025-10-11T05:16:31.641Z] [INFO] 서버 URL: http://192.168.219.200:3002
-[2025-10-11T05:16:31.641Z] [INFO] 로그 파일: /Users/home/Documents/truck_new/backend/logs/server-2025-10-11.log
-[2025-10-11T05:16:31.641Z] [INFO] 개발 설정: http://localhost:3002/config
+[2025-10-24T14:53:28.477Z] [INFO] 데이터베이스 테이블 동기화 완료
+[2025-10-24T14:53:28.480Z] [INFO] Food Truck Backend 서버가 포트 3002에서 실행중입니다
+[2025-10-24T14:53:28.480Z] [INFO] 환경: development
+[2025-10-24T14:53:28.480Z] [INFO] 헬스 체크: http://localhost:3002/health
+[2025-10-24T14:53:28.480Z] [INFO] API 문서: http://localhost:3002/api
+[2025-10-24T14:53:28.480Z] [INFO] 서버 URL: http://192.168.219.200:3002
+[2025-10-24T14:53:28.480Z] [INFO] 로그 파일: /Users/home/Documents/truck_new/backend/logs/server-2025-10-24.log
+[2025-10-24T14:53:28.481Z] [INFO] 개발 설정: http://localhost:3002/config
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+✅ Firebase Admin SDK 초기화 성공
+Executing (default): SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'admins'
+Executing (default): SELECT pk.constraint_type as "Constraint",c.column_name as "Field", c.column_default as "Default",c.is_nullable as "Null", (CASE WHEN c.udt_name = 'hstore' THEN c.udt_name ELSE c.data_type END) || (CASE WHEN c.character_maximum_length IS NOT NULL THEN '(' || c.character_maximum_length || ')' ELSE '' END) as "Type", (SELECT array_agg(e.enumlabel) FROM pg_catalog.pg_type t JOIN pg_catalog.pg_enum e ON t.oid=e.enumtypid WHERE t.typname=c.udt_name) AS "special", (SELECT pgd.description FROM pg_catalog.pg_statio_all_tables AS st INNER JOIN pg_catalog.pg_description pgd on (pgd.objoid=st.relid) WHERE c.ordinal_position=pgd.objsubid AND c.table_name=st.relname) AS "Comment" FROM information_schema.columns c LEFT JOIN (SELECT tc.table_schema, tc.table_name, cu.column_name, tc.constraint_type FROM information_schema.TABLE_CONSTRAINTS tc JOIN information_schema.KEY_COLUMN_USAGE  cu ON tc.table_schema=cu.table_schema and tc.table_name=cu.table_name and tc.constraint_name=cu.constraint_name and tc.constraint_type='PRIMARY KEY') pk ON pk.table_schema=c.table_schema AND pk.table_name=c.table_name AND pk.column_name=c.column_name WHERE c.table_name = 'admins' AND c.table_schema = 'public'
+Executing (default): SELECT DISTINCT tc.constraint_name as constraint_name, tc.constraint_schema as constraint_schema, tc.constraint_catalog as constraint_catalog, tc.table_name as table_name,tc.table_schema as table_schema,tc.table_catalog as table_catalog,tc.initially_deferred as initially_deferred,tc.is_deferrable as is_deferrable,kcu.column_name as column_name,ccu.table_schema  AS referenced_table_schema,ccu.table_catalog  AS referenced_table_catalog,ccu.table_name  AS referenced_table_name,ccu.column_name AS referenced_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = 'admins' AND tc.table_catalog = 'foodtruck_db'
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "username" SET NOT NULL;ALTER TABLE "admins" ALTER COLUMN "username" DROP DEFAULT;ALTER TABLE "admins"  ADD UNIQUE ("username");ALTER TABLE "admins" ALTER COLUMN "username" TYPE VARCHAR(50)  ;
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "password" SET NOT NULL;ALTER TABLE "admins" ALTER COLUMN "password" DROP DEFAULT;ALTER TABLE "admins" ALTER COLUMN "password" TYPE VARCHAR(255);
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "email" SET NOT NULL;ALTER TABLE "admins" ALTER COLUMN "email" DROP DEFAULT;ALTER TABLE "admins"  ADD UNIQUE ("email");ALTER TABLE "admins" ALTER COLUMN "email" TYPE VARCHAR(100)  ;
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "shopName" SET NOT NULL;ALTER TABLE "admins" ALTER COLUMN "shopName" DROP DEFAULT;ALTER TABLE "admins" ALTER COLUMN "shopName" TYPE VARCHAR(100);
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "shopDescription" DROP NOT NULL;ALTER TABLE "admins" ALTER COLUMN "shopDescription" DROP DEFAULT;ALTER TABLE "admins" ALTER COLUMN "shopDescription" TYPE TEXT;
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "phoneNumber" SET NOT NULL;ALTER TABLE "admins" ALTER COLUMN "phoneNumber" DROP DEFAULT;ALTER TABLE "admins" ALTER COLUMN "phoneNumber" TYPE VARCHAR(20);
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "kakakoTalkId" DROP NOT NULL;ALTER TABLE "admins" ALTER COLUMN "kakakoTalkId" DROP DEFAULT;ALTER TABLE "admins" ALTER COLUMN "kakakoTalkId" TYPE VARCHAR(50);
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "isActive" DROP NOT NULL;ALTER TABLE "admins" ALTER COLUMN "isActive" SET DEFAULT true;ALTER TABLE "admins" ALTER COLUMN "isActive" TYPE BOOLEAN;
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "lastLoginAt" DROP NOT NULL;ALTER TABLE "admins" ALTER COLUMN "lastLoginAt" DROP DEFAULT;ALTER TABLE "admins" ALTER COLUMN "lastLoginAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "admins" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "admins" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "admins" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "admins" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "admins" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'admins' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
+Executing (default): SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'menus'
+Executing (default): SELECT pk.constraint_type as "Constraint",c.column_name as "Field", c.column_default as "Default",c.is_nullable as "Null", (CASE WHEN c.udt_name = 'hstore' THEN c.udt_name ELSE c.data_type END) || (CASE WHEN c.character_maximum_length IS NOT NULL THEN '(' || c.character_maximum_length || ')' ELSE '' END) as "Type", (SELECT array_agg(e.enumlabel) FROM pg_catalog.pg_type t JOIN pg_catalog.pg_enum e ON t.oid=e.enumtypid WHERE t.typname=c.udt_name) AS "special", (SELECT pgd.description FROM pg_catalog.pg_statio_all_tables AS st INNER JOIN pg_catalog.pg_description pgd on (pgd.objoid=st.relid) WHERE c.ordinal_position=pgd.objsubid AND c.table_name=st.relname) AS "Comment" FROM information_schema.columns c LEFT JOIN (SELECT tc.table_schema, tc.table_name, cu.column_name, tc.constraint_type FROM information_schema.TABLE_CONSTRAINTS tc JOIN information_schema.KEY_COLUMN_USAGE  cu ON tc.table_schema=cu.table_schema and tc.table_name=cu.table_name and tc.constraint_name=cu.constraint_name and tc.constraint_type='PRIMARY KEY') pk ON pk.table_schema=c.table_schema AND pk.table_name=c.table_name AND pk.column_name=c.column_name WHERE c.table_name = 'menus' AND c.table_schema = 'public'
+Executing (default): SELECT DISTINCT tc.constraint_name as constraint_name, tc.constraint_schema as constraint_schema, tc.constraint_catalog as constraint_catalog, tc.table_name as table_name,tc.table_schema as table_schema,tc.table_catalog as table_catalog,tc.initially_deferred as initially_deferred,tc.is_deferrable as is_deferrable,kcu.column_name as column_name,ccu.table_schema  AS referenced_table_schema,ccu.table_catalog  AS referenced_table_catalog,ccu.table_name  AS referenced_table_name,ccu.column_name AS referenced_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = 'menus' AND tc.table_catalog = 'foodtruck_db'
+Executing (default): ALTER TABLE "menus" DROP CONSTRAINT "menus_adminId_fkey"
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "adminId" SET NOT NULL;ALTER TABLE "menus"  ADD FOREIGN KEY ("adminId") REFERENCES "admins" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "name" SET NOT NULL;ALTER TABLE "menus" ALTER COLUMN "name" DROP DEFAULT;ALTER TABLE "menus" ALTER COLUMN "name" TYPE VARCHAR(100);
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "description" DROP NOT NULL;ALTER TABLE "menus" ALTER COLUMN "description" DROP DEFAULT;ALTER TABLE "menus" ALTER COLUMN "description" TYPE TEXT;
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "price" SET NOT NULL;ALTER TABLE "menus" ALTER COLUMN "price" DROP DEFAULT;ALTER TABLE "menus" ALTER COLUMN "price" TYPE DECIMAL(10,2);
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "imageUrl" DROP NOT NULL;ALTER TABLE "menus" ALTER COLUMN "imageUrl" DROP DEFAULT;ALTER TABLE "menus" ALTER COLUMN "imageUrl" TYPE VARCHAR(500);
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "category" DROP NOT NULL;ALTER TABLE "menus" ALTER COLUMN "category" SET DEFAULT 'main';ALTER TABLE "menus" ALTER COLUMN "category" TYPE VARCHAR(50);
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "isAvailable" DROP NOT NULL;ALTER TABLE "menus" ALTER COLUMN "isAvailable" SET DEFAULT true;ALTER TABLE "menus" ALTER COLUMN "isAvailable" TYPE BOOLEAN;
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "sortOrder" DROP NOT NULL;ALTER TABLE "menus" ALTER COLUMN "sortOrder" SET DEFAULT 0;ALTER TABLE "menus" ALTER COLUMN "sortOrder" TYPE INTEGER;
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "menus" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "menus" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "menus" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "menus" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "menus" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'menus' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
+Executing (default): SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'locations'
+Executing (default): SELECT pk.constraint_type as "Constraint",c.column_name as "Field", c.column_default as "Default",c.is_nullable as "Null", (CASE WHEN c.udt_name = 'hstore' THEN c.udt_name ELSE c.data_type END) || (CASE WHEN c.character_maximum_length IS NOT NULL THEN '(' || c.character_maximum_length || ')' ELSE '' END) as "Type", (SELECT array_agg(e.enumlabel) FROM pg_catalog.pg_type t JOIN pg_catalog.pg_enum e ON t.oid=e.enumtypid WHERE t.typname=c.udt_name) AS "special", (SELECT pgd.description FROM pg_catalog.pg_statio_all_tables AS st INNER JOIN pg_catalog.pg_description pgd on (pgd.objoid=st.relid) WHERE c.ordinal_position=pgd.objsubid AND c.table_name=st.relname) AS "Comment" FROM information_schema.columns c LEFT JOIN (SELECT tc.table_schema, tc.table_name, cu.column_name, tc.constraint_type FROM information_schema.TABLE_CONSTRAINTS tc JOIN information_schema.KEY_COLUMN_USAGE  cu ON tc.table_schema=cu.table_schema and tc.table_name=cu.table_name and tc.constraint_name=cu.constraint_name and tc.constraint_type='PRIMARY KEY') pk ON pk.table_schema=c.table_schema AND pk.table_name=c.table_name AND pk.column_name=c.column_name WHERE c.table_name = 'locations' AND c.table_schema = 'public'
+Executing (default): SELECT DISTINCT tc.constraint_name as constraint_name, tc.constraint_schema as constraint_schema, tc.constraint_catalog as constraint_catalog, tc.table_name as table_name,tc.table_schema as table_schema,tc.table_catalog as table_catalog,tc.initially_deferred as initially_deferred,tc.is_deferrable as is_deferrable,kcu.column_name as column_name,ccu.table_schema  AS referenced_table_schema,ccu.table_catalog  AS referenced_table_catalog,ccu.table_name  AS referenced_table_name,ccu.column_name AS referenced_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = 'locations' AND tc.table_catalog = 'foodtruck_db'
+Executing (default): ALTER TABLE "locations" DROP CONSTRAINT "locations_adminId_fkey"
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "adminId" SET NOT NULL;ALTER TABLE "locations"  ADD FOREIGN KEY ("adminId") REFERENCES "admins" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "name" SET NOT NULL;ALTER TABLE "locations" ALTER COLUMN "name" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "name" TYPE VARCHAR(100);
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "address" SET NOT NULL;ALTER TABLE "locations" ALTER COLUMN "address" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "address" TYPE VARCHAR(255);
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "openTime" DROP NOT NULL;ALTER TABLE "locations" ALTER COLUMN "openTime" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "openTime" TYPE TIME;
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "closeTime" DROP NOT NULL;ALTER TABLE "locations" ALTER COLUMN "closeTime" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "closeTime" TYPE TIME;
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "notice" DROP NOT NULL;ALTER TABLE "locations" ALTER COLUMN "notice" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "notice" TYPE TEXT;
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "locations" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "locations" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "date" DROP NOT NULL;ALTER TABLE "locations" ALTER COLUMN "date" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "date" TYPE DATE;
+Executing (default): ALTER TABLE "locations" ALTER COLUMN "deletedAt" DROP NOT NULL;ALTER TABLE "locations" ALTER COLUMN "deletedAt" DROP DEFAULT;ALTER TABLE "locations" ALTER COLUMN "deletedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'locations' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
+Executing (default): SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'fcm_tokens'
+Executing (default): SELECT t.typname enum_name, array_agg(e.enumlabel ORDER BY enumsortorder) enum_value FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE n.nspname = 'public' AND t.typname='enum_fcm_tokens_deviceType' GROUP BY 1
+Executing (default): SELECT pk.constraint_type as "Constraint",c.column_name as "Field", c.column_default as "Default",c.is_nullable as "Null", (CASE WHEN c.udt_name = 'hstore' THEN c.udt_name ELSE c.data_type END) || (CASE WHEN c.character_maximum_length IS NOT NULL THEN '(' || c.character_maximum_length || ')' ELSE '' END) as "Type", (SELECT array_agg(e.enumlabel) FROM pg_catalog.pg_type t JOIN pg_catalog.pg_enum e ON t.oid=e.enumtypid WHERE t.typname=c.udt_name) AS "special", (SELECT pgd.description FROM pg_catalog.pg_statio_all_tables AS st INNER JOIN pg_catalog.pg_description pgd on (pgd.objoid=st.relid) WHERE c.ordinal_position=pgd.objsubid AND c.table_name=st.relname) AS "Comment" FROM information_schema.columns c LEFT JOIN (SELECT tc.table_schema, tc.table_name, cu.column_name, tc.constraint_type FROM information_schema.TABLE_CONSTRAINTS tc JOIN information_schema.KEY_COLUMN_USAGE  cu ON tc.table_schema=cu.table_schema and tc.table_name=cu.table_name and tc.constraint_name=cu.constraint_name and tc.constraint_type='PRIMARY KEY') pk ON pk.table_schema=c.table_schema AND pk.table_name=c.table_name AND pk.column_name=c.column_name WHERE c.table_name = 'fcm_tokens' AND c.table_schema = 'public'
+Executing (default): SELECT DISTINCT tc.constraint_name as constraint_name, tc.constraint_schema as constraint_schema, tc.constraint_catalog as constraint_catalog, tc.table_name as table_name,tc.table_schema as table_schema,tc.table_catalog as table_catalog,tc.initially_deferred as initially_deferred,tc.is_deferrable as is_deferrable,kcu.column_name as column_name,ccu.table_schema  AS referenced_table_schema,ccu.table_catalog  AS referenced_table_catalog,ccu.table_name  AS referenced_table_name,ccu.column_name AS referenced_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = 'fcm_tokens' AND tc.table_catalog = 'foodtruck_db'
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "token" SET NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "token" DROP DEFAULT;ALTER TABLE "fcm_tokens"  ADD UNIQUE ("token");ALTER TABLE "fcm_tokens" ALTER COLUMN "token" TYPE VARCHAR(500)  ;
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceType" SET NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceType" DROP DEFAULT;DO 'BEGIN CREATE TYPE "public"."enum_fcm_tokens_deviceType" AS ENUM(''ios'', ''android''); EXCEPTION WHEN duplicate_object THEN null; END';ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceType" TYPE "public"."enum_fcm_tokens_deviceType" USING ("deviceType"::"public"."enum_fcm_tokens_deviceType");
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceId" DROP NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceId" DROP DEFAULT;ALTER TABLE "fcm_tokens" ALTER COLUMN "deviceId" TYPE VARCHAR(100);
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "isActive" DROP NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "isActive" SET DEFAULT true;ALTER TABLE "fcm_tokens" ALTER COLUMN "isActive" TYPE BOOLEAN;
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "lastUsedAt" DROP NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "lastUsedAt" DROP DEFAULT;ALTER TABLE "fcm_tokens" ALTER COLUMN "lastUsedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "fcm_tokens" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "fcm_tokens" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "notificationEnabled" DROP NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "notificationEnabled" SET DEFAULT true;ALTER TABLE "fcm_tokens" ALTER COLUMN "notificationEnabled" TYPE BOOLEAN ; COMMENT ON COLUMN "fcm_tokens"."notificationEnabled" IS '사용자의 알림 설정 상태';
+Executing (default): ALTER TABLE "fcm_tokens" ALTER COLUMN "locationNotificationEnabled" DROP NOT NULL;ALTER TABLE "fcm_tokens" ALTER COLUMN "locationNotificationEnabled" SET DEFAULT true;ALTER TABLE "fcm_tokens" ALTER COLUMN "locationNotificationEnabled" TYPE BOOLEAN ; COMMENT ON COLUMN "fcm_tokens"."locationNotificationEnabled" IS '사용자의 위치 알림 설정 상태';
+Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'fcm_tokens' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
+Executing (default): SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'push_notifications'
+Executing (default): SELECT t.typname enum_name, array_agg(e.enumlabel ORDER BY enumsortorder) enum_value FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE n.nspname = 'public' AND t.typname='enum_push_notifications_status' GROUP BY 1
+Executing (default): SELECT pk.constraint_type as "Constraint",c.column_name as "Field", c.column_default as "Default",c.is_nullable as "Null", (CASE WHEN c.udt_name = 'hstore' THEN c.udt_name ELSE c.data_type END) || (CASE WHEN c.character_maximum_length IS NOT NULL THEN '(' || c.character_maximum_length || ')' ELSE '' END) as "Type", (SELECT array_agg(e.enumlabel) FROM pg_catalog.pg_type t JOIN pg_catalog.pg_enum e ON t.oid=e.enumtypid WHERE t.typname=c.udt_name) AS "special", (SELECT pgd.description FROM pg_catalog.pg_statio_all_tables AS st INNER JOIN pg_catalog.pg_description pgd on (pgd.objoid=st.relid) WHERE c.ordinal_position=pgd.objsubid AND c.table_name=st.relname) AS "Comment" FROM information_schema.columns c LEFT JOIN (SELECT tc.table_schema, tc.table_name, cu.column_name, tc.constraint_type FROM information_schema.TABLE_CONSTRAINTS tc JOIN information_schema.KEY_COLUMN_USAGE  cu ON tc.table_schema=cu.table_schema and tc.table_name=cu.table_name and tc.constraint_name=cu.constraint_name and tc.constraint_type='PRIMARY KEY') pk ON pk.table_schema=c.table_schema AND pk.table_name=c.table_name AND pk.column_name=c.column_name WHERE c.table_name = 'push_notifications' AND c.table_schema = 'public'
+Executing (default): SELECT DISTINCT tc.constraint_name as constraint_name, tc.constraint_schema as constraint_schema, tc.constraint_catalog as constraint_catalog, tc.table_name as table_name,tc.table_schema as table_schema,tc.table_catalog as table_catalog,tc.initially_deferred as initially_deferred,tc.is_deferrable as is_deferrable,kcu.column_name as column_name,ccu.table_schema  AS referenced_table_schema,ccu.table_catalog  AS referenced_table_catalog,ccu.table_name  AS referenced_table_name,ccu.column_name AS referenced_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = 'push_notifications' AND tc.table_catalog = 'foodtruck_db'
+Executing (default): ALTER TABLE "push_notifications" DROP CONSTRAINT "push_notifications_adminId_fkey"
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "adminId" SET NOT NULL;ALTER TABLE "push_notifications"  ADD FOREIGN KEY ("adminId") REFERENCES "admins" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "title" SET NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "title" DROP DEFAULT;ALTER TABLE "push_notifications" ALTER COLUMN "title" TYPE VARCHAR(100);
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "body" SET NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "body" DROP DEFAULT;ALTER TABLE "push_notifications" ALTER COLUMN "body" TYPE TEXT;
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "data" DROP NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "data" SET DEFAULT '{}';ALTER TABLE "push_notifications" ALTER COLUMN "data" TYPE JSON;
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "targetCount" DROP NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "targetCount" SET DEFAULT 0;ALTER TABLE "push_notifications" ALTER COLUMN "targetCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "sentCount" DROP NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "sentCount" SET DEFAULT 0;ALTER TABLE "push_notifications" ALTER COLUMN "sentCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "failedCount" DROP NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "failedCount" SET DEFAULT 0;ALTER TABLE "push_notifications" ALTER COLUMN "failedCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "status" DROP NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "status" SET DEFAULT 'pending';DO 'BEGIN CREATE TYPE "public"."enum_push_notifications_status" AS ENUM(''pending'', ''sent'', ''failed'', ''partial''); EXCEPTION WHEN duplicate_object THEN null; END';ALTER TABLE "push_notifications" ALTER COLUMN "status" TYPE "public"."enum_push_notifications_status" USING ("status"::"public"."enum_push_notifications_status");
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "scheduledAt" DROP NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "scheduledAt" DROP DEFAULT;ALTER TABLE "push_notifications" ALTER COLUMN "scheduledAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "sentAt" DROP NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "sentAt" DROP DEFAULT;ALTER TABLE "push_notifications" ALTER COLUMN "sentAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "push_notifications" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "push_notifications" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "push_notifications" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "push_notifications" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'push_notifications' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
+Executing (default): SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'push_histories'
+Executing (default): SELECT t.typname enum_name, array_agg(e.enumlabel ORDER BY enumsortorder) enum_value FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE n.nspname = 'public' AND t.typname='enum_push_histories_target' GROUP BY 1
+Executing (default): SELECT t.typname enum_name, array_agg(e.enumlabel ORDER BY enumsortorder) enum_value FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace WHERE n.nspname = 'public' AND t.typname='enum_push_histories_status' GROUP BY 1
+Executing (default): SELECT pk.constraint_type as "Constraint",c.column_name as "Field", c.column_default as "Default",c.is_nullable as "Null", (CASE WHEN c.udt_name = 'hstore' THEN c.udt_name ELSE c.data_type END) || (CASE WHEN c.character_maximum_length IS NOT NULL THEN '(' || c.character_maximum_length || ')' ELSE '' END) as "Type", (SELECT array_agg(e.enumlabel) FROM pg_catalog.pg_type t JOIN pg_catalog.pg_enum e ON t.oid=e.enumtypid WHERE t.typname=c.udt_name) AS "special", (SELECT pgd.description FROM pg_catalog.pg_statio_all_tables AS st INNER JOIN pg_catalog.pg_description pgd on (pgd.objoid=st.relid) WHERE c.ordinal_position=pgd.objsubid AND c.table_name=st.relname) AS "Comment" FROM information_schema.columns c LEFT JOIN (SELECT tc.table_schema, tc.table_name, cu.column_name, tc.constraint_type FROM information_schema.TABLE_CONSTRAINTS tc JOIN information_schema.KEY_COLUMN_USAGE  cu ON tc.table_schema=cu.table_schema and tc.table_name=cu.table_name and tc.constraint_name=cu.constraint_name and tc.constraint_type='PRIMARY KEY') pk ON pk.table_schema=c.table_schema AND pk.table_name=c.table_name AND pk.column_name=c.column_name WHERE c.table_name = 'push_histories' AND c.table_schema = 'public'
+Executing (default): SELECT DISTINCT tc.constraint_name as constraint_name, tc.constraint_schema as constraint_schema, tc.constraint_catalog as constraint_catalog, tc.table_name as table_name,tc.table_schema as table_schema,tc.table_catalog as table_catalog,tc.initially_deferred as initially_deferred,tc.is_deferrable as is_deferrable,kcu.column_name as column_name,ccu.table_schema  AS referenced_table_schema,ccu.table_catalog  AS referenced_table_catalog,ccu.table_name  AS referenced_table_name,ccu.column_name AS referenced_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = 'push_histories' AND tc.table_catalog = 'foodtruck_db'
+Executing (default): ALTER TABLE "push_histories" DROP CONSTRAINT "push_histories_adminId_fkey"
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "adminId" SET NOT NULL;ALTER TABLE "push_histories"  ADD FOREIGN KEY ("adminId") REFERENCES "admins" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "title" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "title" DROP DEFAULT;ALTER TABLE "push_histories" ALTER COLUMN "title" TYPE VARCHAR(200);
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "body" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "body" DROP DEFAULT;ALTER TABLE "push_histories" ALTER COLUMN "body" TYPE TEXT;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "target" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "target" SET DEFAULT 'all';DO 'BEGIN CREATE TYPE "public"."enum_push_histories_target" AS ENUM(''all'', ''android'', ''ios''); EXCEPTION WHEN duplicate_object THEN null; END';ALTER TABLE "push_histories" ALTER COLUMN "target" TYPE "public"."enum_push_histories_target" USING ("target"::"public"."enum_push_histories_target");
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "iosTokensCount" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "iosTokensCount" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "iosTokensCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "iosSuccessCount" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "iosSuccessCount" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "iosSuccessCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "iosFailureCount" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "iosFailureCount" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "iosFailureCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "androidTokensCount" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "androidTokensCount" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "androidTokensCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "androidSuccessCount" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "androidSuccessCount" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "androidSuccessCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "androidFailureCount" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "androidFailureCount" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "androidFailureCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "totalTokensCount" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "totalTokensCount" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "totalTokensCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "totalSuccessCount" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "totalSuccessCount" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "totalSuccessCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "totalFailureCount" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "totalFailureCount" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "totalFailureCount" TYPE INTEGER;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "successRate" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "successRate" SET DEFAULT 0;ALTER TABLE "push_histories" ALTER COLUMN "successRate" TYPE DECIMAL(5,2);
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "status" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "status" SET DEFAULT 'success';DO 'BEGIN CREATE TYPE "public"."enum_push_histories_status" AS ENUM(''success'', ''partial'', ''failed''); EXCEPTION WHEN duplicate_object THEN null; END';ALTER TABLE "push_histories" ALTER COLUMN "status" TYPE "public"."enum_push_histories_status" USING ("status"::"public"."enum_push_histories_status");
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "errorMessage" DROP NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "errorMessage" DROP DEFAULT;ALTER TABLE "push_histories" ALTER COLUMN "errorMessage" TYPE TEXT;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "createdAt" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "createdAt" DROP DEFAULT;ALTER TABLE "push_histories" ALTER COLUMN "createdAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): ALTER TABLE "push_histories" ALTER COLUMN "updatedAt" SET NOT NULL;ALTER TABLE "push_histories" ALTER COLUMN "updatedAt" DROP DEFAULT;ALTER TABLE "push_histories" ALTER COLUMN "updatedAt" TYPE TIMESTAMP WITH TIME ZONE;
+Executing (default): SELECT i.relname AS name, ix.indisprimary AS primary, ix.indisunique AS unique, ix.indkey AS indkey, array_agg(a.attnum) as column_indexes, array_agg(a.attname) AS column_names, pg_get_indexdef(ix.indexrelid) AS definition FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND t.relkind = 'r' and t.relname = 'push_histories' GROUP BY i.relname, ix.indexrelid, ix.indisprimary, ix.indisunique, ix.indkey ORDER BY i.relname;
+[2025-10-24T14:53:29.208Z] [INFO] 데이터베이스 테이블 동기화 완료
+[2025-10-24T14:53:29.209Z] [INFO] Food Truck Backend 서버가 포트 3002에서 실행중입니다
+[2025-10-24T14:53:29.209Z] [INFO] 환경: development
+[2025-10-24T14:53:29.209Z] [INFO] 헬스 체크: http://localhost:3002/health
+[2025-10-24T14:53:29.209Z] [INFO] API 문서: http://localhost:3002/api
+[2025-10-24T14:53:29.210Z] [INFO] 서버 URL: http://192.168.219.200:3002
+[2025-10-24T14:53:29.210Z] [INFO] 로그 파일: /Users/home/Documents/truck_new/backend/logs/server-2025-10-24.log
+[2025-10-24T14:53:29.210Z] [INFO] 개발 설정: http://localhost:3002/config
+[2025-10-24T15:03:10.417Z] [INFO] [ugkry1446] REQUEST: POST /fcm/token
+{
+  "requestId": "ugkry1446",
+  "method": "POST",
+  "url": "/fcm/token",
+  "originalUrl": "/fcm/token",
+  "ip": "127.0.0.1",
+  "userAgent": "curl/8.7.1",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "token": "test-token-android",
+    "deviceType": "android",
+    "deviceId": "test-device"
+  },
+  "query": {},
+  "params": {}
+}
+[33m[2025-10-24T15:03:10.422Z] [WARN] 404 Not Found: /fcm/token[0m
+[31m[2025-10-24T15:03:10.422Z] [ERROR] [ugkry1446] RESPONSE ERROR: 404
+{
+  "requestId": "ugkry1446",
+  "statusCode": 404,
+  "duration": "5ms",
+  "responseSize": 50,
+  "headers": {}
+}[0m
+[31m[2025-10-24T15:03:10.422Z] [ERROR] [ugkry1446] ERROR DETAILS:
+{
+  "error": "Endpoint not found",
+  "path": "/fcm/token"
+}[0m
+[31m[2025-10-24T15:03:10.422Z] [ERROR] [ugkry1446] RESPONSE ERROR: 404
+{
+  "requestId": "ugkry1446",
+  "statusCode": 404,
+  "duration": "5ms",
+  "responseSize": 50,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}[0m
+[31m[2025-10-24T15:03:10.423Z] [ERROR] [ugkry1446] ERROR DETAILS:
+{
+  "error": "Endpoint not found",
+  "path": "/fcm/token"
+}[0m
+[2025-10-24T15:03:31.380Z] [INFO] [jf24lw2i8] REQUEST: POST /api/fcm/token
+{
+  "requestId": "jf24lw2i8",
+  "method": "POST",
+  "url": "/api/fcm/token",
+  "originalUrl": "/api/fcm/token",
+  "ip": "127.0.0.1",
+  "userAgent": "curl/8.7.1",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "token": "test-token-android",
+    "deviceType": "android",
+    "deviceId": "test-device"
+  },
+  "query": {},
+  "params": {}
+}
+Executing (default): SELECT "id", "token", "deviceType", "deviceId", "isActive", "lastUsedAt", "notificationEnabled", "locationNotificationEnabled", "createdAt", "updatedAt" FROM "fcm_tokens" AS "FCMToken" WHERE "FCMToken"."token" = 'test-token-android';
+Executing (default): INSERT INTO "fcm_tokens" ("id","token","deviceType","deviceId","isActive","lastUsedAt","notificationEnabled","locationNotificationEnabled","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING "id","token","deviceType","deviceId","isActive","lastUsedAt","notificationEnabled","locationNotificationEnabled","createdAt","updatedAt";
+[2025-10-24T15:03:31.447Z] [INFO] [jf24lw2i8] RESPONSE: 201
+{
+  "requestId": "jf24lw2i8",
+  "statusCode": 201,
+  "duration": "67ms",
+  "responseSize": 168,
+  "headers": {}
+}
+[36m[2025-10-24T15:03:31.447Z] [DEBUG] [jf24lw2i8] RESPONSE DATA:
+{
+  "message": "FCM 토큰이 성공적으로 등록되었습니다",
+  "token": {
+    "id": "5022dc63-7c68-40a5-a8dc-0cc7e50d4d57",
+    "deviceType": "android",
+    "isActive": true,
+    "lastUsedAt": "2025-10-24T15:03:31.434Z"
+  }
+}[0m
+[2025-10-24T15:03:31.447Z] [INFO] [jf24lw2i8] RESPONSE: 201
+{
+  "requestId": "jf24lw2i8",
+  "statusCode": 201,
+  "duration": "67ms",
+  "responseSize": 168,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  }
+}

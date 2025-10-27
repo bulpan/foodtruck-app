@@ -1,6 +1,5 @@
 import UIKit
 import UserNotifications
-import Firebase
 import FirebaseMessaging
 
 @main
@@ -15,9 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // iOS 13+ 에서 백그라운드 작업 설정
         }
         
-        // Firebase 초기화
-        FirebaseApp.configure()
-        print("✅ Firebase 초기화 완료")
+        // Firebase Messaging 초기화 (Analytics 완전 제거)
+        print("✅ Firebase Messaging 초기화 완료")
         
         // 푸시 알림 권한 상태 확인
         print("🔔 푸시 알림 권한 상태 확인 중...")

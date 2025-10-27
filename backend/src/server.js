@@ -216,6 +216,7 @@ app.use('/api/menu', require('./routes/menu'));
 app.use('/api/location', require('./routes/location'));
 app.use('/api/fcm', require('./routes/fcm'));
 app.use('/api/push', require('./routes/push'));
+app.use('/api/mobile', require('./routes/mobile'));
 
 // 환경 정보 엔드포인트 (개발 환경에서만)
 if (config.isDevelopment) {

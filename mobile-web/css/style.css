@@ -198,6 +198,8 @@ body {
     transition: var(--transition);
     cursor: pointer;
     border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
 }
 
 .menu-item:hover {
@@ -207,7 +209,7 @@ body {
 
 .menu-image {
     width: 100%;
-    height: 200px;
+    height: 150px; /* 200px에서 150px로 줄임 */
     object-fit: cover;
     background: #f0f0f0;
     position: relative;
@@ -220,7 +222,7 @@ body {
 }
 
 .menu-info {
-    padding: 7px; /* 10px에서 7px로 30% 줄임 */
+    padding: 7px 12px 12px 12px !important; /* 상단 7px, 좌우 12px, 하단 12px 강제 적용 */
 }
 
 .menu-name {
