@@ -15,6 +15,20 @@
 -dontwarn com.google.firebase.**
 -dontwarn com.google.android.gms.**
 
+# Keep Firebase messaging classes and methods
+-keepclassmembers class com.google.firebase.messaging.FirebaseMessaging { *; }
+-keepclassmembers class com.google.firebase.messaging.FirebaseMessagingService { *; }
+-keep class com.foodtruck.app.services.FoodTruckFirebaseMessagingService { *; }
+
+# Keep MainActivity and all its methods
+-keep class com.foodtruck.app.MainActivity { *; }
+-keepclassmembers class com.foodtruck.app.MainActivity {
+    *;
+}
+
+# Keep Application class
+-keep class com.foodtruck.app.FoodTruckApplication { *; }
+
 # WebView JavaScript interface
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;

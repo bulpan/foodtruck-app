@@ -209,6 +209,28 @@ app.use('/mobile', require('./routes/mobile'));
 // 어드민 웹 페이지 서빙 (정적 파일 포함)
 app.use('/admin', require('./routes/admin-web'));
 
+// 앱 다운로드 페이지 서빙
+app.get('/download', (req, res) => {
+  const filePath = path.join(__dirname, '../../mobile-web/download.html');
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      writeLog('ERROR', `Failed to serve download.html: ${err.message}`);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+});
+
+// QR코드 생성기 페이지 서빙
+app.get('/qr-generator', (req, res) => {
+  const filePath = path.join(__dirname, '../../mobile-web/qr-generator.html');
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      writeLog('ERROR', `Failed to serve qr-generator.html: ${err.message}`);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+});
+
 // API 라우트 설정
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/admin', require('./routes/admin'));
@@ -259,7 +281,9 @@ app.get('/', (req, res) => {
       fcm: '/api/fcm',
       push: '/api/push',
       mobile: '/mobile',
-      adminWeb: '/admin'
+      adminWeb: '/admin',
+      download: '/download',
+      qrGenerator: '/qr-generator'
     }
   });
 });

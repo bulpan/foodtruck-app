@@ -36,6 +36,9 @@ function initializeApp() {
     
     // 스크롤 이벤트
     setupScrollEvents();
+    
+    // 푸시 알림 동의 체크
+    checkPushPermission();
 }
 
 // 이벤트 리스너 설정
@@ -565,6 +568,55 @@ document.addEventListener('DOMContentLoaded', registerServiceWorker);
 // 로컬에서 실행할 때는 CORS 문제 해결을 위한 임시 설정
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     axios.defaults.withCredentials = false;
+}
+
+// ==================== 푸시 알림 동의 유도 팝업 ====================
+
+// 푸시 알림 팝업 표시 체크
+function checkPushPermission() {
+    // 로컬 스토리지에서 팝업 표시 횟수 확인
+    const popupCount = parseInt(localStorage.getItem('pushPopupCount')) || 0;
+    
+    // 3번까지는 표시
+    if (popupCount >= 3) {
+        console.log('푸시 팝업 3회 표시 완료');
+        return;
+    }
+    
+    // 모달 표시 (약간의 딜레이를 주어 앱 로딩이 완료된 후 표시)
+    setTimeout(() => {
+        showPushModal();
+    }, 1500);
+}
+
+// 푸시 알림 동의 모달 표시
+function showPushModal() {
+    const modal = document.getElementById('pushModalOverlay');
+    if (modal) {
+        modal.classList.add('show');
+        console.log('푸시 알림 유도 팝업 표시');
+    }
+}
+
+// 푸시 알림 동의 모달 숨기기
+function hidePushModal() {
+    const modal = document.getElementById('pushModalOverlay');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+}
+
+// 확인 버튼 클릭 - 팝업 닫기
+function closePushModal() {
+    console.log('푸시 알림 팝업 닫기');
+    
+    // 모달 닫기
+    hidePushModal();
+    
+    // 로컬 스토리지에 표시 횟수 증가
+    const popupCount = parseInt(localStorage.getItem('pushPopupCount')) || 0;
+    localStorage.setItem('pushPopupCount', (popupCount + 1).toString());
+    console.log(`푸시 팝업 표시 횟수: ${popupCount + 1}/3`);
 }
 
 

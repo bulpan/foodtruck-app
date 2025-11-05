@@ -79,27 +79,72 @@ class MainActivity : ComponentActivity() {
         }
     }
     
-    private fun getFirebaseToken() {
-        Log.d("MainActivity", "🔥 Firebase 토큰 요청 시작 (Android ${Build.VERSION.SDK_INT})")
+    private fun getFirebaseToken(retryCount: Int = 0) {
+        val maxRetries = 5
+        Log.d("MainActivity", "🔥 Firebase 토큰 요청 시작 (Android ${Build.VERSION.SDK_INT}, 재시도 횟수: $retryCount)")
+        
+        // Firebase가 초기화되었는지 확인
+        try {
+            val firebaseApps = com.google.firebase.FirebaseApp.getApps(this)
+            if (firebaseApps.isEmpty()) {
+                Log.w("MainActivity", "⚠️ Firebase 앱 인스턴스 없음, 초기화 대기 중...")
+                if (retryCount < maxRetries) {
+                    val delay = 1000L * (retryCount + 1) // 재시도 횟수에 따라 대기 시간 증가 (1초, 2초, 3초...)
+                    android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                        getFirebaseToken(retryCount + 1)
+                    }, delay)
+                    return
+                } else {
+                    Log.e("MainActivity", "❌ Firebase 초기화 대기 최대 횟수 도달: $maxRetries")
+                    return
+                }
+            }
+            Log.d("MainActivity", "✅ Firebase 앱 인스턴스 확인: ${firebaseApps[0].name}")
+        } catch (e: Exception) {
+            Log.w("MainActivity", "⚠️ Firebase 초기화 확인 중 오류: ${e.message}")
+            if (retryCount < maxRetries) {
+                val delay = 1000L * (retryCount + 1)
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    getFirebaseToken(retryCount + 1)
+                }, delay)
+                return
+            }
+        }
         
         // Firebase 초기화 대기 후 토큰 요청
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val token = task.result
-                Log.d("MainActivity", "✅ Firebase 토큰 성공: $token")
-                // 서버에 토큰 등록
-                registerTokenDirectly(token)
-            } else {
-                Log.e("MainActivity", "❌ Firebase 토큰 가져오기 실패: ${task.exception}")
-                Log.e("MainActivity", "❌ 예외 상세: ${task.exception?.message}")
-                
-                // Android 12 이하에서 Firebase 초기화 실패 시 재시도
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                    Log.d("MainActivity", "🔄 Android 12 이하 재시도...")
-                    android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                        getFirebaseToken()
-                    }, 2000) // 2초 후 재시도
+        try {
+            FirebaseMessaging.getInstance().isAutoInitEnabled = true
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token = task.result
+                    Log.d("MainActivity", "✅ Firebase 토큰 성공: $token")
+                    // 서버에 토큰 등록
+                    registerTokenDirectly(token)
+                } else {
+                    val exception = task.exception
+                    Log.e("MainActivity", "❌ Firebase 토큰 가져오기 실패: $exception")
+                    Log.e("MainActivity", "❌ 예외 상세: ${exception?.message}")
+                    exception?.printStackTrace()
+                    
+                    // 재시도 로직 (모든 Android 버전에 적용)
+                    if (retryCount < maxRetries) {
+                        val delay = 1000L * (retryCount + 1) // 재시도 횟수에 따라 대기 시간 증가
+                        Log.d("MainActivity", "🔄 재시도... ($retryCount/$maxRetries, ${delay}ms 후)")
+                        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                            getFirebaseToken(retryCount + 1)
+                        }, delay)
+                    } else {
+                        Log.e("MainActivity", "❌ 최대 재시도 횟수 도달: $maxRetries")
+                    }
                 }
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "❌ Firebase Messaging 인스턴스 가져오기 실패: ${e.message}")
+            if (retryCount < maxRetries) {
+                val delay = 1000L * (retryCount + 1)
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    getFirebaseToken(retryCount + 1)
+                }, delay)
             }
         }
     }
@@ -156,24 +201,6 @@ class MainActivity : ComponentActivity() {
                 Log.d("MainActivity", "📥 서버 응답: $responseCode $responseMessage")
                 Log.d("MainActivity", "📄 응답 본문: $responseBody")
                 
-                // UI 스레드에서 알럿 표시
-                runOnUiThread {
-                    val alertMessage = """
-                        토큰 등록 결과:
-                        
-                        응답 코드: $responseCode
-                        응답 메시지: $responseMessage
-                        응답 본문: $responseBody
-                        URL: $url
-                    """.trimIndent()
-                    
-                    android.app.AlertDialog.Builder(this@MainActivity)
-                        .setTitle("토큰 등록 결과")
-                        .setMessage(alertMessage)
-                        .setPositiveButton("확인") { _, _ -> }
-                        .show()
-                }
-                
                 if (responseCode == 200) {
                     Log.d("MainActivity", "✅ 토큰 등록 성공")
                 } else {
@@ -189,7 +216,7 @@ class MainActivity : ComponentActivity() {
     }
     
     // 서버에 알림 설정 상태 업데이트
-    private fun updateNotificationSettings(notificationEnabled: Boolean, locationNotificationEnabled: Boolean) {
+    internal fun updateNotificationSettings(notificationEnabled: Boolean, locationNotificationEnabled: Boolean) {
         // FCM 토큰을 가져와서 서버에 알림 설정 상태 업데이트
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -200,15 +227,6 @@ class MainActivity : ComponentActivity() {
                 updateNotificationSettingsOnServer(token, notificationEnabled, locationNotificationEnabled)
             } else {
                 Log.e("NotificationSettings", "FCM 토큰 가져오기 실패", task.exception)
-                
-                // UI 스레드에서 오류 알럿 표시
-                runOnUiThread {
-                    android.app.AlertDialog.Builder(this@MainActivity)
-                        .setTitle("알림 설정 오류")
-                        .setMessage("FCM 토큰을 가져올 수 없습니다: ${task.exception?.message}")
-                        .setPositiveButton("확인") { _, _ -> }
-                        .show()
-                }
             }
         }
     }
@@ -251,27 +269,6 @@ class MainActivity : ComponentActivity() {
                 Log.d("NotificationSettings", "📥 서버 응답: $responseCode $responseMessage")
                 Log.d("NotificationSettings", "📄 응답 본문: $responseBody")
                 
-                // UI 스레드에서 결과 알럿 표시
-                runOnUiThread {
-                    val alertMessage = """
-                        알림 설정 업데이트 결과:
-                        
-                        응답 코드: $responseCode
-                        응답 메시지: $responseMessage
-                        응답 본문: $responseBody
-                        URL: $url
-                        
-                        푸시 알림: $notificationEnabled
-                        위치 알림: $locationNotificationEnabled
-                    """.trimIndent()
-                    
-                    android.app.AlertDialog.Builder(this@MainActivity)
-                        .setTitle("알림 설정 업데이트 결과")
-                        .setMessage(alertMessage)
-                        .setPositiveButton("확인") { _, _ -> }
-                        .show()
-                }
-                
                 if (responseCode == 200 || responseCode == 201) {
                     Log.d("NotificationSettings", "✅ 서버에 알림 설정 업데이트 성공")
                 } else {
@@ -281,15 +278,6 @@ class MainActivity : ComponentActivity() {
                 connection.disconnect()
             } catch (e: Exception) {
                 Log.e("NotificationSettings", "❌ 서버 통신 오류", e)
-                
-                // UI 스레드에서 오류 알럿 표시
-                runOnUiThread {
-                    android.app.AlertDialog.Builder(this@MainActivity)
-                        .setTitle("알림 설정 오류")
-                        .setMessage("서버 통신 오류: ${e.message}")
-                        .setPositiveButton("확인") { _, _ -> }
-                        .show()
-                }
             }
         }.start()
     }
@@ -302,8 +290,12 @@ fun FoodTruckApp(
     var showNotificationSettings by remember { mutableStateOf(false) }
     var webView by remember { mutableStateOf<WebView?>(null) }
     
+    // MainActivity 인스턴스 가져오기
+    val context = LocalContext.current
+    val mainActivity = context as? MainActivity
+    
     // 시스템 뒤로가기 키 처리
-    val backPressedDispatcher = LocalContext.current as ComponentActivity
+    val backPressedDispatcher = context as ComponentActivity
     val backPressedCallback = remember {
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -456,7 +448,10 @@ fun FoodTruckApp(
         // 알림 설정 화면 오버레이
         if (showNotificationSettings) {
             NotificationSettingsScreen(
-                onBackClick = { showNotificationSettings = false }
+                onBackClick = { showNotificationSettings = false },
+                onUpdateNotificationSettings = { notificationEnabled, locationNotificationEnabled ->
+                    mainActivity?.updateNotificationSettings(notificationEnabled, locationNotificationEnabled)
+                }
             )
         }
     }
@@ -498,7 +493,8 @@ fun PhoneButtonOverlay() {
 
 @Composable
 fun NotificationSettingsScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onUpdateNotificationSettings: (Boolean, Boolean) -> Unit
 ) {
     var isNotificationEnabled by remember { mutableStateOf(true) }
     var isLocationNotificationEnabled by remember { mutableStateOf(true) }
@@ -579,7 +575,7 @@ fun NotificationSettingsScreen(
                                 }
                                 
                                 // 서버에 알림 설정 업데이트
-                                updateNotificationSettings(it, isLocationNotificationEnabled)
+                                onUpdateNotificationSettings(it, isLocationNotificationEnabled)
                             }
                         )
                     }
@@ -615,7 +611,7 @@ fun NotificationSettingsScreen(
                             onCheckedChange = { 
                                 isLocationNotificationEnabled = it
                                 // 서버에 알림 설정 업데이트
-                                updateNotificationSettings(isNotificationEnabled, it)
+                                onUpdateNotificationSettings(isNotificationEnabled, it)
                             },
                             enabled = isNotificationEnabled
                         )

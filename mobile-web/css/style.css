@@ -623,4 +623,170 @@ input:checked + .toggle-slider:before {
     }
 }
 
+/* 푸시 알림 동의 모달 */
+.push-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.push-modal-overlay.show {
+    display: flex;
+}
+
+.push-modal {
+    background: white;
+    border-radius: 24px;
+    padding: 40px 32px;
+    margin: 20px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.4s ease;
+    text-align: center;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.push-modal-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #E63946, #FF6B7A);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 24px rgba(230, 57, 70, 0.3);
+}
+
+.push-modal-icon i {
+    font-size: 40px;
+    color: white;
+    animation: ring 2s infinite;
+}
+
+@keyframes ring {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    10%, 30% {
+        transform: rotate(-15deg);
+    }
+    20%, 40% {
+        transform: rotate(15deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+}
+
+.push-modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-color);
+}
+
+.push-modal-description {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.push-modal-description strong {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.push-modal-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px 0;
+    text-align: left;
+    background: #F8F9FA;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.push-modal-benefits li {
+    padding: 12px 0;
+    font-size: 15px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.push-modal-benefits li:last-child {
+    border-bottom: none;
+}
+
+.push-modal-benefits li i {
+    color: var(--primary-color);
+    font-size: 18px;
+}
+
+.push-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.push-modal-btn {
+    padding: 16px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+}
+
+.push-modal-btn-accept {
+    background: linear-gradient(135deg, #E63946, #FF6B7A);
+    color: white;
+    box-shadow: 0 4px 16px rgba(230, 57, 70, 0.4);
+}
+
+.push-modal-btn-accept:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
+}
+
+.push-modal-btn-skip {
+    background: #F0F0F0;
+    color: #666;
+}
+
+.push-modal-btn-skip:active {
+    background: #E0E0E0;
+}
+
+.push-modal-note {
+    font-size: 13px;
+    color: #999;
+    margin-top: 20px;
+}
+
 /* 다크모드 지원 제거 - 라이트모드로 고정 */

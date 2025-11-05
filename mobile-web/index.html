@@ -19,7 +19,7 @@
     <link rel="icon" type="image/png" href="/mobile/images/icon-192x192.png">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="/mobile/css/style.css?v=202510231400&t=1737031500">
+    <link rel="stylesheet" href="/mobile/css/style.css?v=2025110303">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -157,8 +157,34 @@
         <div class="spinner"></div>
     </div>
 
+    <!-- 푸시 알림 동의 모달 -->
+    <div class="push-modal-overlay" id="pushModalOverlay">
+        <div class="push-modal">
+            <div class="push-modal-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h2 class="push-modal-title">🔔 푸시 알림을 받으세요!</h2>
+            <div class="push-modal-content">
+                <p class="push-modal-description">
+                    세종유미곱창트럭의<br>
+                    <strong>즉시 알림</strong>을 받으세요
+                </p>
+                <ul class="push-modal-benefits">
+                    <li><i class="fas fa-check-circle"></i> 오늘 위치 알림</li>
+                    <li><i class="fas fa-check-circle"></i> 특별 이벤트 알림</li>
+                    <li><i class="fas fa-check-circle"></i> 영업시간 안내</li>
+                </ul>
+            </div>
+            <div class="push-modal-buttons">
+                <button class="push-modal-btn push-modal-btn-accept" onclick="closePushModal()">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- 스크립트 -->
-    <script src="/mobile/js/app.js?v=202510231400&t=1737031500"></script>
+    <script src="/mobile/js/app.js?v=2025110303"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 </html>

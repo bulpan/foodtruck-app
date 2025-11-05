@@ -145,8 +145,8 @@ class MainViewController: UIViewController {
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
         
-        // 캐시 비활성화 설정
-        config.websiteDataStore = WKWebsiteDataStore.nonPersistent()
+        // localStorage 사용을 위해 영구 저장소 사용
+        config.websiteDataStore = WKWebsiteDataStore.default()
         
         // JavaScript 브릿지 설정
         let contentController = WKUserContentController()

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR코드 생성기 - 푸드트럭</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"], input[type="url"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="url"]:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .qr-container {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .qr-code {
+            margin: 20px 0;
+        }
+
+        .qr-info {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .qr-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .qr-info p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .preset-links {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .preset-links h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .preset-link {
+            display: block;
+            padding: 10px 15px;
+            margin: 8px 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .preset-link:hover {
+            border-color: #ffd700;
+            background: #fffbf0;
+        }
+
+        .preset-link strong {
+            color: #667eea;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🍔</div>
+        <h1>QR코드 생성기</h1>
+        <p class="subtitle">푸드트럭 앱 다운로드용 QR코드를 생성하세요</p>
+
+        <div class="preset-links">
+            <h3>📋 사전 설정된 링크</h3>
+            <a href="#" class="preset-link" onclick="setUrl('https://truck.carrera74.com/download.html')">
+                <strong>앱 다운로드 페이지</strong><br>
+                <small>https://truck.carrera74.com/download.html</small>
+            </a>
+            <a href="#" class="preset-link" onclick="setUrl('https://truck.carrera74.com/')">
+                <strong>메인 웹사이트</strong><br>
+                <small>https://truck.carrera74.com/</small>
+            </a>
+        </div>
+
+        <div class="form-group">
+            <label for="urlInput">🔗 다운로드 페이지 URL</label>
+            <input type="url" id="urlInput" placeholder="https://truck.carrera74.com/download.html" value="https://truck.carrera74.com/download.html">
+        </div>
+
+        <div class="form-group">
+            <label for="sizeInput">📏 QR코드 크기</label>
+            <input type="text" id="sizeInput" placeholder="300" value="300">
+        </div>
+
+        <button class="btn" onclick="generateQR()">🎯 QR코드 생성</button>
+        <button class="btn btn-secondary" onclick="clearQR()">🗑️ 초기화</button>
+
+        <div class="qr-container" id="qrContainer">
+            <h3>📱 생성된 QR코드</h3>
+            <div class="qr-code" id="qrCode"></div>
+            <div class="qr-info">
+                <h3>ℹ️ QR코드 정보</h3>
+                <p><strong>URL:</strong> <span id="qrUrl"></span></p>
+                <p><strong>크기:</strong> <span id="qrSize"></span>px</p>
+                <p><strong>생성 시간:</strong> <span id="qrTime"></span></p>
+            </div>
+            <a href="#" class="download-btn" id="downloadBtn" download="foodtruck-qr.png">📥 PNG 다운로드</a>
+            <a href="#" class="download-btn" id="downloadSvgBtn" download="foodtruck-qr.svg">📥 SVG 다운로드</a>
+        </div>
+    </div>
+
+    <script>
+        function setUrl(url) {
+            document.getElementById('urlInput').value = url;
+        }
+
+        function generateQR() {
+            const url = document.getElementById('urlInput').value;
+            const size = parseInt(document.getElementById('sizeInput').value) || 300;
+            
+            if (!url) {
+                alert('URL을 입력해주세요.');
+                return;
+            }
+
+            const qrContainer = document.getElementById('qrContainer');
+            const qrCode = document.getElementById('qrCode');
+            
+            // 기존 QR코드 제거
+            qrCode.innerHTML = '';
+            
+            try {
+                // QRCode 생성기 사용
+                const qr = qrcode(0, 'M');
+                qr.addData(url);
+                qr.make();
+                
+                // Canvas 생성
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = size;
+                canvas.height = size;
+                
+                // QR코드 그리기
+                const moduleCount = qr.getModuleCount();
+                const cellSize = size / moduleCount;
+                
+                // 배경을 흰색으로
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, size, size);
+                
+                // QR코드 모듈 그리기
+                ctx.fillStyle = '#000000';
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            ctx.fillRect(
+                                col * cellSize,
+                                row * cellSize,
+                                cellSize,
+                                cellSize
+                            );
+                        }
+                    }
+                }
+                
+                qrCode.appendChild(canvas);
+                
+                // QR코드 정보 업데이트
+                document.getElementById('qrUrl').textContent = url;
+                document.getElementById('qrSize').textContent = size;
+                document.getElementById('qrTime').textContent = new Date().toLocaleString('ko-KR');
+                
+                // 다운로드 링크 설정
+                const pngLink = document.getElementById('downloadBtn');
+                pngLink.href = canvas.toDataURL('image/png');
+                
+                // SVG 다운로드 (간단한 SVG 생성)
+                const svgContent = generateSVG(qr, size);
+                const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
+                const svgUrl = URL.createObjectURL(svgBlob);
+                document.getElementById('downloadSvgBtn').href = svgUrl;
+                
+                // QR코드 컨테이너 표시
+                qrContainer.style.display = 'block';
+                qrContainer.scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('QR코드 생성 오류:', error);
+                alert('QR코드 생성 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+
+        function generateSVG(qr, size) {
+            const moduleCount = qr.getModuleCount();
+            const cellSize = size / moduleCount;
+            
+            let svg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">`;
+            svg += `<rect width="${size}" height="${size}" fill="white"/>`;
+            
+            for (let row = 0; row < moduleCount; row++) {
+                for (let col = 0; col < moduleCount; col++) {
+                    if (qr.isDark(row, col)) {
+                        svg += `<rect x="${col * cellSize}" y="${row * cellSize}" width="${cellSize}" height="${cellSize}" fill="black"/>`;
+                    }
+                }
+            }
+            
+            svg += '</svg>';
+            return svg;
+        }
+
+        function clearQR() {
+            document.getElementById('urlInput').value = 'https://truck.carrera74.com/download.html';
+            document.getElementById('sizeInput').value = '300';
+            document.getElementById('qrContainer').style.display = 'none';
+            document.getElementById('qrCode').innerHTML = '';
+        }
+
+        // 페이지 로드 시 기본 QR코드 생성
+        document.addEventListener('DOMContentLoaded', function() {
+            // QRCode 라이브러리 로드 확인
+            if (typeof qrcode === 'undefined') {
+                console.error('QRCode 라이브러리를 로드할 수 없습니다.');
+                alert('QRCode 라이브러리 로드에 실패했습니다. 페이지를 새로고침해주세요.');
+                return;
+            }
+            generateQR();
+        });
+    </script>
+</body>
+</html>
