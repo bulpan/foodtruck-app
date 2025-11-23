@@ -44,18 +44,24 @@
         }
 
         .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            border-radius: 20px;
+            width: 120px;
+            height: 120px;
+            background: transparent;
+            border-radius: 25px;
             margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            font-weight: bold;
-            color: #333;
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            padding: 8px;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 20px;
         }
 
         h1 {
@@ -122,12 +128,6 @@
             transform: translateY(0);
         }
 
-        .store-logo {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
 
         .features {
             text-align: left;
@@ -237,8 +237,10 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo">🍔</div>
-        <h1>푸드트럭 앱</h1>
+        <div class="logo">
+            <img src="/images/app-icon.png" alt="유미네곱창트럭 앱 아이콘" style="width: 100%; height: 100%; object-fit: contain; border-radius: 20px;">
+        </div>
+        <h1>유미네곱창트럭 앱</h1>
         <p class="subtitle">맛있는 음식을 더 가깝게, 더 편리하게</p>
         
         <div class="device-info">
@@ -253,7 +255,6 @@
         </div>
 
         <a href="#" class="download-btn" id="downloadBtn" style="display: none;">
-            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" class="store-logo" alt="앱스토어">
             <span id="downloadText">앱 다운로드</span>
         </a>
 
@@ -272,13 +273,6 @@
                     <div class="feature-desc">새로운 메뉴와 특별 이벤트를 놓치지 마세요</div>
                 </div>
             </div>
-            <div class="feature-item">
-                <div class="feature-icon">📋</div>
-                <div class="feature-text">
-                    <div class="feature-title">메뉴 확인</div>
-                    <div class="feature-desc">오늘의 특별 메뉴와 가격을 미리 확인하세요</div>
-                </div>
-            </div>
         </div>
 
         <div class="manual-links">
@@ -289,9 +283,9 @@
     </div>
 
     <script>
-        // 앱스토어 링크 (가상)
+        // 앱스토어 링크
         const STORE_LINKS = {
-            ios: 'https://apps.apple.com/app/foodtruck-app/id1234567890', // 실제 링크로 교체 필요
+            ios: 'https://apps.apple.com/app/id6754273647',
             android: 'https://play.google.com/store/apps/details?id=com.foodtruck.app' // 실제 링크로 교체 필요
         };
 
@@ -311,7 +305,7 @@
 
             if (isIOS) {
                 deviceInfo = {
-                    icon: '🍎',
+                    icon: '📱',
                     name: 'iPhone/iPad',
                     desc: 'App Store에서 다운로드하세요',
                     store: 'ios'
