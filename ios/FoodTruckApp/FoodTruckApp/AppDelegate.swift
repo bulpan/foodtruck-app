@@ -1,5 +1,6 @@
 import UIKit
 import UserNotifications
+import Firebase
 import FirebaseMessaging
 
 @main
@@ -8,6 +9,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         print("🚀 앱 시작 - Firebase 초기화 중...")
+        FirebaseApp.configure()
         
         // 백그라운드 작업 설정
         if #available(iOS 13.0, *) {
