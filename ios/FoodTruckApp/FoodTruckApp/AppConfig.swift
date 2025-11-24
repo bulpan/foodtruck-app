@@ -45,7 +45,7 @@ struct AppConfig {
     
     // MARK: - App Info
     static let appName = "세종유미곱창트럭"
-    static let appVersion = "1.0.0"
+    static let appVersion = "1.0.3"
     static let bundleIdentifier = "com.foodtruck.app"
     
     // MARK: - Firebase Configuration
