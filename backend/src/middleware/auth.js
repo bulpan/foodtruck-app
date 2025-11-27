@@ -49,9 +49,10 @@ const optionalAuth = async (req, res, next) => {
 
 const rateLimit = require('express-rate-limit');
 
+// 로그인 제한 설정
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15분
-  max: 20, // 15분당 20회 시도 (개발용으로 증가)
+  max: 20, // 15분당 20회 시도
   message: {
     error: '너무 많은 로그인 시도로 인해 일시적으로 차단되었습니다. 15분 후 다시 시도해주세요.'
   },

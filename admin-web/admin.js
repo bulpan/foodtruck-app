@@ -96,15 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
         pushForm.addEventListener('submit', handlePushSubmit);
     }
     
-    // 접속 추이 탭 이벤트 리스너
-    const analyticsTab = document.getElementById('token-analytics-tab');
-    if (analyticsTab) {
-        analyticsTab.addEventListener('shown.bs.tab', function() {
-            // 탭이 활성화되면 자동으로 데이터 로드
-            loadAnalytics();
-        });
-    }
-    
     // 접속 추이 날짜 기본값 설정
     const endDate = new Date();
     const startDate = new Date();
@@ -116,6 +107,40 @@ document.addEventListener('DOMContentLoaded', function() {
         analyticsEndDate.value = endDate.toISOString().split('T')[0];
         analyticsStartDate.value = startDate.toISOString().split('T')[0];
     }
+    
+    // 접속 추이 버튼 이벤트 리스너
+    const loadAnalyticsBtn = document.getElementById('loadAnalyticsBtn');
+    if (loadAnalyticsBtn) {
+        loadAnalyticsBtn.addEventListener('click', function() {
+            loadAnalytics();
+        });
+    }
+    
+    const exportAnalyticsBtn = document.getElementById('exportAnalyticsBtn');
+    if (exportAnalyticsBtn) {
+        exportAnalyticsBtn.addEventListener('click', function() {
+            exportAnalytics();
+        });
+    }
+    
+    // 접속 추이 탭 이벤트 리스너 (DOM 로드 후 설정)
+    setTimeout(() => {
+        const analyticsTab = document.getElementById('token-analytics-tab');
+        if (analyticsTab) {
+            analyticsTab.addEventListener('shown.bs.tab', function() {
+                // Chart.js 로드 확인 후 데이터 로드
+                if (typeof Chart !== 'undefined') {
+                    // 약간의 지연을 두어 DOM이 완전히 렌더링된 후 그래프 생성
+                    setTimeout(() => {
+                        loadAnalytics();
+                    }, 100);
+                } else {
+                    console.error('Chart.js is not loaded');
+                    showToast('Chart.js 라이브러리를 불러올 수 없습니다. 페이지를 새로고침해주세요.', 'error', '오류', 5000);
+                }
+            });
+        }
+    }, 500);
     
     // 저장된 토큰이 있는지 확인
     const savedToken = localStorage.getItem('adminToken');
@@ -1601,9 +1626,16 @@ let trendChart = null;
 let dailyChart = null;
 let deviceChart = null;
 
-// 접속 추이 데이터 로드
+// 접속 추이 데이터 로드 (전역 함수로 선언)
 async function loadAnalytics() {
     try {
+        // Chart.js 로드 확인
+        if (typeof Chart === 'undefined') {
+            showToast('Chart.js 라이브러리를 불러올 수 없습니다. 페이지를 새로고침해주세요.', 'error', '오류', 5000);
+            console.error('Chart.js is not loaded');
+            return;
+        }
+        
         const period = document.getElementById('analyticsPeriod').value;
         const startDate = document.getElementById('analyticsStartDate').value;
         const endDate = document.getElementById('analyticsEndDate').value;
@@ -1633,31 +1665,47 @@ async function loadAnalytics() {
             params.append('compareWith', compareWith);
         }
         
+        console.log('Loading analytics with params:', params.toString());
+        
         const response = await fetch(`${API_BASE_URL}/fcm/analytics/trend?${params}`, {
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
         
         if (!response.ok) {
-            throw new Error('데이터 로드 실패');
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `HTTP ${response.status}: 데이터 로드 실패`);
         }
         
         const data = await response.json();
+        console.log('Analytics data received:', data);
+        
+        // 데이터 유효성 검사
+        if (!data || !data.data || !Array.isArray(data.data)) {
+            throw new Error('잘못된 데이터 형식입니다.');
+        }
         
         // 요약 통계 업데이트
-        updateAnalyticsSummary(data.summary, data.comparison);
+        if (data.summary) {
+            updateAnalyticsSummary(data.summary, data.comparison);
+        }
         
-        // 그래프 렌더링
-        renderTrendChart(data);
-        renderDailyChart(data);
-        renderDeviceChart(data);
+        // 그래프 렌더링 (약간의 지연을 두어 DOM이 완전히 준비된 후 실행)
+        setTimeout(() => {
+            renderTrendChart(data);
+            renderDailyChart(data);
+            renderDeviceChart(data);
+        }, 200);
         
         showToast('접속 추이 데이터를 불러왔습니다.', 'success', '성공', 3000);
         
     } catch (error) {
         console.error('Load analytics error:', error);
-        showToast('접속 추이 데이터를 불러오는 중 오류가 발생했습니다.', 'error', '오류', 5000);
+        showToast(`접속 추이 데이터를 불러오는 중 오류가 발생했습니다: ${error.message}`, 'error', '오류', 5000);
     }
 }
+
+// 전역 스코프에 명시적으로 할당 (인라인 이벤트 핸들러용)
+window.loadAnalytics = loadAnalytics;
 
 // 요약 통계 업데이트
 function updateAnalyticsSummary(summary, comparison) {
@@ -1683,12 +1731,42 @@ function updateAnalyticsSummary(summary, comparison) {
 // 접속 추이 그래프 렌더링
 function renderTrendChart(data) {
     const ctx = document.getElementById('trendChart');
-    if (!ctx) return;
+    if (!ctx) {
+        console.error('trendChart canvas element not found');
+        return;
+    }
+    
+    if (!data || !data.data || data.data.length === 0) {
+        console.warn('No data to render trend chart');
+        // 빈 그래프 표시
+        if (trendChart) {
+            trendChart.destroy();
+        }
+        trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: {
+                        display: true,
+                        text: '데이터가 없습니다'
+                    }
+                }
+            }
+        });
+        return;
+    }
     
     const labels = data.data.map(item => item.date);
-    const totalData = data.data.map(item => item.total);
-    const newData = data.data.map(item => item.new);
-    const returningData = data.data.map(item => item.returning);
+    const totalData = data.data.map(item => item.total || 0);
+    const newData = data.data.map(item => item.new || 0);
+    const returningData = data.data.map(item => item.returning || 0);
     
     if (trendChart) {
         trendChart.destroy();
@@ -1757,10 +1835,38 @@ function renderTrendChart(data) {
 // 일일 접속자 수 막대 그래프 렌더링
 function renderDailyChart(data) {
     const ctx = document.getElementById('dailyChart');
-    if (!ctx) return;
+    if (!ctx) {
+        console.error('dailyChart canvas element not found');
+        return;
+    }
+    
+    if (!data || !data.data || data.data.length === 0) {
+        console.warn('No data to render daily chart');
+        if (dailyChart) {
+            dailyChart.destroy();
+        }
+        dailyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '데이터가 없습니다'
+                    }
+                }
+            }
+        });
+        return;
+    }
     
     const labels = data.data.map(item => item.date);
-    const totalData = data.data.map(item => item.total);
+    const totalData = data.data.map(item => item.total || 0);
     
     if (dailyChart) {
         dailyChart.destroy();
@@ -1802,10 +1908,70 @@ function renderDailyChart(data) {
 // 디바이스 타입별 분포 파이 차트 렌더링
 function renderDeviceChart(data) {
     const ctx = document.getElementById('deviceChart');
-    if (!ctx) return;
+    if (!ctx) {
+        console.error('deviceChart canvas element not found');
+        return;
+    }
     
-    const iosCount = data.summary.iosCount;
-    const androidCount = data.summary.androidCount;
+    if (!data || !data.summary) {
+        console.warn('No summary data to render device chart');
+        if (deviceChart) {
+            deviceChart.destroy();
+        }
+        deviceChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '데이터가 없습니다'
+                    }
+                }
+            }
+        });
+        return;
+    }
+    
+    const iosCount = data.summary.iosCount || 0;
+    const androidCount = data.summary.androidCount || 0;
+    
+    if (iosCount === 0 && androidCount === 0) {
+        console.warn('No device data to render');
+        if (deviceChart) {
+            deviceChart.destroy();
+        }
+        deviceChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['iOS', 'Android'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.3)',
+                        'rgba(16, 185, 129, 0.3)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: {
+                        display: true,
+                        text: '데이터가 없습니다'
+                    }
+                }
+            }
+        });
+        return;
+    }
     
     if (deviceChart) {
         deviceChart.destroy();
@@ -1845,3 +2011,6 @@ function exportAnalytics() {
     // CSV 내보내기 기능 (추후 구현)
     showToast('데이터 내보내기 기능은 준비 중입니다.', 'info', '알림', 3000);
 }
+
+// 전역 스코프에 명시적으로 할당 (인라인 이벤트 핸들러용)
+window.exportAnalytics = exportAnalytics;

@@ -3,8 +3,8 @@ let data = {
   adminUsers: [
     {
       id: '1',
-      username: 'admin',
-      password: 'admin123',
+      username: 'goodman',
+      password: '!thdbs1624',
       shopName: '유미네 곱창트럭',
       shopDescription: '신선한 곱창으로 만드는 맛있는 음식'
     }
