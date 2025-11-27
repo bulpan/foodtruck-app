@@ -118,6 +118,7 @@ body {
     align-items: center;
     gap: 20px; /* 16px에서 20px로 증가 */
     border-left: 4px solid var(--primary-color);
+    position: relative;
 }
 
 .location-icon {
@@ -136,6 +137,7 @@ body {
 .location-info {
     flex: 1;
     min-width: 0;
+    padding-right: 50px; /* 새로고침 버튼 공간 확보 */
 }
 
 .location-name {
@@ -169,6 +171,40 @@ body {
     border-radius: 12px;
     display: inline-block;
     line-height: 1.3;
+}
+
+/* 위치 카드 새로고침 버튼 */
+.location-refresh-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(230, 57, 70, 0.1);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--transition);
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.location-refresh-btn:hover {
+    background: rgba(230, 57, 70, 0.2);
+    transform: rotate(180deg);
+}
+
+.location-refresh-btn:active {
+    transform: rotate(180deg) scale(0.95);
+}
+
+.location-refresh-btn i {
+    transition: var(--transition);
 }
 
 
