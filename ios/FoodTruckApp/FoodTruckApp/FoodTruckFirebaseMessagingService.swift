@@ -139,13 +139,6 @@ class FoodTruckFirebaseMessagingService: NSObject {
                     
                     // 네트워크 연결 상태 확인
                     self.checkNetworkConnectivity()
-                    
-                    // 네트워크 오류 시 재시도
-                    self.isRegistering = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                        print("🔄 네트워크 오류로 인한 재시도...")
-                        self.registerFCMToken()
-                    }
                     return
                 }
                 
@@ -154,21 +147,13 @@ class FoodTruckFirebaseMessagingService: NSObject {
                     print("   - 상태 코드: \(httpResponse.statusCode)")
                     print("   - 헤더: \(httpResponse.allHeaderFields)")
                     
-                    if httpResponse.statusCode == 200 || httpResponse.statusCode == 201 {
-                        print("✅ FCM 토큰 서버 등록 성공 (상태 코드: \(httpResponse.statusCode))")
-                        self.isRegistering = false
+                    if httpResponse.statusCode == 200 {
+                        print("✅ FCM 토큰 서버 등록 성공")
                     } else {
                         print("⚠️ 서버 응답 오류 - 상태 코드: \(httpResponse.statusCode)")
-                        // 오류 발생 시 재시도
-                        self.isRegistering = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                            print("🔄 서버 오류로 인한 재시도...")
-                            self.registerFCMToken()
-                        }
                     }
-                } else {
-                    // 응답이 없는 경우
-                    print("⚠️ HTTP 응답이 없습니다")
+                    
+                    // 등록 완료 후 상태 리셋
                     self.isRegistering = false
                 }
                 
@@ -239,9 +224,17 @@ extension FoodTruckFirebaseMessagingService: MessagingDelegate {
         print("🔄 Firebase 토큰 갱신 수신:")
         if let token = fcmToken {
             print("   - 새 토큰: \(token)")
-            // 권한 상태와 관계없이 토큰 등록 (권한이 나중에 변경될 수 있으므로)
-            print("✅ FCM 토큰 갱신 - 서버에 등록 진행")
-            self.sendFCMTokenToServer(token: token)
+            // 권한 상태 확인 후에만 토큰 등록
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                DispatchQueue.main.async {
+                    if settings.authorizationStatus == .authorized {
+                        print("✅ 푸시 알림 권한이 허용되어 토큰 등록 진행")
+                        self.sendFCMTokenToServer(token: token)
+                    } else {
+                        print("❌ 푸시 알림 권한이 거부되어 토큰 등록 건너뜀")
+                    }
+                }
+            }
         } else {
             print("   - 토큰이 nil입니다")
         }

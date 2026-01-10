@@ -7,15 +7,15 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../../mobile-web/index.html'));
 });
 
-// 개인정보 처리방침 페이지
-router.get('/privacy', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../../mobile-web/privacy.html'));
-});
-
 // 모바일 웹 정적 코드 서빙
 router.use('/js', express.static(path.join(__dirname, '../../../mobile-web/js')));
 router.use('/css', express.static(path.join(__dirname, '../../../mobile-web/css')));
 router.use('/images', express.static(path.join(__dirname, '../../../mobile-web/images')));
+
+// 개인정보 처리방침 페이지
+router.get('/privacy', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../../mobile-web/privacy.html'));
+});
 
 // PWA 관련 파일들
 router.get('/manifest.json', (req, res) => {

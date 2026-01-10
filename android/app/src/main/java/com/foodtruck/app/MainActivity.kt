@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.foodtruck.app.config.AppConfig
+import com.foodtruck.app.BuildConfig
 import com.google.firebase.messaging.FirebaseMessaging
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -117,7 +118,9 @@ class MainActivity : ComponentActivity() {
             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val token = task.result
-                    Log.d("MainActivity", "✅ Firebase 토큰 성공: $token")
+                    if (BuildConfig.DEBUG) {
+                        Log.d("MainActivity", "✅ Firebase 토큰 성공: ${token.take(20)}...")
+                    }
                     // 서버에 토큰 등록
                     registerTokenDirectly(token)
                 } else {
@@ -163,7 +166,9 @@ class MainActivity : ComponentActivity() {
     
     // Firebase 토큰을 서버에 등록하는 메서드
     private fun registerTokenDirectly(token: String) {
-        Log.d("MainActivity", "🌐 서버에 토큰 등록 시작: $token")
+        if (BuildConfig.DEBUG) {
+            Log.d("MainActivity", "🌐 서버에 토큰 등록 시작")
+        }
         Thread {
             try {
                 val url = "${AppConfig.getApiUrl()}/fcm/token"
@@ -182,7 +187,9 @@ class MainActivity : ComponentActivity() {
                     }
                 """.trimIndent()
                 
-                Log.d("MainActivity", "📤 전송 데이터: $jsonData")
+                if (BuildConfig.DEBUG) {
+                    Log.d("MainActivity", "📤 전송 데이터: $jsonData")
+                }
                 
                 connection.outputStream.use { outputStream ->
                     outputStream.write(jsonData.toByteArray())
@@ -221,7 +228,9 @@ class MainActivity : ComponentActivity() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val token = task.result
-                Log.d("NotificationSettings", "알림 설정 업데이트: notification=$notificationEnabled, location=$locationNotificationEnabled, 토큰: $token")
+                if (BuildConfig.DEBUG) {
+                    Log.d("NotificationSettings", "알림 설정 업데이트: notification=$notificationEnabled, location=$locationNotificationEnabled")
+                }
                 
                 // 서버에 알림 설정 상태 업데이트 API 호출
                 updateNotificationSettingsOnServer(token, notificationEnabled, locationNotificationEnabled)

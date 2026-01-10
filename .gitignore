@@ -13,7 +13,7 @@ yarn-error.log*
 
 # Google/Firebase credentials
 serviceAccount.json
-# GoogleService-Info.plist  # iOS 앱에 필요하므로 Git에 포함
+GoogleService-Info.plist
 google-services.json
 firebase-adminsdk-*.json
 

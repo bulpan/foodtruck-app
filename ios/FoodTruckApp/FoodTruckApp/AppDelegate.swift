@@ -1,6 +1,5 @@
 import UIKit
 import UserNotifications
-import Firebase
 import FirebaseMessaging
 
 @main
@@ -9,7 +8,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         print("🚀 앱 시작 - Firebase 초기화 중...")
-        FirebaseApp.configure()
         
         // 백그라운드 작업 설정
         if #available(iOS 13.0, *) {
@@ -40,12 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                 }
                             } else {
                                 print("❌ 푸시 알림 권한 거부됨: \(error?.localizedDescription ?? "알 수 없는 오류")")
-                                // 권한이 거부되어도 토큰 등록은 시도 (나중에 권한을 허용할 수 있으므로)
-                                print("⚠️ 권한 거부되었지만 토큰 등록은 시도합니다")
-                                self.setupFirebaseMessaging()
-                                DispatchQueue.main.async {
-                                    application.registerForRemoteNotifications()
-                                }
                             }
                         }
                     )
@@ -55,14 +47,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     self.setupFirebaseMessaging()
                     application.registerForRemoteNotifications()
                 case .denied, .provisional, .ephemeral:
-                    // 권한 거부된 경우에도 토큰 등록 시도 (나중에 권한을 허용할 수 있으므로)
-                    print("⚠️ 푸시 알림 권한 거부됨 - 하지만 토큰 등록은 시도합니다")
-                    self.setupFirebaseMessaging()
-                    application.registerForRemoteNotifications()
+                    // 권한 거부된 경우
+                    print("❌ 푸시 알림 권한 거부됨 - 토큰 등록 건너뜀")
                 @unknown default:
-                    print("⚠️ 알 수 없는 권한 상태 - 토큰 등록 시도")
-                    self.setupFirebaseMessaging()
-                    application.registerForRemoteNotifications()
+                    print("⚠️ 알 수 없는 권한 상태")
                 }
             }
         }
@@ -101,22 +89,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Messaging.messaging().apnsToken = deviceToken
         print("✅ Firebase에 APNs 토큰 설정 완료")
         
-        // 권한 상태와 관계없이 FCM 토큰 등록 시도 (권한이 나중에 변경될 수 있으므로)
-        print("🔄 FCM 토큰 등록 시작...")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            FoodTruckFirebaseMessagingService.shared.registerFCMToken()
+        // 권한 상태 확인 후 FCM 토큰 등록
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .authorized {
+                    print("✅ 푸시 알림 권한이 허용되어 FCM 토큰 등록 진행")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        print("🔄 FCM 토큰 등록 시작...")
+                        FoodTruckFirebaseMessagingService.shared.registerFCMToken()
+                    }
+                } else {
+                    print("❌ 푸시 알림 권한이 거부되어 FCM 토큰 등록 건너뜀")
+                }
+            }
         }
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("❌ APNs 토큰 등록 실패: \(error.localizedDescription)")
-        print("⚠️ APNs 등록 실패했지만 FCM 토큰 등록은 시도합니다")
+        print("⚠️ FCM 토큰 등록을 건너뜁니다")
         
-        // APNs 등록이 실패해도 FCM 토큰 등록은 시도 (일부 환경에서는 APNs 없이도 FCM 토큰을 받을 수 있음)
+        // 시뮬레이터에서는 APNs 등록이 실패할 수 있으므로 더미 토큰으로 테스트
+        #if targetEnvironment(simulator)
+        print("🧪 시뮬레이터 환경에서 더미 토큰으로 테스트 진행...")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            print("🔄 APNs 실패 후 FCM 토큰 등록 시도...")
             FoodTruckFirebaseMessagingService.shared.registerFCMToken()
         }
+        #endif
     }
     
     // MARK: Firebase Messaging 수동 통합

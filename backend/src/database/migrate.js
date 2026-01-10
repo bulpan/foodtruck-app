@@ -22,17 +22,17 @@ async function migrate() {
         console.log('👤 사용자명: goodman');
         console.log('🔐 비밀번호: !thdbs1624');
       } else {
-        await Admin.create({
+      await Admin.create({
           username: 'goodman',
           password: '!thdbs1624',
-          email: 'admin@foodtruck.com',
-          shopName: '유미네 곱창트럭',
-          shopDescription: '신선한 곱창으로 만드는 맛있는 음식',
-          phoneNumber: '010-1234-5678',
-          kakaoTalkId: 'foodtruck_admin',
-          isActive: true
-        });
-        console.log('✅ 기본 관리자 계정이 생성되었습니다');
+        email: 'admin@foodtruck.com',
+        shopName: '유미네 곱창트럭',
+        shopDescription: '신선한 곱창으로 만드는 맛있는 음식',
+        phoneNumber: '010-1234-5678',
+        kakaoTalkId: 'foodtruck_admin',
+        isActive: true
+      });
+      console.log('✅ 기본 관리자 계정이 생성되었습니다');
         console.log('👤 사용자명: goodman');
         console.log('🔐 비밀번호: !thdbs1624');
       }

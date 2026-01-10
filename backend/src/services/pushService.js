@@ -18,24 +18,31 @@ const getFirebaseConfig = () => {
   
   // 파일 경로 사용 (개발 환경 또는 환경변수 파싱 실패 시)
   const fullPath = path.resolve(serviceAccountPath);
-  return require(fullPath);
+  console.log('📂 Firebase config loading from:', fullPath);
+  try {
+    return require(fullPath);
+  } catch (e) {
+    console.error(`❌ Failed to load serviceAccount from ${fullPath}:`, e.message);
+    // Fallback?
+    throw e;
+  }
 };
 
 // Firebase Admin SDK 초기화
 if (!admin.apps.length) {
   try {
+    console.log('🔄 Firebase Admin SDK 초기화 시작...');
     const serviceAccount = getFirebaseConfig();
+    console.log('📄 Service Account 로드 성공. Project ID:', serviceAccount.project_id);
+    
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
       projectId: process.env.FIREBASE_PROJECT_ID || 'truckspot-9031e'
     });
-    console.log('✅ Firebase Admin SDK 초기화 성공');
+    console.log('✅ Firebase Admin SDK 초기화 완료');
   } catch (error) {
     console.error('❌ Firebase Admin SDK 초기화 실패:', error.message);
-    console.log('💡 Firebase 설정을 확인해주세요:');
-    console.log('   - serviceAccount.json 파일이 존재하는지 확인');
-    console.log('   - FIREBASE_SERVICE_ACCOUNT_PATH 환경변수 설정');
-    console.log('   - FIREBASE_PROJECT_ID 환경변수 설정');
+    console.error('Stack:', error.stack);
   }
 }
 

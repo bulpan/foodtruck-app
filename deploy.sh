@@ -4,9 +4,10 @@
 # 사용법: ./deploy.sh [파일명] [서버경로]
 
 # 기본 설정
-SSH_KEY="$HOME/Downloads/ssh-key-2025-10-10 (1).key"
-SERVER="opc@152.67.211.244"
-SERVER_PATH="/home/opc"
+# 기본 설정
+SSH_KEY="$HOME/.ssh/gcp-foodtruck"
+SERVER="oviwan1974@34.173.65.195"
+SERVER_PATH="/home/oviwan1974"
 
 # 색상 코드
 RED='\033[0;31m'

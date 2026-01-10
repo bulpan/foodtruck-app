@@ -265,16 +265,11 @@ function updateLocationDisplay() {
         locationNotice
     });
     
-    // 모든 요소를 다시 표시 (이전에 숨겨진 경우를 대비)
     if (locationName) {
-        locationName.style.display = '';
-        locationName.style.color = '';
-        locationName.style.fontStyle = '';
         locationName.textContent = currentLocationData.name;
         console.log('위치명 설정:', currentLocationData.name);
     }
     if (locationAddress) {
-        locationAddress.style.display = '';
         locationAddress.textContent = currentLocationData.address;
         console.log('주소 설정:', currentLocationData.address);
     }
@@ -287,7 +282,6 @@ function updateLocationDisplay() {
     };
     
     if (locationHours) {
-        locationHours.style.display = '';
         const openTime = formatTime(currentLocationData.openTime) || '11:00';
         const closeTime = formatTime(currentLocationData.closeTime) || '22:00';
         locationHours.textContent = `🕒 ${openTime} ~ ${closeTime}`;
@@ -295,7 +289,6 @@ function updateLocationDisplay() {
     }
     
     if (locationNotice) {
-        locationNotice.style.display = '';
         locationNotice.textContent = currentLocationData.notice || '';
         console.log('공지사항 설정:', currentLocationData.notice || '');
     }
@@ -457,29 +450,6 @@ function handleCategoryChange(event) {
 async function refreshLocation() {
     showLoading(true);
     try {
-        // DOM 요소들을 초기화하여 이전 상태 제거
-        const locationName = document.querySelector('#currentLocation .location-name');
-        const locationAddress = document.querySelector('#currentLocation .location-address');
-        const locationHours = document.querySelector('#currentLocation .location-hours');
-        const locationNotice = document.querySelector('#currentLocation .location-notice');
-        
-        // 모든 요소를 초기 상태로 복원
-        if (locationName) {
-            locationName.style.display = '';
-            locationName.style.color = '';
-            locationName.style.fontStyle = '';
-        }
-        if (locationAddress) {
-            locationAddress.style.display = '';
-        }
-        if (locationHours) {
-            locationHours.style.display = '';
-        }
-        if (locationNotice) {
-            locationNotice.style.display = '';
-        }
-        
-        // 위치 데이터 다시 로드
         await loadLocationData();
         showSuccess('위치 정보가 업데이트되었습니다.');
     } catch (error) {
