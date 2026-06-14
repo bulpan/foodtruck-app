@@ -17,6 +17,11 @@ GoogleService-Info.plist
 google-services.json
 firebase-adminsdk-*.json
 
+# Deployment private keys (public key file는 추적 가능)
+.deploy/*.key
+.deploy/*_private
+.deploy/id_*
+
 # API Keys and secrets
 *.key
 *.pem

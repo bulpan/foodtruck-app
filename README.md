@@ -187,6 +187,12 @@ FIREBASE_PROJECT_ID=truckspot-9031e
 - `POST /api/location` - 위치 등록
 - `PUT /api/location/:id` - 위치 수정
 
+### 위치 등록 기준
+- 위치는 날짜별로 관리자가 직접 등록합니다.
+- 오늘 날짜의 위치가 등록되지 않은 경우 고객 화면에는 위치 미정 상태가 표시됩니다.
+- 이전 주 또는 다른 날짜의 위치는 자동으로 복사하지 않습니다.
+- `DEFAULT_LOCATION_TIMEZONE`으로 오늘 날짜 판정 시간대를 지정할 수 있습니다. 기본값은 `Asia/Seoul`입니다.
+
 ### 푸시 알림
 - `POST /api/push/send` - 푸시 발송
 - `GET /api/push/history` - 발송 이력
@@ -216,6 +222,18 @@ grep "ERROR" backend/logs/server-$(date +%Y-%m-%d).log
 ```bash
 ./check-server.sh
 ```
+
+## 🛡️ TLS 인증서 관리 (2026-04-14 중요 메모)
+- Cloudflare 프록시와 `Full (strict)` 모드를 원활히 쓰려면 nginx가 `/etc/nginx/ssl/truck.carrera74.com.crt`/`.key`에 Let’s Encrypt 인증서를 직접 읽어야 합니다.
+- 아래처럼 발급된 `fullchain.pem`/`privkey.pem`을 nginx 경로로 복사하고 권한 조정·서비스 리로드까지 거쳐야 하며, 오늘 deploy-hook을 설정해 두었으므로 `certbot renew`가 진행될 때마다 동일한 순서(복사 → 권한 → reload)가 자동 실행됩니다.
+  ```bash
+  sudo cp /etc/letsencrypt/live/truck.carrera74.com/fullchain.pem /etc/nginx/ssl/truck.carrera74.com.crt
+  sudo cp /etc/letsencrypt/live/truck.carrera74.com/privkey.pem /etc/nginx/ssl/truck.carrera74.com.key
+  sudo chmod 644 /etc/nginx/ssl/truck.carrera74.com.crt
+  sudo chmod 600 /etc/nginx/ssl/truck.carrera74.com.key
+  sudo systemctl reload nginx
+  ```
+- 배포 후 `curl -vk https://truck.carrera74.com` 또는 `openssl s_client -connect truck.carrera74.com:443 -servername truck.carrera74.com`으로 issuer가 Let’s Encrypt인지 확인하고, Cloudflare SSL/TLS 대시보드에서 `Full (strict)` 모드가 유지되는지 점검하세요.
 
 ## 📞 지원
 

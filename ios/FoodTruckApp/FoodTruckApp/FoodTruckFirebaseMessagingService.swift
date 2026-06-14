@@ -227,11 +227,12 @@ extension FoodTruckFirebaseMessagingService: MessagingDelegate {
             // 권한 상태 확인 후에만 토큰 등록
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 DispatchQueue.main.async {
-                    if settings.authorizationStatus == .authorized {
-                        print("✅ 푸시 알림 권한이 허용되어 토큰 등록 진행")
+                    switch settings.authorizationStatus {
+                    case .authorized, .provisional, .ephemeral:
+                        print("✅ 푸시 알림 권한 사용 가능 상태로 토큰 등록 진행")
                         self.sendFCMTokenToServer(token: token)
-                    } else {
-                        print("❌ 푸시 알림 권한이 거부되어 토큰 등록 건너뜀")
+                    default:
+                        print("❌ 푸시 알림 권한 미허용 상태로 토큰 등록 건너뜀")
                     }
                 }
             }

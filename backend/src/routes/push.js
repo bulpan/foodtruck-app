@@ -280,6 +280,11 @@ router.get('/history-detailed', auth, async (req, res) => {
 // 최근 2주간 발송한 푸시 알림 목록 조회 (빠른 재발송용)
 router.get('/recent', auth, async (req, res) => {
   try {
+    const requestedLimit = Number.parseInt(req.query.limit, 10);
+    const limit = Number.isFinite(requestedLimit)
+      ? Math.min(Math.max(requestedLimit, 1), 20)
+      : 10;
+
     const twoWeeksAgo = new Date();
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
     
@@ -294,7 +299,7 @@ router.get('/recent', auth, async (req, res) => {
         }
       },
       order: [['createdAt', 'DESC']],
-      limit: 4,
+      limit,
       attributes: ['id', 'title', 'body', 'data', 'createdAt']
     });
     

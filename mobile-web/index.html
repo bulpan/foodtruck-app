@@ -19,7 +19,7 @@
     <link rel="icon" type="image/png" href="/mobile/images/icon-192x192.png">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="/mobile/css/style.css?v=2025110303">
+    <link rel="stylesheet" href="/mobile/css/style.css?v=20260312-contact21">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -45,6 +45,12 @@
                     <div class="location-hours"></div>
                     <div class="location-notice"></div>
                 </div>
+                <div class="location-card-actions">
+                    <button type="button" class="location-refresh-btn" onclick="refreshLocation()" aria-label="위치 새로고침">
+                        <i class="fas fa-sync-alt" aria-hidden="true"></i> 새로고침
+                    </button>
+                    <button type="button" class="location-contact-btn" id="locationContactBtn">문의하기</button>
+                </div>
             </div>
 
             <!-- 메뉴 섹션 -->
@@ -53,6 +59,20 @@
                 <div class="menu-grid" id="menuGrid">
                     <!-- 메뉴 아이템들이 동적으로 로드됩니다 -->
                 </div>
+            </div>
+
+            <!-- 문의 섹션 -->
+            <div class="contact-section">
+            <div class="contact-card">
+                <div class="contact-text">
+                    <h3>문의 / 요청</h3>
+                    <p>메뉴, 위치, 예약 등 궁금한 점을 남겨주세요.</p>
+                </div>
+                <button class="contact-open-btn" id="openContactBtn">
+                    문의하기
+                </button>
+                <button class="contact-inbox-btn badge-host" id="contactInboxBtn">내 문의 <span class="badge-new" id="contactInboxBadge">NEW</span></button>
+            </div>
             </div>
 
 
@@ -157,6 +177,93 @@
         <div class="spinner"></div>
     </div>
 
+    <!-- 오늘의 할인 쿠폰 팝업 -->
+    <div class="coupon-modal-overlay" id="dailyCouponOverlay">
+        <div class="coupon-modal">
+            <button class="coupon-modal-close" onclick="closeDailyCouponPopup()" aria-label="쿠폰 닫기">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="coupon-ticket">
+                <div class="coupon-badge">TODAY EVENT</div>
+                <h2 class="coupon-title">천원 쿠폰</h2>
+                <p class="coupon-subtitle">앱 실행 고객 전용 할인</p>
+                <div class="coupon-price">1,000원 OFF</div>
+                <div class="coupon-divider"></div>
+                <p class="coupon-datetime-label">발급일시</p>
+                <p class="coupon-datetime" id="dailyCouponDateTime">-</p>
+                <p class="coupon-guide">주문 시 직원에게 이 화면을 보여주세요.</p>
+            </div>
+            <button class="coupon-confirm-btn" onclick="closeDailyCouponPopup()">쿠폰 확인</button>
+        </div>
+    </div>
+
+    <!-- 알림 필요 안내 팝업 -->
+    <div class="notification-required-overlay" id="notificationRequiredOverlay">
+        <div class="notification-required-modal">
+            <button class="notification-required-close" onclick="closeNotificationRequiredPopup()" aria-label="안내 닫기">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="notification-required-icon">
+                <i class="fas fa-bell-slash"></i>
+            </div>
+            <h3 class="notification-required-title">쿠폰 표시 조건 안내</h3>
+            <p class="notification-required-message" id="notificationRequiredMessage">
+                알림을 켜고 앱으로 돌아오면 쿠폰이 자동 표시됩니다.
+            </p>
+            <button class="notification-required-btn" onclick="openNotificationSettingsAndWait()">
+                알림 켜기
+            </button>
+        </div>
+    </div>
+
+    <!-- 고객 문의 모달 -->
+    <div class="contact-modal-overlay" id="contactModalOverlay">
+        <div class="contact-modal">
+            <div class="contact-modal-header">
+                <h3>문의 남기기</h3>
+                <button class="contact-modal-close" aria-label="닫기" onclick="closeContactModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="contact-modal-body">
+                <div class="contact-row">
+                    <label class="contact-field compact">
+                        <span>이름(선택)</span>
+                        <input type="text" id="contactName" maxlength="50" placeholder="홍길동">
+                    </label>
+                    <label class="contact-field compact">
+                        <span>연락처(선택)</span>
+                        <input type="text" id="contactInfo" maxlength="60" placeholder="전화 또는 카톡ID">
+                    </label>
+                </div>
+                <label class="contact-field">
+                    <span>메시지</span>
+                    <textarea id="contactMessage" rows="4" maxlength="500" placeholder="남기실 내용을 적어주세요" required></textarea>
+                </label>
+                <p class="contact-hint">남겨주시면 확인 후 답변을 드립니다.</p>
+            </div>
+            <div class="contact-modal-footer">
+                <button class="contact-submit-btn" onclick="submitContact()">보내기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 문의 내역 모달 -->
+    <div class="contact-modal-overlay contact-inbox-overlay" id="contactInboxOverlay">
+        <div class="contact-modal contact-inbox-modal">
+            <div class="contact-modal-header">
+                <h3>내 문의 확인</h3>
+                <button class="contact-modal-close" aria-label="닫기" onclick="closeContactInbox()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="contact-inbox-body" id="contactInboxBody">
+                <p class="contact-hint">최근 문의와 답변을 불러옵니다.</p>
+            </div>
+        </div>
+    </div>
+
+
     <!-- 푸시 알림 동의 모달 -->
     <div class="push-modal-overlay" id="pushModalOverlay">
         <div class="push-modal">
@@ -184,7 +291,7 @@
     </div>
 
     <!-- 스크립트 -->
-    <script src="/mobile/js/app.js?v=2025110303"></script>
+    <script src="/mobile/js/app.js?v=20260312-contact11"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 </html>

@@ -10,11 +10,44 @@ const config = {
   isDevelopment: process.env.NODE_ENV === 'development'
 };
 
+const LOCATION_TIME_ZONE = process.env.DEFAULT_LOCATION_TIMEZONE || 'Asia/Seoul';
+
+const AUTO_DEFAULT_NOTICE_PATTERN = /기본\s*자동\s*세팅된\s*위치입니다\.?\s*변동\s*시\s*관리자에서\s*수정해주세요\.?/g;
+
+function sanitizeLocationNotice(notice) {
+  if (typeof notice !== 'string') {
+    return notice || '';
+  }
+
+  return notice.replace(AUTO_DEFAULT_NOTICE_PATTERN, '').trim();
+}
+
+function getCurrentDateInfo() {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: LOCATION_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    weekday: 'short'
+  });
+
+  const values = formatter.formatToParts(new Date()).reduce((acc, part) => {
+    if (part.type !== 'literal') {
+      acc[part.type] = part.value;
+    }
+    return acc;
+  }, {});
+
+  return {
+    date: `${values.year}-${values.month}-${values.day}`,
+    weekday: values.weekday
+  };
+}
+
 // 현재 위치 조회 (공개용 - 고객용)
 router.get('/current', async (req, res) => {
   try {
-    // 오늘 날짜
-    const today = new Date().toISOString().split('T')[0];
+    const { date: today, weekday } = getCurrentDateInfo();
     
     const currentLocation = await Location.findOne({
       where: {
@@ -28,7 +61,9 @@ router.get('/current', async (req, res) => {
     if (!currentLocation) {
       return res.json({
         location: null,
-        message: '아직 어디로 갈지 몰라요'
+        message: weekday === 'Sun'
+          ? '일요일, 오늘은 휴무입니다.'
+          : '아직 어디로 갈지 몰라요'
       });
     }
 
@@ -39,8 +74,9 @@ router.get('/current', async (req, res) => {
         address: currentLocation.address,
         openTime: currentLocation.openTime,
         closeTime: currentLocation.closeTime,
-        notice: currentLocation.notice,
-        date: currentLocation.date
+        notice: sanitizeLocationNotice(currentLocation.notice),
+        date: currentLocation.date,
+        isActive: true
       }
     });
   } catch (error) {
@@ -66,7 +102,8 @@ router.get('/admin/list', auth, async (req, res) => {
         address: location.address,
         openTime: location.openTime,
         closeTime: location.closeTime,
-        notice: location.notice,
+        notice: sanitizeLocationNotice(location.notice),
+        isActive: !location.deletedAt,
         createdAt: location.createdAt,
         updatedAt: location.updatedAt
       }))
@@ -105,7 +142,8 @@ router.post('/admin', [
         address: location.address,
         openTime: location.openTime,
         closeTime: location.closeTime,
-        notice: location.notice
+        notice: sanitizeLocationNotice(location.notice),
+        isActive: true
       }
     });
   } catch (error) {
@@ -154,7 +192,8 @@ router.put('/admin/:id', [
         address: location.address,
         openTime: location.openTime,
         closeTime: location.closeTime,
-        notice: location.notice,
+        notice: sanitizeLocationNotice(location.notice),
+        isActive: !location.deletedAt,
         updatedAt: location.updatedAt
       }
     });
@@ -223,7 +262,8 @@ router.post('/', [
         address: location.address,
         openTime: location.openTime,
         closeTime: location.closeTime,
-        notice: location.notice
+        notice: sanitizeLocationNotice(location.notice),
+        isActive: true
       }
     });
   } catch (error) {
@@ -274,7 +314,8 @@ router.put('/:id', [
         address: location.address,
         openTime: location.openTime,
         closeTime: location.closeTime,
-        notice: location.notice
+        notice: sanitizeLocationNotice(location.notice),
+        isActive: !location.deletedAt
       }
     });
   } catch (error) {

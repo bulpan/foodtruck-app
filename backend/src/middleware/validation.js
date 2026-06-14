@@ -1,5 +1,24 @@
 const Joi = require('joi');
 
+function isValidImageUrl(value) {
+  const normalized = String(value || '').trim();
+  if (!normalized) {
+    return true;
+  }
+
+  // 내부 업로드 경로 허용
+  if (normalized.startsWith('/')) {
+    return true;
+  }
+
+  try {
+    const parsed = new URL(normalized);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch (error) {
+    return false;
+  }
+}
+
 // 공통 유효성 검사 함수
 const validate = (schema) => {
   return (req, res, next) => {
@@ -45,13 +64,33 @@ const schemas = {
 
   menuCreate: Joi.object({
     name: Joi.string().trim().min(2).max(100).required(),
-    description: Joi.string().trim().max(500),
+    description: Joi.string().trim().allow('').max(500),
     price: Joi.number().positive().precision(2).required(),
-    imageUrl: Joi.string().uri().allow('').optional(),
+    imageUrl: Joi.string().trim().allow('').custom((value, helpers) => {
+      if (isValidImageUrl(value)) {
+        return value;
+      }
+      return helpers.error('string.uri');
+    }).optional(),
     category: Joi.string().valid('main', 'side', 'beverage', 'dessert', '메인', '사이드', '음료', '디저트').default('main'),
     isAvailable: Joi.boolean().default(true),
     sortOrder: Joi.number().integer().min(0).default(0)
   }),
+
+  menuUpdate: Joi.object({
+    name: Joi.string().trim().min(2).max(100).optional(),
+    description: Joi.string().trim().allow('').max(500).optional(),
+    price: Joi.number().positive().precision(2).optional(),
+    imageUrl: Joi.string().trim().allow('').custom((value, helpers) => {
+      if (isValidImageUrl(value)) {
+        return value;
+      }
+      return helpers.error('string.uri');
+    }).optional(),
+    category: Joi.string().valid('main', 'side', 'beverage', 'dessert', '메인', '사이드', '음료', '디저트').optional(),
+    isAvailable: Joi.boolean().optional(),
+    sortOrder: Joi.number().integer().min(0).optional()
+  }).min(1),
 
   locationCreate: Joi.object({
     name: Joi.string().trim().min(2).max(100).required(),
@@ -74,6 +113,15 @@ const schemas = {
     data: Joi.object().optional(),
     scheduledAt: Joi.date().greater('now').optional(),
     target: Joi.string().valid('all', 'android', 'ios').optional()
+  }),
+
+  contactCreate: Joi.object({
+    name: Joi.string().trim().max(100).allow('', null),
+    contact: Joi.string().trim().max(120).allow('', null),
+    userId: Joi.string().trim().max(100).allow('', null),
+    source: Joi.string().valid('web', 'app', 'mobile-web', 'app-webview', 'kiosk', 'admin', 'unknown').default('web'),
+    fcmToken: Joi.string().trim().max(500).optional(),
+    message: Joi.string().trim().min(3).max(1000).required()
   })
 };
 

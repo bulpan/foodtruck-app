@@ -12,10 +12,6 @@ class NotificationSettingsViewController: UIViewController {
     private var pushNotificationSwitch: UISwitch!
     private var locationNotificationSwitch: UISwitch!
     
-    // 이전 상태 저장용
-    private var previousPushNotificationState: Bool = false
-    private var previousLocationNotificationState: Bool = false
-    
     // UserDefaults 키
     private let pushNotificationKey = "isPushNotificationEnabled"
     private let locationNotificationKey = "isLocationNotificationEnabled"
@@ -37,6 +33,14 @@ class NotificationSettingsViewController: UIViewController {
         setupNavigationBar()
         // 화면이 나타날 때마다 권한 상태 확인
         checkNotificationPermission()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.post(
+            name: NSNotification.Name("FoodTruckNotificationSettingsChanged"),
+            object: nil
+        )
     }
     
     // MARK: - UI Setup
@@ -242,10 +246,7 @@ class NotificationSettingsViewController: UIViewController {
     
     @objc private func pushNotificationChanged(_ sender: UISwitch) {
         print("🔔 전체 푸시 알림 변경: \(sender.isOn)")
-        
-        // 이전 상태 저장
-        previousPushNotificationState = !sender.isOn
-        
+
         if sender.isOn {
             print("🔍 권한 상태 확인 중...")
             // 권한 상태 확인
@@ -255,18 +256,22 @@ class NotificationSettingsViewController: UIViewController {
                 
                 DispatchQueue.main.async {
                     switch settings.authorizationStatus {
-                    case .authorized, .provisional:
+                    case .authorized, .provisional, .ephemeral:
                         print("✅ 권한이 허용됨 - 정상 동작")
                         // 권한이 허용된 경우 - 정상 동작
                         self.locationNotificationSwitch.isEnabled = true
                         // 푸시 알림이 켜지면 위치 알림도 자동으로 켜기
                         self.locationNotificationSwitch.isOn = true
-                        // 서버에 설정 저장
+                        // 로컬 설정은 즉시 저장하고 서버 동기화는 비동기로 진행
+                        self.saveSettings()
                         self.saveSettingsToServer()
                     case .denied:
                         print("❌ 권한이 거부됨 - 설정으로 이동")
                         // 권한이 거부된 경우 - OS 설정으로 이동
                         sender.isOn = false // 스위치를 다시 OFF로
+                        self.locationNotificationSwitch.isOn = false
+                        self.locationNotificationSwitch.isEnabled = false
+                        self.saveSettings()
                         self.showPermissionDeniedAlert()
                     case .notDetermined:
                         print("⚠️ 권한이 미결정 - 권한 요청")
@@ -283,7 +288,8 @@ class NotificationSettingsViewController: UIViewController {
             // 전체 알림이 꺼지면 하위 알림도 비활성화 및 OFF
             locationNotificationSwitch.isOn = false
             locationNotificationSwitch.isEnabled = false
-            // 서버에 설정 저장
+            // 로컬 설정은 즉시 저장하고 서버 동기화는 비동기로 진행
+            saveSettings()
             saveSettingsToServer()
         }
     }
@@ -291,11 +297,9 @@ class NotificationSettingsViewController: UIViewController {
     
     @objc private func locationNotificationChanged(_ sender: UISwitch) {
         print("📍 위치 알림 변경: \(sender.isOn)")
-        
-        // 이전 상태 저장
-        previousLocationNotificationState = !sender.isOn
-        
-        // 서버에 설정 저장
+
+        // 로컬 설정은 즉시 저장하고 서버 동기화는 비동기로 진행
+        saveSettings()
         saveSettingsToServer()
     }
     
@@ -306,44 +310,35 @@ class NotificationSettingsViewController: UIViewController {
         print("🔘 스위치 isUserInteractionEnabled: \(sender.isUserInteractionEnabled)")
     }
     
-    // MARK: - Rollback Methods
-    private func rollbackPushNotificationSwitch() {
-        print("🔄 푸시 알림 스위치 이전 상태로 복원: \(previousPushNotificationState)")
-        pushNotificationSwitch.isOn = previousPushNotificationState
-        
-        // 푸시 알림이 꺼지면 위치 알림도 비활성화
-        if !previousPushNotificationState {
-            locationNotificationSwitch.isOn = false
-            locationNotificationSwitch.isEnabled = false
-        }
-    }
-    
-    private func rollbackLocationNotificationSwitch() {
-        print("🔄 위치 알림 스위치 이전 상태로 복원: \(previousLocationNotificationState)")
-        locationNotificationSwitch.isOn = previousLocationNotificationState
-    }
-    
-    
     // MARK: - Settings Management
     private func loadSettings() {
-        let isPushEnabled = UserDefaults.standard.bool(forKey: pushNotificationKey)
-        let isLocationEnabled = UserDefaults.standard.bool(forKey: locationNotificationKey)
-        
-        // 처음 실행 시 기본값 설정
-        if !UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
-            UserDefaults.standard.set(true, forKey: pushNotificationKey)
-            UserDefaults.standard.set(true, forKey: locationNotificationKey)
-            UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
-            
-            pushNotificationSwitch.isOn = true
-            locationNotificationSwitch.isOn = true
+        let defaults = UserDefaults.standard
+        let isPushEnabled: Bool
+        let isLocationEnabled: Bool
+
+        if let pushValue = defaults.object(forKey: pushNotificationKey) as? Bool {
+            isPushEnabled = pushValue
         } else {
-            pushNotificationSwitch.isOn = isPushEnabled
-            locationNotificationSwitch.isOn = isLocationEnabled
+            isPushEnabled = true
+            defaults.set(true, forKey: pushNotificationKey)
         }
+
+        if let locationValue = defaults.object(forKey: locationNotificationKey) as? Bool {
+            isLocationEnabled = locationValue
+        } else {
+            isLocationEnabled = true
+            defaults.set(true, forKey: locationNotificationKey)
+        }
+
+        pushNotificationSwitch.isOn = isPushEnabled
+        locationNotificationSwitch.isOn = isPushEnabled ? isLocationEnabled : false
         
         // 전체 알림이 꺼져있으면 하위 알림 비활성화
         locationNotificationSwitch.isEnabled = isPushEnabled
+
+        print("📥 로컬 알림 설정 로드:")
+        print("   - 푸시 알림: \(isPushEnabled)")
+        print("   - 위치 알림: \(isLocationEnabled)")
     }
     
     private func saveSettings() {
@@ -354,6 +349,11 @@ class NotificationSettingsViewController: UIViewController {
         print("✅ 알림 설정 저장 완료:")
         print("   - 푸시 알림: \(pushNotificationSwitch.isOn)")
         print("   - 위치 알림: \(locationNotificationSwitch.isOn)")
+
+        NotificationCenter.default.post(
+            name: NSNotification.Name("FoodTruckNotificationSettingsChanged"),
+            object: nil
+        )
     }
     
     // MARK: - Notification Permission
@@ -361,7 +361,7 @@ class NotificationSettingsViewController: UIViewController {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
                 switch settings.authorizationStatus {
-                case .authorized, .provisional:
+                case .authorized, .provisional, .ephemeral:
                     print("✅ 알림 권한 허용됨")
                     self.enableNotificationControls()
                 case .denied:
@@ -403,11 +403,15 @@ class NotificationSettingsViewController: UIViewController {
                     // 권한이 허용되면 위치 알림 스위치도 활성화하고 켜기
                     self.locationNotificationSwitch.isEnabled = true
                     self.locationNotificationSwitch.isOn = true
-                    // 서버에 설정 저장
+                    // 로컬 설정은 즉시 저장하고 서버 동기화는 비동기로 진행
+                    self.saveSettings()
                     self.saveSettingsToServer()
                 } else {
                     print("❌ 알림 권한 거부됨")
                     self.pushNotificationSwitch.isOn = false
+                    self.locationNotificationSwitch.isOn = false
+                    self.locationNotificationSwitch.isEnabled = false
+                    self.saveSettings()
                     self.showPermissionDeniedAlert()
                 }
             }
@@ -434,14 +438,24 @@ class NotificationSettingsViewController: UIViewController {
     
     // MARK: - Server API
     private func loadSettingsFromServer() {
+        let hasLocalPreference =
+            UserDefaults.standard.object(forKey: pushNotificationKey) != nil &&
+            UserDefaults.standard.object(forKey: locationNotificationKey) != nil
+
         // 먼저 로컬 설정으로 UI 초기화
         loadSettings()
+
+        // 사용자가 이미 앱에서 설정한 값이 있으면 서버 값으로 덮어쓰지 않음
+        if hasLocalPreference {
+            print("ℹ️ 로컬 알림 설정이 존재하여 서버 동기화 덮어쓰기를 건너뜁니다")
+            return
+        }
         
         // 알림 권한 상태 확인 후 FCM 토큰 가져오기
         UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
             DispatchQueue.main.async {
                 switch settings.authorizationStatus {
-                case .authorized, .provisional:
+                case .authorized, .provisional, .ephemeral:
                     print("✅ 알림 권한 허용됨 - FCM 토큰 가져오기 시도")
                     self?.getFCMTokenAndLoadSettings()
                 case .denied:
@@ -477,9 +491,15 @@ class NotificationSettingsViewController: UIViewController {
             self?.fetchNotificationSettings(token: token)
         }
     }
+
+    private func encodedPathToken(_ token: String) -> String {
+        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-._~"))
+        return token.addingPercentEncoding(withAllowedCharacters: allowed) ?? token
+    }
     
     private func fetchNotificationSettings(token: String) {
-        guard let url = URL(string: "\(baseURL)/api/fcm/tokens") else {
+        let encodedToken = encodedPathToken(token)
+        guard let url = URL(string: "\(baseURL)/api/fcm/token/\(encodedToken)") else {
             print("❌ 잘못된 URL")
             return
         }
@@ -495,6 +515,21 @@ class NotificationSettingsViewController: UIViewController {
                     print("❌ 서버 통신 오류: \(error)")
                     return
                 }
+
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    print("❌ HTTP 응답이 아닙니다")
+                    return
+                }
+
+                if httpResponse.statusCode == 404 {
+                    print("ℹ️ 서버에 토큰 설정이 없어 로컬 설정을 유지합니다")
+                    return
+                }
+
+                guard (200...299).contains(httpResponse.statusCode) else {
+                    print("❌ 서버 오류: \(httpResponse.statusCode)")
+                    return
+                }
                 
                 guard let data = data else {
                     print("❌ 응답 데이터 없음")
@@ -503,20 +538,11 @@ class NotificationSettingsViewController: UIViewController {
                 
                 do {
                     if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                       let tokens = json["tokens"] as? [[String: Any]] {
-                        print("📱 서버에서 받은 토큰 목록: \(json)")
+                       let tokenData = json["token"] as? [String: Any] {
+                        print("📱 서버에서 받은 토큰 설정: \(json)")
                         
-                        // 현재 토큰에 해당하는 설정 찾기
-                        var notificationEnabled = true
-                        var locationNotificationEnabled = true
-                        
-                        for tokenData in tokens {
-                            if let tokenValue = tokenData["token"] as? String, tokenValue == token {
-                                notificationEnabled = tokenData["notificationEnabled"] as? Bool ?? true
-                                locationNotificationEnabled = tokenData["locationNotificationEnabled"] as? Bool ?? true
-                                break
-                            }
-                        }
+                        let notificationEnabled = tokenData["notificationEnabled"] as? Bool ?? true
+                        let locationNotificationEnabled = tokenData["locationNotificationEnabled"] as? Bool ?? true
                         
                         // UI 업데이트
                         self?.pushNotificationSwitch.isOn = notificationEnabled
@@ -542,13 +568,11 @@ class NotificationSettingsViewController: UIViewController {
         UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
             DispatchQueue.main.async {
                 switch settings.authorizationStatus {
-                case .authorized, .provisional:
+                case .authorized, .provisional, .ephemeral:
                     print("✅ 알림 권한 허용됨 - 서버에 설정 저장 시도")
                     self?.getFCMTokenAndSaveSettings()
                 case .denied:
-                    print("❌ 알림 권한 거부됨 - 로컬에만 저장")
-                    // 권한이 거부된 경우 로컬에만 저장
-                    self?.saveSettings()
+                    print("❌ 알림 권한 거부됨 - 서버 동기화 생략 (로컬 설정 유지)")
                 case .notDetermined:
                     print("⚠️ 알림 권한 미결정 - 서버에 설정 저장 시도")
                     self?.getFCMTokenAndSaveSettings()
@@ -564,15 +588,13 @@ class NotificationSettingsViewController: UIViewController {
         Messaging.messaging().token { [weak self] (token: String?, error: Error?) in
             if let error = error {
                 print("❌ FCM 토큰 가져오기 실패: \(error)")
-                // FCM 토큰이 없어도 로컬에는 저장
-                self?.saveSettings()
+                // 로컬 저장은 이미 완료되어 있으므로 서버 동기화만 생략
                 return
             }
             
             guard let token = token else {
                 print("❌ FCM 토큰이 nil")
-                // FCM 토큰이 없어도 로컬에는 저장
-                self?.saveSettings()
+                // 로컬 저장은 이미 완료되어 있으므로 서버 동기화만 생략
                 return
             }
             
@@ -581,7 +603,8 @@ class NotificationSettingsViewController: UIViewController {
     }
     
     private func updateNotificationSettingsOnServer(token: String) {
-        guard let url = URL(string: "\(baseURL)/api/fcm/token/\(token)") else {
+        let encodedToken = encodedPathToken(token)
+        guard let url = URL(string: "\(baseURL)/api/fcm/token/\(encodedToken)") else {
             print("❌ 잘못된 URL")
             showErrorAlert(message: "잘못된 서버 URL입니다.")
             return
@@ -609,10 +632,8 @@ class NotificationSettingsViewController: UIViewController {
             DispatchQueue.main.async {
                 if let error = error {
                     print("❌ 서버 통신 오류: \(error)")
-                    // 서버 저장 실패 시 스위치 상태 롤백
-                    self?.rollbackPushNotificationSwitch()
-                    self?.rollbackLocationNotificationSwitch()
-                    self?.showErrorAlert(message: "서버 통신에 실패했습니다.")
+                    // 앱 내 로컬 설정은 유지하고 서버 동기화만 실패 처리
+                    self?.showErrorAlert(message: "서버 동기화에 실패했습니다. 앱 설정은 유지됩니다.")
                     return
                 }
                 
@@ -625,10 +646,8 @@ class NotificationSettingsViewController: UIViewController {
                         print("✅ 서버에 알림 설정 저장 완료")
                     } else {
                         print("❌ 서버 오류: \(httpResponse.statusCode)")
-                        // 서버 저장 실패 시 스위치 상태 롤백
-                        self?.rollbackPushNotificationSwitch()
-                        self?.rollbackLocationNotificationSwitch()
-                        self?.showErrorAlert(message: "서버에서 오류가 발생했습니다.")
+                        // 앱 내 로컬 설정은 유지하고 서버 동기화만 실패 처리
+                        self?.showErrorAlert(message: "서버 동기화에 실패했습니다. 앱 설정은 유지됩니다.")
                     }
                 }
             }
@@ -646,4 +665,3 @@ class NotificationSettingsViewController: UIViewController {
         present(alert, animated: true)
     }
 }
-

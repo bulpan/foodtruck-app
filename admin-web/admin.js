@@ -61,6 +61,14 @@ function showLoginAlert(message, type) {
 let authToken = null;
 let currentEditingMenuId = null;
 let currentEditingLocationId = null;
+const DEFAULT_ADMIN_SECTION = 'location';
+const SECTION_LABELS = {
+    dashboard: '대시보드',
+    menu: '메뉴 관리',
+    location: '위치 관리',
+    push: '푸시 알림',
+    tokens: '토큰 관리'
+};
 
 // API 기본 URL
 const API_BASE_URL = window.location.origin + '/api';
@@ -121,7 +129,7 @@ async function validateToken() {
 
         if (response.ok) {
             showMainContent();
-            loadDashboardData();
+            showSection(DEFAULT_ADMIN_SECTION);
         } else {
             // 토큰이 유효하지 않으면 로그인 화면으로
             localStorage.removeItem('adminToken');
@@ -173,20 +181,25 @@ function showMainContent() {
     document.querySelectorAll('.sidebar .nav-link').forEach(link => {
         link.classList.remove('active');
     });
-    const dashboardSidebarLink = document.querySelector('.sidebar .nav-link[onclick*="dashboard"]');
-    if (dashboardSidebarLink) {
-        dashboardSidebarLink.classList.add('active');
-        console.log('Dashboard sidebar link activated');
+    const defaultSidebarLink = document.querySelector(`.sidebar .nav-link[onclick*="${DEFAULT_ADMIN_SECTION}"]`);
+    if (defaultSidebarLink) {
+        defaultSidebarLink.classList.add('active');
+        console.log('Default sidebar link activated');
     }
 
     // 모바일 탭 활성화
     document.querySelectorAll('.mobile-nav .nav-link').forEach(link => {
         link.classList.remove('active');
     });
-    const dashboardMobileLink = document.querySelector('.mobile-nav .nav-link[onclick*="dashboard"]');
-    if (dashboardMobileLink) {
-        dashboardMobileLink.classList.add('active');
-        console.log('Dashboard mobile link activated');
+    const defaultMobileLink = document.querySelector(`.mobile-nav .nav-link[onclick*="${DEFAULT_ADMIN_SECTION}"]`);
+    if (defaultMobileLink) {
+        defaultMobileLink.classList.add('active');
+        console.log('Default mobile link activated');
+    }
+
+    const mobileSectionLabel = document.getElementById('mobile-section-label');
+    if (mobileSectionLabel) {
+        mobileSectionLabel.textContent = `현재: ${SECTION_LABELS[DEFAULT_ADMIN_SECTION]}`;
     }
 }
 
@@ -220,7 +233,7 @@ async function handleLogin(e) {
 
             // 로그인 성공 시 즉시 화면 전환
             showMainContent();
-            loadDashboardData();
+            showSection(DEFAULT_ADMIN_SECTION);
             showToast('로그인에 성공했습니다!', 'success', '로그인 성공', 3000);
         } else {
             const errorMessage = data.error || '로그인에 실패했습니다.';
@@ -294,7 +307,11 @@ function getAuthHeaders() {
 
 
 // 섹션 표시 (반응형 네비게이션 지원)
-function showSection(sectionName) {
+function showSection(sectionName, event = null) {
+    if (event) {
+        event.preventDefault();
+    }
+
     // 모든 섹션 숨기기
     document.querySelectorAll('.page-section').forEach(section => {
         section.classList.remove('active');
@@ -324,6 +341,11 @@ function showSection(sectionName) {
         activeMobileLink.classList.add('active');
     }
 
+    const mobileSectionLabel = document.getElementById('mobile-section-label');
+    if (mobileSectionLabel && SECTION_LABELS[sectionName]) {
+        mobileSectionLabel.textContent = `현재: ${SECTION_LABELS[sectionName]}`;
+    }
+
     // 섹션별 데이터 로드
     switch (sectionName) {
         case 'dashboard':
@@ -343,6 +365,8 @@ function showSection(sectionName) {
             loadTokens();
             break;
     }
+
+    return false;
 }
 
 // 대시보드 데이터 로드
@@ -369,14 +393,229 @@ async function loadDashboardData() {
         document.getElementById('total-menus').textContent = menusData.menus?.length || 0;
         document.getElementById('current-location').textContent = locationsData.location ? '1' : '0';
 
-        // 푸시 발송 내역과 금일 건수 로드
+        // 금일 푸시 건수, 2주 접속 이력, 당일 시간대 통계 로드
         await Promise.all([
-            loadPushHistory(),
-            loadTodayPushCount()
+            loadTodayPushCount(),
+            loadVisitorTrend(),
+            loadTodayVisitorStats()
         ]);
 
     } catch (error) {
         console.error('Dashboard data load error:', error);
+    }
+}
+
+function formatNumber(value) {
+    return Number(value || 0).toLocaleString('ko-KR');
+}
+
+function escapeHtml(text) {
+    return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function getDayShortLabel(dateText) {
+    const dayMap = ['일', '월', '화', '수', '목', '금', '토'];
+    const parsed = new Date(`${dateText}T00:00:00`);
+    return dayMap[parsed.getDay()] || '';
+}
+
+function renderVisitorYAxis(maxValue) {
+    const yAxisEl = document.getElementById('visitor-y-axis');
+    if (!yAxisEl) return;
+
+    const top = Math.max(1, Number(maxValue || 0));
+    const tickValues = [top, Math.round(top * 0.75), Math.round(top * 0.5), Math.round(top * 0.25), 0];
+
+    yAxisEl.innerHTML = `
+        <span>${formatNumber(tickValues[0])}</span>
+        <span>${formatNumber(tickValues[1])}</span>
+        <span>${formatNumber(tickValues[2])}</span>
+        <span>${formatNumber(tickValues[3])}</span>
+        <span class="unit">${formatNumber(tickValues[4])} req</span>
+    `;
+}
+
+function renderVisitorTrend(stats = [], summary = {}) {
+    const chartEl = document.getElementById('visitor-trend-chart');
+    if (!chartEl) return;
+
+    document.getElementById('visitor-total-unique').textContent = formatNumber(summary.totalUniqueVisitors);
+    document.getElementById('visitor-total-requests').textContent = formatNumber(summary.totalRequests);
+    document.getElementById('visitor-avg-unique').textContent = formatNumber(summary.avgUniqueVisitors);
+    document.getElementById('visitor-avg-requests').textContent = formatNumber(summary.avgRequests);
+
+    if (!stats.length) {
+        renderVisitorYAxis(0);
+        chartEl.innerHTML = '<p class="text-muted text-center w-100 my-2">접속자 로그 데이터가 없습니다.</p>';
+        return;
+    }
+
+    const maxUnique = Math.max(...stats.map(item => item.uniqueVisitors), 0);
+    const maxRequests = Math.max(...stats.map(item => item.requestCount), 0);
+    const maxValue = Math.max(maxUnique, maxRequests, 1);
+
+    renderVisitorYAxis(maxValue);
+
+    chartEl.innerHTML = stats.map((item) => {
+        const date = item.date ? item.date.slice(5) : '--.--';
+        const dayShort = getDayShortLabel(item.date);
+        const uniqueHeight = Math.max(2, Math.round((item.uniqueVisitors / maxValue) * 100));
+        const requestHeight = Math.max(2, Math.round((item.requestCount / maxValue) * 100));
+        const tooltip = `${item.date} (${dayShort}) 방문자 ${item.uniqueVisitors}명 / 요청 ${item.requestCount}건`;
+
+        return `
+            <div class="visitor-day" title="${escapeHtml(tooltip)}">
+                <div class="visitor-bars">
+                    <span class="visitor-bar requests" style="height:${requestHeight}%"></span>
+                    <span class="visitor-bar visitors" style="height:${uniqueHeight}%"></span>
+                </div>
+                <div class="visitor-day-date">${escapeHtml(date)}</div>
+                <div class="visitor-day-week">${escapeHtml(dayShort)}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderVisitorQualityNote(quality = {}) {
+    const noteEl = document.getElementById('visitor-quality-note');
+    if (!noteEl) return;
+
+    const hasReliableDate = Boolean(quality.reliableFromDate);
+    const message = quality.message || '신뢰 가능한 식별 데이터가 쌓이는 중입니다.';
+
+    noteEl.textContent = message;
+    noteEl.classList.toggle('text-warning', !hasReliableDate);
+    noteEl.classList.toggle('text-muted', hasReliableDate);
+}
+
+function getHourLabel(hour) {
+    return `${String(hour).padStart(2, '0')}시`;
+}
+
+function renderTodayVisitorStats(data = {}) {
+    const summary = data.summary || {};
+    const hourly = Array.isArray(data.hourly) ? data.hourly : [];
+    const dateEl = document.getElementById('today-visitor-date');
+    const uniqueEl = document.getElementById('today-visitor-unique');
+    const requestsEl = document.getElementById('today-visitor-requests');
+    const activeHoursEl = document.getElementById('today-visitor-active-hours');
+    const peakHourEl = document.getElementById('today-visitor-peak-hour');
+    const chartEl = document.getElementById('today-hourly-chart');
+    const noteEl = document.getElementById('today-visitor-quality-note');
+
+    if (!dateEl || !uniqueEl || !requestsEl || !activeHoursEl || !peakHourEl || !chartEl || !noteEl) {
+        return;
+    }
+
+    dateEl.textContent = data.date ? `${data.date} 기준` : '-';
+    uniqueEl.textContent = formatNumber(summary.totalUniqueVisitors);
+    requestsEl.textContent = formatNumber(summary.totalRequests);
+    activeHoursEl.textContent = formatNumber(summary.activeHours);
+
+    if (summary.peakHour && Number(summary.peakHour.requestCount || 0) > 0) {
+        peakHourEl.textContent = `${getHourLabel(summary.peakHour.hour)} (${formatNumber(summary.peakHour.requestCount)}건)`;
+    } else {
+        peakHourEl.textContent = '-';
+    }
+
+    const quality = data.quality || {};
+    noteEl.textContent = quality.message || '당일 접속 로그를 집계 중입니다.';
+    noteEl.classList.toggle('text-warning', !quality.hasReliableClientId);
+    noteEl.classList.toggle('text-muted', Boolean(quality.hasReliableClientId));
+
+    if (!hourly.length || Number(summary.totalRawRequests || 0) === 0) {
+        chartEl.innerHTML = '<p class="text-muted text-center w-100 my-2">당일 접속 기록이 아직 없습니다.</p>';
+        return;
+    }
+
+    const maxValue = Math.max(
+        ...hourly.map((item) => Math.max(Number(item.requestCount || 0), Number(item.uniqueVisitors || 0))),
+        1
+    );
+
+    chartEl.innerHTML = hourly.map((item) => {
+        const hour = Number(item.hour || 0);
+        const requestCount = Number(item.requestCount || 0);
+        const uniqueVisitors = Number(item.uniqueVisitors || 0);
+        const requestHeight = requestCount > 0 ? Math.max(4, Math.round((requestCount / maxValue) * 100)) : 2;
+        const visitorHeight = uniqueVisitors > 0 ? Math.max(4, Math.round((uniqueVisitors / maxValue) * 100)) : 2;
+        const label = hour % 3 === 0 ? String(hour).padStart(2, '0') : '';
+        const tooltip = `${getHourLabel(hour)} 방문자 ${uniqueVisitors}명 / 이벤트 ${requestCount}건`;
+
+        return `
+            <div class="today-hour-slot" title="${escapeHtml(tooltip)}">
+                <div class="today-hour-bars">
+                    <span class="today-hour-bar requests" style="height:${requestHeight}%"></span>
+                    <span class="today-hour-bar visitors" style="height:${visitorHeight}%"></span>
+                </div>
+                <div class="today-hour-label">${escapeHtml(label)}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function loadTodayVisitorStats() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/visitor-stats/today`, {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+
+        if (!response.ok) {
+            throw new Error(`today visitor stats load failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        renderTodayVisitorStats(data);
+    } catch (error) {
+        console.error('Load today visitor stats error:', error);
+        renderTodayVisitorStats({
+            date: new Date().toISOString().slice(0, 10),
+            summary: {
+                totalUniqueVisitors: 0,
+                totalRequests: 0,
+                totalRawRequests: 0,
+                activeHours: 0,
+                peakHour: null
+            },
+            hourly: [],
+            quality: {
+                hasReliableClientId: false,
+                message: '당일 접속 통계를 불러오지 못했습니다.'
+            }
+        });
+    }
+}
+
+async function loadVisitorTrend() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/visitor-stats?days=14`, {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+
+        if (!response.ok) {
+            throw new Error(`visitor stats load failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        renderVisitorTrend(data.stats || [], data.summary || {});
+        renderVisitorQualityNote(data.quality || {});
+    } catch (error) {
+        console.error('Load visitor trend error:', error);
+        renderVisitorTrend([], {
+            totalUniqueVisitors: 0,
+            totalRequests: 0,
+            avgUniqueVisitors: 0,
+            avgRequests: 0
+        });
+        renderVisitorQualityNote({
+            message: '접속 통계 품질 정보를 불러오지 못했습니다.',
+            reliableFromDate: null
+        });
     }
 }
 
@@ -548,6 +787,8 @@ function showAddMenuForm() {
     currentEditingMenuId = null;
     document.getElementById('menu-form-title').textContent = '메뉴 추가';
     document.getElementById('menu-form-element').reset();
+    document.getElementById('menu-existing-image-url').value = '';
+    document.getElementById('menu-image-url').value = '';
 
     // 이미지 관련 요소 초기화
     document.getElementById('current-image-preview').style.display = 'none';
@@ -558,8 +799,22 @@ function showAddMenuForm() {
 
 // URL 벨리데이션 함수
 function isValidUrl(string) {
+    if (!string) {
+        return false;
+    }
+
+    const normalized = String(string).trim();
+
+    // 서버에 저장된 기존 이미지 경로(/uploads/...)도 유효 URL로 허용
+    if (normalized.startsWith('/')) {
+        return true;
+    }
+
     try {
-        new URL(string);
+        const parsed = new URL(normalized);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+            return false;
+        }
         return true;
     } catch (_) {
         return false;
@@ -577,7 +832,8 @@ function removeCurrentImage() {
     // 새 이미지 업로드 폼 표시
     newImageUpload.style.display = 'block';
 
-    // 이미지 URL 필드 초기화
+    // 기존 이미지 참조와 새 이미지 입력을 모두 초기화
+    document.getElementById('menu-existing-image-url').value = '';
     document.getElementById('menu-image-url').value = '';
     document.getElementById('menu-image').value = '';
 }
@@ -616,13 +872,15 @@ async function editMenu(menuId) {
                 currentImagePreview.style.display = 'block';
                 newImageUpload.style.display = 'none';
 
-                // 숨겨진 필드에 기존 이미지 URL 저장
-                document.getElementById('menu-image-url').value = data.menu.imageUrl;
+                // 기존 이미지와 새 이미지 URL 입력을 분리해서 관리
+                document.getElementById('menu-existing-image-url').value = data.menu.imageUrl;
+                document.getElementById('menu-image-url').value = '';
             } else {
                 // 기존 이미지가 없으면 새 이미지 업로드 폼 표시
                 currentImagePreview.style.display = 'none';
                 newImageUpload.style.display = 'block';
                 document.getElementById('menu-image').value = '';
+                document.getElementById('menu-existing-image-url').value = '';
                 document.getElementById('menu-image-url').value = '';
             }
 
@@ -638,6 +896,8 @@ async function editMenu(menuId) {
 function hideMenuForm() {
     document.getElementById('menu-form').style.display = 'none';
     currentEditingMenuId = null;
+    document.getElementById('menu-existing-image-url').value = '';
+    document.getElementById('menu-image-url').value = '';
 
     // 이미지 관련 요소 초기화
     document.getElementById('current-image-preview').style.display = 'none';
@@ -681,6 +941,7 @@ async function handleMenuSubmit(e) {
     // 이미지 처리
     const imageFile = document.getElementById('menu-image').files[0];
     const imageUrl = document.getElementById('menu-image-url').value.trim();
+    const existingImageUrl = document.getElementById('menu-existing-image-url').value.trim();
     const currentImagePreview = document.getElementById('current-image-preview');
 
     // 이미지 URL 벨리데이션 (URL이 입력된 경우)
@@ -690,15 +951,7 @@ async function handleMenuSubmit(e) {
         return;
     }
 
-    // 기존 이미지가 있고 새 이미지를 업로드하지 않은 경우
-    if (currentImagePreview.style.display !== 'none' && !imageFile && !imageUrl) {
-        // 기존 이미지 URL을 그대로 사용
-        const currentImageSrc = document.getElementById('current-image').src;
-        if (currentImageSrc) {
-            formData.append('imageUrl', currentImageSrc);
-            console.log('기존 이미지 URL 유지:', currentImageSrc);
-        }
-    } else if (imageFile) {
+    if (imageFile) {
         // 새 이미지 파일 업로드
         formData.append('image', imageFile);
         console.log('새 이미지 파일 추가:', imageFile.name);
@@ -706,6 +959,14 @@ async function handleMenuSubmit(e) {
         // 새 이미지 URL 사용
         formData.append('imageUrl', imageUrl);
         console.log('새 이미지 URL 추가:', imageUrl);
+    } else if (currentImagePreview.style.display !== 'none' && existingImageUrl) {
+        // 기존 이미지를 유지
+        formData.append('imageUrl', existingImageUrl);
+        console.log('기존 이미지 URL 유지:', existingImageUrl);
+    } else if (currentEditingMenuId) {
+        // 편집 상태에서 이미지가 모두 제거된 경우를 명시적으로 전달
+        formData.append('imageUrl', '');
+        console.log('기존 이미지 제거 처리');
     }
 
     // FormData 내용 확인
@@ -780,14 +1041,15 @@ async function loadLocations() {
 
         if (data.location) {
             const location = data.location;
+            const isActive = location.isActive !== false;
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${location.name}</td>
                 <td>${location.address}</td>
                 <td>${location.openTime} - ${location.closeTime}</td>
                 <td>
-                    <span class="badge ${location.isActive ? 'bg-success' : 'bg-secondary'}">
-                        ${location.isActive ? '활성' : '비활성'}
+                    <span class="badge ${isActive ? 'bg-success' : 'bg-secondary'}">
+                        ${isActive ? '활성' : '비활성'}
                     </span>
                 </td>
                 <td>
@@ -1318,7 +1580,7 @@ function displayPushHistory(histories) {
 // 최근 발송한 푸시 알림 로드
 async function loadRecentPushNotifications() {
     try {
-        const response = await fetch(`${API_BASE_URL}/push/recent`, {
+        const response = await fetch(`${API_BASE_URL}/push/recent?limit=10`, {
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
         const data = await response.json();
@@ -1334,7 +1596,7 @@ function displayRecentPushNotifications(notifications) {
     const container = document.getElementById('recent-push-list');
 
     if (!notifications || notifications.length === 0) {
-        container.innerHTML = '<div class="col-12"><p class="text-muted text-center">최근 발송한 푸시 알림이 없습니다.</p></div>';
+        container.innerHTML = '<p class="text-muted text-center my-2">최근 발송한 푸시 알림이 없습니다.</p>';
         return;
     }
 
@@ -1342,19 +1604,16 @@ function displayRecentPushNotifications(notifications) {
         const createdAt = new Date(notification.createdAt);
         const dateStr = createdAt.toLocaleDateString('ko-KR');
         const timeStr = createdAt.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+        const firstLine = (notification.body || '').split(/\r?\n/)[0] || '';
+        const firstLinePreview = firstLine.length > 80 ? `${firstLine.substring(0, 80)}...` : firstLine;
 
         return `
-            <div class="col-md-6 col-lg-3 mb-3">
-                <div class="card h-100 recent-push-card" onclick="setPushFormFromRecent('${notification.id}')" style="cursor: pointer;">
-                    <div class="card-body">
-                        <h6 class="card-title">${notification.title}</h6>
-                        <p class="card-text small text-muted">${notification.body.substring(0, 50)}${notification.body.length > 50 ? '...' : ''}</p>
-                        <small class="text-muted">
-                            <i class="fas fa-clock me-1"></i>
-                            ${dateStr} ${timeStr}
-                        </small>
-                    </div>
+            <div class="recent-push-item" onclick="setPushFormFromRecent('${notification.id}')">
+                <div class="recent-push-head">
+                    <div class="recent-push-title">${escapeHtml(notification.title)}</div>
+                    <div class="recent-push-date">${dateStr} ${timeStr}</div>
                 </div>
+                <div class="recent-push-first-line">${escapeHtml(firstLinePreview)}</div>
             </div>
         `;
     }).join('');

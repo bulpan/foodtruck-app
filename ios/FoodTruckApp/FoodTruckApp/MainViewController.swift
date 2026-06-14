@@ -18,11 +18,14 @@ class MainViewController: UIViewController {
     
     // 중복 실행 방지
     private var isNavigating = false
+    private let pushNotificationKey = "isPushNotificationEnabled"
+    private let locationNotificationKey = "isLocationNotificationEnabled"
     
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        ensureNotificationDefaults()
         setupUI()
         setupNotifications()
         setupWebView()
@@ -33,6 +36,11 @@ class MainViewController: UIViewController {
         super.viewWillAppear(animated)
         // 네비게이션 바 설정 재적용
         setupNavigationBar()
+        sendNotificationStateToWeb()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLayoutSubviews() {
@@ -153,6 +161,12 @@ class MainViewController: UIViewController {
         
         // 네이티브 앱 인터페이스 추가
         contentController.add(self, name: "FoodTruckInterface")
+        let bridgeScript = WKUserScript(
+            source: bridgeBootstrapScript(),
+            injectionTime: .atDocumentStart,
+            forMainFrameOnly: true
+        )
+        contentController.addUserScript(bridgeScript)
         
         config.userContentController = contentController
         webView = WKWebView(frame: .zero, configuration: config)
@@ -179,6 +193,20 @@ class MainViewController: UIViewController {
             name: NSNotification.Name("NavigateToScreen"),
             object: nil
         )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleNotificationSettingsChanged),
+            name: NSNotification.Name("FoodTruckNotificationSettingsChanged"),
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAppWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
     }
     
     private func loadInitialWebContent() {
@@ -199,6 +227,168 @@ class MainViewController: UIViewController {
         request.setValue("no-cache", forHTTPHeaderField: "Pragma")
         
         webView.load(request)
+    }
+
+    private func ensureNotificationDefaults() {
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: pushNotificationKey) == nil {
+            defaults.set(true, forKey: pushNotificationKey)
+        }
+        if defaults.object(forKey: locationNotificationKey) == nil {
+            defaults.set(true, forKey: locationNotificationKey)
+        }
+    }
+
+    private func bridgeBootstrapScript() -> String {
+        return """
+        (function() {
+            if (window.__foodtruckBridgeInitialized) return;
+            window.__foodtruckBridgeInitialized = true;
+
+            window.FoodTruckInterface = window.FoodTruckInterface || {};
+            window.__foodtruckBridgeCallbacks = window.__foodtruckBridgeCallbacks || {};
+
+            window.FoodTruckInterface.requestNotificationStateSync = function() {
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.FoodTruckInterface) {
+                    window.webkit.messageHandlers.FoodTruckInterface.postMessage({ action: 'requestNotificationStateSync' });
+                }
+            };
+
+            window.FoodTruckInterface.openNotificationSettings = function() {
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.FoodTruckInterface) {
+                    window.webkit.messageHandlers.FoodTruckInterface.postMessage({ action: 'openNotificationSettings' });
+                }
+            };
+
+            window.FoodTruckInterface.getNotificationState = function() {
+                return new Promise(function(resolve) {
+                    var callbackId = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+                    window.__foodtruckBridgeCallbacks[callbackId] = resolve;
+
+                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.FoodTruckInterface) {
+                        window.webkit.messageHandlers.FoodTruckInterface.postMessage({
+                            action: 'getNotificationState',
+                            callbackId: callbackId
+                        });
+                    } else {
+                        resolve(null);
+                    }
+                });
+            };
+
+            window.FoodTruckInterface.__resolveNotificationState = function(callbackId, payload) {
+                var resolver = window.__foodtruckBridgeCallbacks[callbackId];
+                if (typeof resolver === 'function') {
+                    resolver(payload);
+                    delete window.__foodtruckBridgeCallbacks[callbackId];
+                }
+            };
+        })();
+        """
+    }
+
+    private func buildNotificationBridgePayload(permissionStatus: UNAuthorizationStatus) -> [String: Any] {
+        let defaults = UserDefaults.standard
+        let appNotificationEnabled = defaults.object(forKey: pushNotificationKey) == nil
+            ? true
+            : defaults.bool(forKey: pushNotificationKey)
+        let locationNotificationEnabled = defaults.object(forKey: locationNotificationKey) == nil
+            ? true
+            : defaults.bool(forKey: locationNotificationKey)
+
+        let permissionGranted: Bool
+        switch permissionStatus {
+        case .authorized, .provisional:
+            permissionGranted = true
+        default:
+            permissionGranted = false
+        }
+
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+        let effectiveNotificationEnabled = appNotificationEnabled && permissionGranted
+
+        return [
+            "platform": "ios",
+            "appVersion": appVersion,
+            "appVersionCode": buildNumber,
+            "bridgeVersion": 1,
+            "supportsCouponGate": true,
+            "notificationEnabled": effectiveNotificationEnabled,
+            "appNotificationEnabled": appNotificationEnabled,
+            "permissionGranted": permissionGranted,
+            "locationNotificationEnabled": locationNotificationEnabled && effectiveNotificationEnabled,
+            "updatedAt": Int(Date().timeIntervalSince1970 * 1000)
+        ]
+    }
+
+    private func fetchNotificationBridgeState(completion: @escaping ([String: Any]) -> Void) {
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            guard let self = self else { return }
+            let payload = self.buildNotificationBridgePayload(permissionStatus: settings.authorizationStatus)
+            completion(payload)
+        }
+    }
+
+    private func escapeForJavaScript(_ value: String) -> String {
+        return value
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "'", with: "\\'")
+            .replacingOccurrences(of: "\n", with: "\\n")
+            .replacingOccurrences(of: "\r", with: "")
+    }
+
+    private func sendNotificationStateToWeb(callbackId: String? = nil) {
+        fetchNotificationBridgeState { [weak self] payload in
+            guard let self = self else { return }
+            guard let data = try? JSONSerialization.data(withJSONObject: payload),
+                  let payloadJson = String(data: data, encoding: .utf8) else {
+                return
+            }
+
+            let callbackScript: String
+            if let callbackId = callbackId {
+                callbackScript = """
+                    if (window.FoodTruckInterface && typeof window.FoodTruckInterface.__resolveNotificationState === 'function') {
+                        window.FoodTruckInterface.__resolveNotificationState('\(self.escapeForJavaScript(callbackId))', payload);
+                    }
+                """
+            } else {
+                callbackScript = ""
+            }
+
+            let script = """
+                (function() {
+                    try {
+                        var payload = \(payloadJson);
+                        \(callbackScript)
+                        if (typeof window.onFoodTruckNotificationStateChanged === 'function') {
+                            window.onFoodTruckNotificationStateChanged(payload);
+                        }
+                        if (typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
+                            window.dispatchEvent(new CustomEvent('foodtruck:notification-state', { detail: payload }));
+                        }
+                    } catch (e) {
+                        console.error('FoodTruck iOS bridge dispatch failed', e);
+                    }
+                })();
+            """
+
+            DispatchQueue.main.async {
+                self.webView?.evaluateJavaScript(script, completionHandler: nil)
+            }
+        }
+    }
+
+    private func openNotificationSettingsFromWeb() {
+        DispatchQueue.main.async {
+            if let navigationController = self.navigationController {
+                let settingsVC = NotificationSettingsViewController()
+                navigationController.pushViewController(settingsVC, animated: true)
+            } else if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            }
+        }
     }
     
     // MARK: - Safe Area Setup
@@ -248,6 +438,14 @@ class MainViewController: UIViewController {
     @objc private func handleNavigateToScreen(_ notification: Notification) {
         guard let screen = notification.userInfo?["screen"] as? String else { return }
         currentScreen = screen
+    }
+
+    @objc private func handleNotificationSettingsChanged() {
+        sendNotificationStateToWeb()
+    }
+
+    @objc private func handleAppWillEnterForeground() {
+        sendNotificationStateToWeb()
     }
     
     // MARK: - Network Status
@@ -332,43 +530,7 @@ extension MainViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         setupSafeArea()
-        
-        // 초기화 스크립트 실행
-        let initScript = """
-            window.FoodTruckInterface = {
-                navigateToMenu: function() {
-                    const menuSection = document.getElementById('menu-screen') || 
-                                       document.querySelector('.menu-section');
-                    if (menuSection) {
-                        menuSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    } else {
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                    }
-                },
-                navigateToHome: function() {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                },
-                navigateToNotification: function() {
-                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                }
-            };
-            
-            function navigateTo(screen) {
-                switch(screen) {
-                    case 'home':
-                        window.FoodTruckInterface.navigateToHome();
-                        break;
-                    case 'menu':
-                        window.FoodTruckInterface.navigateToMenu();
-                        break;
-                    case 'notification':
-                        window.FoodTruckInterface.navigateToNotification();
-                        break;
-                }
-            }
-        """
-        
-        webView.evaluateJavaScript(initScript)
+        sendNotificationStateToWeb()
         updateWebViewScreen()
     }
     
@@ -410,6 +572,19 @@ extension MainViewController: WKScriptMessageHandler {
                         UIApplication.shared.open(url)
                     }
                 }
+
+            case "requestNotificationStateSync":
+                sendNotificationStateToWeb()
+
+            case "openNotificationSettings":
+                openNotificationSettingsFromWeb()
+
+            case "getNotificationState":
+                if let callbackId = messageBody["callbackId"] as? String {
+                    sendNotificationStateToWeb(callbackId: callbackId)
+                } else {
+                    sendNotificationStateToWeb()
+                }
                 
             default:
                 break
@@ -428,8 +603,3 @@ extension MainViewController: WKScriptMessageHandler {
         present(alert, animated: true)
     }
 }
-
-
-
-
-

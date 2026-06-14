@@ -4,8 +4,13 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
+const {
+  initializeVisitorStatsService,
+  recordVisitFromRequest
+} = require('./services/visitorStatsService');
 
 const app = express();
+app.set('trust proxy', true);
 
 // 로그 디렉토리 생성
 const logDir = path.join(__dirname, '../logs');
@@ -14,7 +19,9 @@ if (!fs.existsSync(logDir)) {
 }
 
 // 로그 파일 설정
-const logFile = path.join(logDir, `server-${new Date().toISOString().split('T')[0]}.log`);
+function getCurrentLogFile() {
+  return path.join(logDir, `server-${new Date().toISOString().split('T')[0]}.log`);
+}
 
 // 로그 함수
 function writeLog(level, message, data = null) {
@@ -43,8 +50,12 @@ function writeLog(level, message, data = null) {
     console.log(logEntry.trim());
   }
   
-  // 파일에 저장
-  fs.appendFileSync(logFile, logEntry);
+  // 파일에 저장. 운영 요청 경로를 막지 않도록 비동기로 기록한다.
+  fs.appendFile(getCurrentLogFile(), logEntry, (error) => {
+    if (error) {
+      console.error(`Failed to write log file: ${error.message}`);
+    }
+  });
 }
 
 // 환경별 설정
@@ -132,13 +143,23 @@ app.use((req, res, next) => {
     userAgent: req.get('User-Agent'),
     headers: {
       'content-type': req.get('Content-Type'),
-      'authorization': req.get('Authorization') ? 'Bearer ***' : undefined
+      'authorization': req.get('Authorization') ? 'Bearer ***' : undefined,
+      'x-forwarded-for': req.get('X-Forwarded-For'),
+      'x-real-ip': req.get('X-Real-IP'),
+      'x-client-id': req.get('X-Client-Id'),
+      'x-client-source': req.get('X-Client-Source')
     },
     body: req.method !== 'GET' ? req.body : undefined,
     query: req.query,
     params: req.params
   };
   
+  try {
+    recordVisitFromRequest(req, requestLog);
+  } catch (error) {
+    console.warn(`Failed to record visitor stats: ${error.message}`);
+  }
+
   writeLog('INFO', `[${requestId}] REQUEST: ${req.method} ${req.originalUrl}`, requestLog);
   
   // 응답 완료 시 로깅
@@ -239,6 +260,8 @@ app.use('/api/location', require('./routes/location'));
 app.use('/api/fcm', require('./routes/fcm'));
 app.use('/api/push', require('./routes/push'));
 app.use('/api/mobile', require('./routes/mobile'));
+app.use('/api/contact', require('./routes/contact'));
+app.use('/api/telegram', require('./routes/telegram'));
 
 // 환경 정보 엔드포인트 (개발 환경에서만)
 if (config.isDevelopment) {
@@ -248,7 +271,7 @@ if (config.isDevelopment) {
       serverUrl: config.getServerUrl(),
       isDevelopment: config.isDevelopment,
       localIp: config.devLocalIp,
-      logFile: logFile
+      logFile: getCurrentLogFile()
     });
   });
 }
@@ -264,9 +287,14 @@ app.get('/health', (req, res) => {
   });
 });
 
-// 루트 엔드포인트
+// 루트 접속 시 모바일 페이지로 이동
 app.get('/', (req, res) => {
-  res.json({
+  // 브라우저 접근은 모바일 페이지로 유도, API 클라이언트는 JSON 안내 유지
+  if (req.accepts('html')) {
+    return res.redirect(302, '/mobile');
+  }
+
+  return res.json({
     message: 'Food Truck Backend API',
     version: '1.0.0',
     environment: config.nodeEnv,
@@ -315,9 +343,12 @@ async function startServer() {
   try {
     // 데이터베이스 모델 동기화
     const { sequelize } = require('./models');
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     writeLog('INFO', '데이터베이스 테이블 동기화 완료');
-    
+
+    initializeVisitorStatsService();
+    writeLog('INFO', '접속 통계 캐시 서비스 시작 완료');
+
     // 서버 시작
     app.listen(config.port, config.host, () => {
       writeLog('INFO', `Food Truck Backend 서버가 포트 ${config.port}에서 실행중입니다`);
@@ -325,7 +356,7 @@ async function startServer() {
       writeLog('INFO', `헬스 체크: http://localhost:${config.port}/health`);
       writeLog('INFO', `API 문서: http://localhost:${config.port}/api`);
       writeLog('INFO', `서버 URL: ${config.getServerUrl()}`);
-      writeLog('INFO', `로그 파일: ${logFile}`);
+      writeLog('INFO', `로그 파일: ${getCurrentLogFile()}`);
       if (config.isDevelopment) {
         writeLog('INFO', `개발 설정: http://localhost:${config.port}/config`);
       }

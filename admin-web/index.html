@@ -7,58 +7,134 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --admin-bg: #eef2f5;
+            --admin-surface: #ffffff;
+            --admin-surface-alt: #f7fafc;
+            --admin-ink: #1a2430;
+            --admin-muted: #657284;
+            --admin-line: #d7dfe8;
+            --admin-accent: #1f4f73;
+            --admin-accent-strong: #153852;
+            --admin-accent-soft: #e8eff5;
+            --admin-danger-soft: #f9ebee;
+            --admin-shadow: 0 4px 12px rgba(15, 22, 31, 0.06);
+        }
+
+        html,
+        body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: var(--admin-bg);
+            color: var(--admin-ink);
+            font-size: 14px;
+            letter-spacing: -0.01em;
+        }
+
+        #main-content,
+        #main-content .container-fluid,
+        #main-content .row,
+        #main-content [class*="col-"],
+        .page-section,
+        .card {
+            max-width: 100%;
+            min-width: 0;
+        }
+
         /* 기본 레이아웃 */
         .sidebar {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #121a23;
             transition: transform 0.3s ease;
         }
         .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
+            color: #a7b3c2;
+            padding: 10px 12px;
             margin: 4px 0;
             border-radius: 8px;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
         }
         .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
             color: white;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
+            background: #26313d;
         }
         .main-content {
-            background-color: #f8f9fa;
+            background-color: var(--admin-bg);
             min-height: 100vh;
         }
 
         /* 모바일 네비게이션 */
         .mobile-nav {
             display: none;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 10px 0;
-            position: fixed;
+            background: #121a23;
+            padding: 8px 12px 10px;
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.16);
         }
         .mobile-nav .nav-tabs {
             border: none;
-            justify-content: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 8px;
+            justify-content: flex-start;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .mobile-nav .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .mobile-nav .nav-item {
+            flex: 0 0 auto;
         }
         .mobile-nav .nav-link {
-            color: rgba(255, 255, 255, 0.8);
+            color: #c5cfda;
             border: none;
-            border-radius: 8px;
-            margin: 0 5px;
-            padding: 8px 16px;
-            transition: all 0.3s;
+            border-radius: 999px;
+            margin: 0;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.06);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            touch-action: manipulation;
+        }
+        .mobile-nav .nav-link i {
+            font-size: 12px;
         }
         .mobile-nav .nav-link:hover,
         .mobile-nav .nav-link.active {
             color: white;
             background: rgba(255, 255, 255, 0.2);
+        }
+        .mobile-nav .nav-link.mobile-logout {
+            background: rgba(220, 53, 69, 0.14);
+        }
+        .mobile-nav .nav-link.mobile-logout:hover,
+        .mobile-nav .nav-link.mobile-logout.active {
+            background: rgba(220, 53, 69, 0.25);
+        }
+        .mobile-section-label {
+            display: none;
+            margin-top: 8px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            padding-left: 2px;
         }
 
         /* 모바일에서 사이드바 숨기기 */
@@ -69,12 +145,158 @@
             .mobile-nav {
                 display: block;
             }
+            #main-content > .container-fluid > .row {
+                margin-left: 0;
+                margin-right: 0;
+            }
             .main-content {
-                margin-top: 60px;
+                margin-top: 0;
+                padding-left: 0;
+                padding-right: 0;
             }
             .container-fluid {
-                padding-left: 15px;
-                padding-right: 15px;
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .toast-container {
+                left: 12px;
+                right: 12px;
+                top: 12px;
+            }
+            .toast {
+                min-width: 0;
+                max-width: none;
+                width: 100%;
+            }
+            .mobile-section-label {
+                display: block;
+            }
+            .main-content .container-fluid.py-4 {
+                padding-top: 1rem !important;
+                padding-bottom: 1.25rem !important;
+            }
+            .page-section h2 {
+                font-size: 1.2rem;
+                margin-bottom: 1rem !important;
+            }
+            .section-heading-row {
+                gap: 8px;
+                margin-bottom: 1rem !important;
+                flex-wrap: wrap;
+            }
+            .section-heading-row > * {
+                min-width: 0;
+            }
+            .section-heading-row h2 {
+                margin-bottom: 0 !important;
+                font-size: 1.15rem;
+                line-height: 1.2;
+                flex: 1 1 auto;
+            }
+            .mobile-action-btn {
+                padding: 0.4rem 0.65rem;
+                font-size: 0.82rem;
+                border-radius: 10px;
+                white-space: nowrap;
+            }
+            .card-header h5 {
+                font-size: 0.95rem;
+                margin-bottom: 0;
+            }
+            .card-header.d-flex {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .card-header.d-flex > * {
+                min-width: 0;
+            }
+            .table {
+                font-size: 0.86rem;
+            }
+            .dashboard-kpi-grid {
+                gap: 8px;
+            }
+            .dashboard-kpi-cell {
+                padding: 9px 10px;
+                min-height: 64px;
+            }
+            .dashboard-kpi-label {
+                font-size: 11px;
+            }
+            .dashboard-kpi-value {
+                font-size: 20px;
+            }
+            .visitor-summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+            }
+            .visitor-summary-item {
+                padding: 7px 6px;
+            }
+            .visitor-summary-item .value {
+                font-size: 14px;
+            }
+            .visitor-chart-wrap {
+                grid-template-columns: 28px minmax(0, 1fr);
+                gap: 4px;
+            }
+            .visitor-y-axis {
+                min-height: 150px;
+                font-size: 9px;
+            }
+            .visitor-trend-chart {
+                gap: 2px;
+                padding: 6px 2px;
+                min-height: 150px;
+            }
+            .visitor-bars {
+                height: 90px;
+            }
+            .visitor-bar.requests,
+            .visitor-bar.visitors {
+                width: 6px;
+            }
+            .visitor-day-date,
+            .visitor-day-week {
+                font-size: 9px;
+            }
+            .visitor-legend {
+                justify-content: flex-start;
+                font-size: 10px;
+            }
+            .today-visitor-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+            }
+            .today-visitor-item {
+                padding: 7px 6px;
+            }
+            .today-visitor-item .value {
+                font-size: 14px;
+            }
+            .today-hourly-chart {
+                gap: 1px;
+                padding: 6px 2px;
+                min-height: 142px;
+            }
+            .today-hour-bars {
+                height: 82px;
+            }
+            .today-hour-bar.requests,
+            .today-hour-bar.visitors {
+                width: 4px;
+            }
+            .today-hour-label {
+                font-size: 8px;
+            }
+            .recent-push-item {
+                padding: 8px 10px;
+            }
+            .recent-push-title {
+                font-size: 13px;
+            }
+            .recent-push-first-line {
+                font-size: 11px;
             }
         }
 
@@ -84,15 +306,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background:
+                radial-gradient(circle at 20% 20%, rgba(39, 73, 109, 0.22), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(23, 50, 78, 0.2), transparent 40%),
+                #111820;
         }
         .login-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: var(--admin-surface);
+            border-radius: 12px;
+            box-shadow: 0 12px 28px rgba(12, 20, 28, 0.2);
             padding: 40px;
             width: 100%;
             max-width: 400px;
+            border: 1px solid #dce2ea;
         }
 
         /* 토스트 알림 스타일 */
@@ -103,9 +329,9 @@
             z-index: 9999;
         }
         .toast {
-            background: white;
+            background: var(--admin-surface);
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 18px rgba(15, 22, 31, 0.14);
             padding: 16px 20px;
             margin-bottom: 10px;
             min-width: 300px;
@@ -154,42 +380,64 @@
         }
         @keyframes slideInRight {
             from {
-                transform: translateX(100%);
+                transform: translate3d(24px, 0, 0);
                 opacity: 0;
             }
             to {
-                transform: translateX(0);
+                transform: translate3d(0, 0, 0);
                 opacity: 1;
             }
         }
         @keyframes slideOutRight {
             from {
-                transform: translateX(0);
+                transform: translate3d(0, 0, 0);
                 opacity: 1;
             }
             to {
-                transform: translateX(100%);
+                transform: translate3d(24px, 0, 0);
                 opacity: 0;
             }
         }
         .card {
-            border: none;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            border-radius: 12px;
+            border: 1px solid var(--admin-line);
+            box-shadow: var(--admin-shadow);
+            border-radius: 10px;
+            background: var(--admin-surface);
+            overflow: hidden;
+        }
+        .card-header {
+            background: var(--admin-surface-alt);
+            border-bottom: 1px solid var(--admin-line);
+            padding: 0.7rem 0.9rem;
+        }
+        .card-header h5 {
+            margin-bottom: 0;
+            color: var(--admin-ink);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .card-body {
+            padding: 0.9rem;
         }
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
+            background: var(--admin-accent);
+            border: 1px solid var(--admin-accent);
             border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
         }
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: var(--admin-accent-strong);
+            border-color: var(--admin-accent-strong);
         }
-        .stats-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px;
+        .btn-outline-primary {
+            color: var(--admin-accent);
+            border-color: #91a7bb;
+        }
+        .btn-outline-primary:hover {
+            color: var(--admin-accent-strong);
+            border-color: #7c95aa;
+            background: var(--admin-accent-soft);
         }
         .page-section {
             display: none;
@@ -197,30 +445,368 @@
         .page-section.active {
             display: block;
         }
+        .page-section h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--admin-ink);
+        }
+        .form-label {
+            font-size: 0.83rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: var(--admin-muted);
+        }
         .form-control, .form-select {
             border-radius: 8px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--admin-line);
+            color: var(--admin-ink);
+            font-size: 0.9rem;
         }
         .form-control:focus, .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: #7d93ac;
+            box-shadow: 0 0 0 0.2rem rgba(39, 73, 109, 0.16);
         }
         .table {
             border-radius: 8px;
             overflow: hidden;
         }
+        .table thead th {
+            background: #f4f7fa;
+            color: #4d5b6b;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--admin-line);
+            white-space: nowrap;
+        }
+        .table tbody td {
+            font-size: 0.85rem;
+            color: var(--admin-ink);
+            vertical-align: middle;
+        }
         .alert {
             border-radius: 8px;
             border: none;
         }
+        .dashboard-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .dashboard-kpi-cell {
+            border: 1px solid var(--admin-line);
+            border-radius: 10px;
+            background: var(--admin-surface);
+            padding: 10px 12px;
+            min-height: 74px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .dashboard-kpi-label {
+            font-size: 12px;
+            color: var(--admin-muted);
+            margin-bottom: 4px;
+            line-height: 1.25;
+        }
+        .dashboard-kpi-value {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--admin-ink);
+        }
         .recent-push-card {
             transition: all 0.3s ease;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--admin-line);
         }
         .recent-push-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
+            box-shadow: 0 6px 14px rgba(15, 22, 31, 0.12);
+            border-color: #6f8eab;
+        }
+
+        .visitor-trend-card .card-body {
+            padding: 0.9rem;
+        }
+        .visitor-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .visitor-summary-item {
+            background: #f5f8fb;
+            border: 1px solid #dce4ed;
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+        }
+        .visitor-summary-item .label {
+            font-size: 11px;
+            color: #5c6879;
+            margin-bottom: 2px;
+        }
+        .visitor-summary-item .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--admin-ink);
+            line-height: 1.2;
+        }
+        .visitor-chart-wrap {
+            display: grid;
+            grid-template-columns: 34px minmax(0, 1fr);
+            gap: 6px;
+            align-items: stretch;
+        }
+        .visitor-y-axis {
+            min-height: 168px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 4px 2px 4px 0;
+            color: #7a8197;
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1;
+        }
+        .visitor-y-axis .unit {
+            font-size: 9px;
+            color: #8e98a8;
+            font-weight: 500;
+        }
+        .visitor-trend-chart {
+            display: grid;
+            grid-template-columns: repeat(14, minmax(0, 1fr));
+            gap: 4px;
+            align-items: end;
+            padding: 8px 4px;
+            border-radius: 10px;
+            background:
+                repeating-linear-gradient(
+                    to top,
+                    #ebf0f5 0,
+                    #ebf0f5 1px,
+                    transparent 1px,
+                    transparent 23px
+                ),
+                #fff;
+            border: 1px solid #dde5ef;
+            min-height: 168px;
+        }
+        .visitor-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            min-width: 0;
+        }
+        .visitor-bars {
+            height: 108px;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 2px;
+        }
+        .visitor-bar {
+            border-radius: 4px 4px 0 0;
+            min-height: 2px;
+        }
+        .visitor-bar.requests {
+            width: 8px;
+            background: #8aa6bf;
+            opacity: 0.85;
+        }
+        .visitor-bar.visitors {
+            width: 8px;
+            background: #2b5c87;
+        }
+        .visitor-day-date {
+            font-size: 10px;
+            font-weight: 600;
+            color: #47506a;
+            line-height: 1;
+            letter-spacing: -0.01em;
+        }
+        .visitor-day-week {
+            font-size: 10px;
+            color: #767f98;
+            line-height: 1;
+        }
+        .visitor-legend {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #5f6679;
+        }
+        .visitor-legend .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+        }
+        .visitor-legend .dot.visitors {
+            background: #2b5c87;
+        }
+        .visitor-legend .dot.requests {
+            background: #8aa6bf;
+        }
+        .today-visitor-card {
+            margin-top: 12px;
+        }
+        .today-visitor-summary {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .today-visitor-item {
+            background: #f5f8fb;
+            border: 1px solid #dce4ed;
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+        }
+        .today-visitor-item .label {
+            font-size: 11px;
+            color: #5c6879;
+            margin-bottom: 2px;
+        }
+        .today-visitor-item .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--admin-ink);
+            line-height: 1.2;
+        }
+        .today-hourly-chart {
+            display: grid;
+            grid-template-columns: repeat(24, minmax(0, 1fr));
+            gap: 2px;
+            align-items: end;
+            padding: 8px 4px;
+            border-radius: 10px;
+            background:
+                repeating-linear-gradient(
+                    to top,
+                    #ebf0f5 0,
+                    #ebf0f5 1px,
+                    transparent 1px,
+                    transparent 23px
+                ),
+                #fff;
+            border: 1px solid #dde5ef;
+            min-height: 152px;
+        }
+        .today-hour-slot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            min-width: 0;
+        }
+        .today-hour-bars {
+            height: 92px;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 1px;
+        }
+        .today-hour-bar {
+            border-radius: 4px 4px 0 0;
+            min-height: 2px;
+        }
+        .today-hour-bar.requests {
+            width: 5px;
+            background: #8aa6bf;
+            opacity: 0.85;
+        }
+        .today-hour-bar.visitors {
+            width: 5px;
+            background: #2b5c87;
+        }
+        .today-hour-label {
+            font-size: 9px;
+            font-weight: 600;
+            color: #606c7d;
+            line-height: 1;
+            letter-spacing: -0.01em;
+        }
+        .today-hourly-legend {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #5f6679;
+        }
+        .today-hourly-legend .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+        }
+        .today-hourly-legend .dot.visitors {
+            background: #2b5c87;
+        }
+        .today-hourly-legend .dot.requests {
+            background: #8aa6bf;
+        }
+
+        .recent-push-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .recent-push-item {
+            border: 1px solid #dbe4ed;
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+        .recent-push-item:hover {
+            border-color: #86a0b8;
+            box-shadow: 0 4px 10px rgba(44, 63, 85, 0.12);
+            transform: translateY(-1px);
+        }
+        .recent-push-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .recent-push-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--admin-ink);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .recent-push-date {
+            font-size: 11px;
+            color: #738194;
+            white-space: nowrap;
+        }
+        .recent-push-first-line {
+            font-size: 12px;
+            color: #5a6677;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .login-card .text-primary {
+            color: var(--admin-accent) !important;
         }
         
         /* 메뉴 순서 버튼 스타일 */
@@ -277,36 +863,37 @@
         <div class="mobile-nav">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" onclick="showSection('dashboard')">
-                        <i class="fas fa-tachometer-alt me-1"></i>대시보드
+                    <a class="nav-link" href="#" onclick="return showSection('dashboard', event)" title="대시보드">
+                        <i class="fas fa-tachometer-alt"></i><span>대시</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showSection('menu')">
-                        <i class="fas fa-utensils me-1"></i>메뉴
+                    <a class="nav-link" href="#" onclick="return showSection('menu', event)" title="메뉴 관리">
+                        <i class="fas fa-utensils"></i><span>메뉴</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showSection('location')">
-                        <i class="fas fa-map-marker-alt me-1"></i>위치
+                    <a class="nav-link active" href="#" onclick="return showSection('location', event)" title="위치 관리">
+                        <i class="fas fa-map-marker-alt"></i><span>위치</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showSection('push')">
-                        <i class="fas fa-bell me-1"></i>푸시
+                    <a class="nav-link" href="#" onclick="return showSection('push', event)" title="푸시 알림">
+                        <i class="fas fa-bell"></i><span>푸시</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showSection('tokens')">
-                        <i class="fas fa-mobile-alt me-1"></i>토큰
+                    <a class="nav-link" href="#" onclick="return showSection('tokens', event)" title="토큰 관리">
+                        <i class="fas fa-mobile-alt"></i><span>토큰</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="logout()">
-                        <i class="fas fa-sign-out-alt me-1"></i>로그아웃
+                    <a class="nav-link mobile-logout" href="#" onclick="logout(); return false;" title="로그아웃">
+                        <i class="fas fa-sign-out-alt"></i><span>종료</span>
                     </a>
                 </li>
             </ul>
+            <div id="mobile-section-label" class="mobile-section-label">현재: 위치 관리</div>
         </div>
 
         <div class="container-fluid">
@@ -319,19 +906,19 @@
                             푸드트럭 관리
                         </h4>
                         <nav class="nav flex-column">
-                            <a class="nav-link" href="#" onclick="showSection('dashboard')">
+                            <a class="nav-link" href="#" onclick="return showSection('dashboard', event)">
                                 <i class="fas fa-tachometer-alt me-2"></i>대시보드
                             </a>
-                            <a class="nav-link" href="#" onclick="showSection('menu')">
+                            <a class="nav-link" href="#" onclick="return showSection('menu', event)">
                                 <i class="fas fa-utensils me-2"></i>메뉴 관리
                             </a>
-                            <a class="nav-link" href="#" onclick="showSection('location')">
+                            <a class="nav-link active" href="#" onclick="return showSection('location', event)">
                                 <i class="fas fa-map-marker-alt me-2"></i>위치 관리
                             </a>
-                            <a class="nav-link" href="#" onclick="showSection('push')">
+                            <a class="nav-link" href="#" onclick="return showSection('push', event)">
                                 <i class="fas fa-bell me-2"></i>푸시 알림
                             </a>
-                            <a class="nav-link" href="#" onclick="showSection('tokens')">
+                            <a class="nav-link" href="#" onclick="return showSection('tokens', event)">
                                 <i class="fas fa-mobile-alt me-2"></i>토큰 관리
                             </a>
                             <hr class="text-white-50">
@@ -346,97 +933,116 @@
                 <div class="col-md-9 col-lg-10 main-content">
                     <div class="container-fluid py-4">
                         <!-- Dashboard Section -->
-                        <div id="dashboard-section" class="page-section active">
+                        <div id="dashboard-section" class="page-section">
                         <h2 class="mb-4">
                             <i class="fas fa-tachometer-alt me-2"></i>대시보드
                         </h2>
-                        <div class="row mb-4">
-                            <div class="col-md-3 mb-3">
-                                <div class="card stats-card">
-                                    <div class="card-body text-center">
-                                        <i class="fas fa-mobile-alt fa-2x mb-2"></i>
-                                        <h4 id="total-devices">0</h4>
-                                        <p class="mb-0">등록된 디바이스</p>
-                                    </div>
-                                </div>
+                        <div class="dashboard-kpi-grid">
+                            <div class="dashboard-kpi-cell">
+                                <div class="dashboard-kpi-label">등록 디바이스</div>
+                                <div id="total-devices" class="dashboard-kpi-value">0</div>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card stats-card">
-                                    <div class="card-body text-center">
-                                        <i class="fas fa-utensils fa-2x mb-2"></i>
-                                        <h4 id="total-menus">0</h4>
-                                        <p class="mb-0">등록된 메뉴</p>
-                                    </div>
-                                </div>
+                            <div class="dashboard-kpi-cell">
+                                <div class="dashboard-kpi-label">등록 메뉴</div>
+                                <div id="total-menus" class="dashboard-kpi-value">0</div>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card stats-card">
-                                    <div class="card-body text-center">
-                                        <i class="fas fa-bell fa-2x mb-2"></i>
-                                        <h4 id="today-pushes">0</h4>
-                                        <p class="mb-0">금일 발송된 푸시</p>
-                                    </div>
-                                </div>
+                            <div class="dashboard-kpi-cell">
+                                <div class="dashboard-kpi-label">금일 푸시 발송</div>
+                                <div id="today-pushes" class="dashboard-kpi-value">0</div>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card stats-card">
-                                    <div class="card-body text-center">
-                                        <i class="fas fa-map-marker-alt fa-2x mb-2"></i>
-                                        <h4 id="current-location">1</h4>
-                                        <p class="mb-0">현재 위치</p>
-                                    </div>
-                                </div>
+                            <div class="dashboard-kpi-cell">
+                                <div class="dashboard-kpi-label">현재 위치 등록</div>
+                                <div id="current-location" class="dashboard-kpi-value">1</div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5><i class="fas fa-chart-line me-2"></i>최근 푸시 발송 현황</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div id="push-stats-chart">
-                                            <div class="table-responsive">
-                                                <table class="table table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>발송시각</th>
-                                                            <th>메시지제목</th>
-                                                            <th>iOS</th>
-                                                            <th>Android</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="push-history-table">
-                                                        <tr>
-                                                            <td colspan="4" class="text-center text-muted">최근 발송된 푸시 알림이 없습니다.</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="card visitor-trend-card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5><i class="fas fa-users me-2"></i>최근 2주 접속자 이력</h5>
+                                <small class="text-muted">요청 로그 기반</small>
                             </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5><i class="fas fa-list me-2"></i>최근 활동</h5>
+                            <div class="card-body">
+                                <div id="visitor-summary" class="visitor-summary-grid">
+                                    <div class="visitor-summary-item">
+                                        <div class="label">2주 방문자(일별합)</div>
+                                        <div class="value" id="visitor-total-unique">0</div>
                                     </div>
-                                    <div class="card-body">
-                                        <div id="recent-activities">
-                                            <p class="text-muted">최근 활동이 없습니다.</p>
-                                        </div>
+                                    <div class="visitor-summary-item">
+                                        <div class="label">2주 접속 이벤트</div>
+                                        <div class="value" id="visitor-total-requests">0</div>
+                                    </div>
+                                    <div class="visitor-summary-item">
+                                        <div class="label">일평균 방문자</div>
+                                        <div class="value" id="visitor-avg-unique">0</div>
+                                    </div>
+                                    <div class="visitor-summary-item">
+                                        <div class="label">일평균 이벤트</div>
+                                        <div class="value" id="visitor-avg-requests">0</div>
                                     </div>
                                 </div>
+                                <div class="visitor-chart-wrap">
+                                    <div id="visitor-y-axis" class="visitor-y-axis">
+                                        <span>0</span>
+                                        <span>0</span>
+                                        <span>0</span>
+                                        <span>0</span>
+                                        <span class="unit">req</span>
+                                    </div>
+                                    <div id="visitor-trend-chart" class="visitor-trend-chart">
+                                        <p class="text-muted text-center w-100 my-2">접속자 데이터를 불러오는 중입니다.</p>
+                                    </div>
+                                </div>
+                                <div class="visitor-legend">
+                                    <span><i class="dot visitors"></i>방문자(고유 식별)</span>
+                                    <span><i class="dot requests"></i>접속 이벤트</span>
+                                </div>
+                                <small id="visitor-quality-note" class="text-muted d-block mt-2">
+                                    신뢰 가능한 식별 데이터가 쌓이는 중입니다.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="card today-visitor-card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5><i class="fas fa-clock me-2"></i>당일 접속자 통계 기록</h5>
+                                <small id="today-visitor-date" class="text-muted">-</small>
+                            </div>
+                            <div class="card-body">
+                                <div class="today-visitor-summary">
+                                    <div class="today-visitor-item">
+                                        <div class="label">당일 방문자(고유)</div>
+                                        <div class="value" id="today-visitor-unique">0</div>
+                                    </div>
+                                    <div class="today-visitor-item">
+                                        <div class="label">당일 접속 이벤트</div>
+                                        <div class="value" id="today-visitor-requests">0</div>
+                                    </div>
+                                    <div class="today-visitor-item">
+                                        <div class="label">접속 발생 시간대</div>
+                                        <div class="value" id="today-visitor-active-hours">0</div>
+                                    </div>
+                                    <div class="today-visitor-item">
+                                        <div class="label">피크 시간대</div>
+                                        <div class="value" id="today-visitor-peak-hour">-</div>
+                                    </div>
+                                </div>
+                                <div id="today-hourly-chart" class="today-hourly-chart">
+                                    <p class="text-muted text-center w-100 my-2">당일 통계 데이터를 불러오는 중입니다.</p>
+                                </div>
+                                <div class="today-hourly-legend">
+                                    <span><i class="dot visitors"></i>방문자(고유 식별)</span>
+                                    <span><i class="dot requests"></i>접속 이벤트</span>
+                                </div>
+                                <small id="today-visitor-quality-note" class="text-muted d-block mt-2">
+                                    당일 접속 로그를 집계 중입니다.
+                                </small>
                             </div>
                         </div>
                     </div>
 
                     <!-- Menu Management Section -->
                     <div id="menu-section" class="page-section">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex justify-content-between align-items-center section-heading-row">
                             <h2><i class="fas fa-utensils me-2"></i>메뉴 관리</h2>
-                            <button class="btn btn-primary" onclick="showAddMenuForm()">
+                            <button class="btn btn-primary mobile-action-btn" onclick="showAddMenuForm()">
                                 <i class="fas fa-plus me-2"></i>메뉴 추가
                             </button>
                         </div>
@@ -449,6 +1055,7 @@
                             <div class="card-body">
                                 <form id="menu-form-element">
                                     <input type="hidden" id="menu-id">
+                                    <input type="hidden" id="menu-existing-image-url">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-3">
@@ -554,10 +1161,10 @@
                     </div>
 
                     <!-- Location Management Section -->
-                    <div id="location-section" class="page-section">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div id="location-section" class="page-section active">
+                        <div class="d-flex justify-content-between align-items-center section-heading-row">
                             <h2><i class="fas fa-map-marker-alt me-2"></i>위치 관리</h2>
-                            <button class="btn btn-primary" onclick="showAddLocationForm()">
+                            <button class="btn btn-primary mobile-action-btn" onclick="showAddLocationForm()">
                                 <i class="fas fa-plus me-2"></i>위치 추가
                             </button>
                         </div>
@@ -665,10 +1272,10 @@
                         <!-- 최근 발송한 푸시 알림 목록 -->
                         <div class="card mb-4">
                             <div class="card-header">
-                                <h5><i class="fas fa-history me-2"></i>최근 발송한 푸시 알림 (2주간)</h5>
+                                <h5><i class="fas fa-history me-2"></i>최근 발송한 푸시 10개</h5>
                             </div>
                             <div class="card-body">
-                                <div id="recent-push-list" class="row">
+                                <div id="recent-push-list" class="recent-push-list">
                                     <!-- 최근 발송한 푸시 알림이 여기에 동적으로 추가됩니다 -->
                                 </div>
                             </div>
@@ -799,6 +1406,6 @@
     <div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/admin/admin.js?v=202501110210"></script>
+    <script src="/admin/admin.js?v=202606051725"></script>
 </body>
 </html>

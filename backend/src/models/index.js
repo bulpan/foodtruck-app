@@ -7,6 +7,8 @@ const Location = require('./Location');
 const FCMToken = require('./FCMToken');
 const PushNotification = require('./PushNotification');
 const PushHistory = require('./PushHistory');
+const ContactTicket = require('./ContactTicket');
+const ContactMessage = require('./ContactMessage');
 
 // 관계 설정
 Admin.hasMany(Menu, { foreignKey: 'adminId' });
@@ -21,6 +23,9 @@ PushNotification.belongsTo(Admin, { foreignKey: 'adminId' });
 Admin.hasMany(PushHistory, { foreignKey: 'adminId' });
 PushHistory.belongsTo(Admin, { foreignKey: 'adminId' });
 
+ContactTicket.hasMany(ContactMessage, { foreignKey: 'ticketId', as: 'messages' });
+ContactMessage.belongsTo(ContactTicket, { foreignKey: 'ticketId', as: 'ticket' });
+
 module.exports = {
   sequelize,
   Admin,
@@ -28,7 +33,8 @@ module.exports = {
   Location,
   FCMToken,
   PushNotification,
-  PushHistory
+  PushHistory,
+  ContactTicket,
+  ContactMessage
 };
-
 

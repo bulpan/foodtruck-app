@@ -41,12 +41,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             }
                         }
                     )
-                case .authorized:
-                    // 이미 권한 허용된 경우 - 바로 설정
-                    print("✅ 푸시 알림 권한 이미 허용됨")
+                case .authorized, .provisional, .ephemeral:
+                    // 권한이 유효하면 바로 설정
+                    print("✅ 푸시 알림 권한 사용 가능 상태: \(settings.authorizationStatus.rawValue)")
                     self.setupFirebaseMessaging()
                     application.registerForRemoteNotifications()
-                case .denied, .provisional, .ephemeral:
+                case .denied:
                     // 권한 거부된 경우
                     print("❌ 푸시 알림 권한 거부됨 - 토큰 등록 건너뜀")
                 @unknown default:
@@ -92,14 +92,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // 권한 상태 확인 후 FCM 토큰 등록
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
-                if settings.authorizationStatus == .authorized {
-                    print("✅ 푸시 알림 권한이 허용되어 FCM 토큰 등록 진행")
+                switch settings.authorizationStatus {
+                case .authorized, .provisional, .ephemeral:
+                    print("✅ 푸시 알림 권한 사용 가능 상태로 FCM 토큰 등록 진행")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         print("🔄 FCM 토큰 등록 시작...")
                         FoodTruckFirebaseMessagingService.shared.registerFCMToken()
                     }
-                } else {
-                    print("❌ 푸시 알림 권한이 거부되어 FCM 토큰 등록 건너뜀")
+                default:
+                    print("❌ 푸시 알림 권한 미허용 상태로 FCM 토큰 등록 건너뜀")
                 }
             }
         }
@@ -178,6 +179,5 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         completionHandler()
     }
 }
-
 
 

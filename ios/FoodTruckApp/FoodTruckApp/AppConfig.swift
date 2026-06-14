@@ -45,7 +45,7 @@ struct AppConfig {
     
     // MARK: - App Info
     static let appName = "세종유미곱창트럭"
-    static let appVersion = "1.0.3"
+    static let appVersion = "1.0.4"
     static let bundleIdentifier = "com.foodtruck.app"
     
     // MARK: - Firebase Configuration
@@ -56,7 +56,6 @@ struct AppConfig {
     static let notificationChannelName = "푸드트럭 알림"
     static let notificationChannelDescription = "푸드트럭의 메뉴, 위치 정보 알림"
 }
-
 
 
 

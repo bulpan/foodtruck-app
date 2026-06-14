@@ -264,13 +264,9 @@ router.put('/order', auth, async (req, res) => {
 router.put('/:id', [
   auth,
   upload.single('image'),
-  validate(schemas.menuCreate)
+  validate(schemas.menuUpdate)
 ], async (req, res) => {
   try {
-    console.log('❌ PUT /:id 라우트가 매칭되었습니다! ID:', req.params.id);
-    console.log('❌ 요청 URL:', req.url);
-    console.log('❌ 요청 경로:', req.path);
-    console.log('❌ 요청 원본 URL:', req.originalUrl);
     const menu = await Menu.findOne({
       where: { 
         id: req.params.id,
@@ -284,30 +280,26 @@ router.put('/:id', [
       });
     }
 
-          const { name, description, price, category, isAvailable, sortOrder } = req.body;
-          
-          // 카테고리 변환 (한글 -> 영문)
-          const convertedCategory = category ? convertCategory(category) : menu.category;
-          
-          // 이미지 URL 처리
-          let imageUrl = menu.imageUrl; // 기본값은 기존 이미지
-          if (req.file) {
-            // 업로드된 파일의 URL 생성
-            imageUrl = `/uploads/menu/${req.file.filename}`;
-          } else if (req.body.imageUrl !== undefined) {
-            // JSON으로 전달된 이미지 URL 사용 (빈 문자열이면 null로 설정)
-            imageUrl = req.body.imageUrl.trim() !== '' ? req.body.imageUrl : null;
-          }
-          
-          await menu.update({
-            name: name || menu.name,
-            description: description !== undefined ? description : menu.description,
-            price: price || menu.price,
-            imageUrl: imageUrl,
-            category: convertedCategory,
-            isAvailable: isAvailable !== undefined ? isAvailable : menu.isAvailable,
-            sortOrder: sortOrder !== undefined ? sortOrder : menu.sortOrder
-          });
+    const { name, description, price, category, isAvailable, sortOrder } = req.body;
+
+    const convertedCategory = category ? convertCategory(category) : menu.category;
+
+    let imageUrl = menu.imageUrl;
+    if (req.file) {
+      imageUrl = `/uploads/menu/${req.file.filename}`;
+    } else if (req.body.imageUrl !== undefined) {
+      imageUrl = req.body.imageUrl.trim() !== '' ? req.body.imageUrl.trim() : null;
+    }
+
+    await menu.update({
+      name: name !== undefined ? name : menu.name,
+      description: description !== undefined ? description : menu.description,
+      price: price !== undefined ? price : menu.price,
+      imageUrl,
+      category: convertedCategory,
+      isAvailable: isAvailable !== undefined ? isAvailable : menu.isAvailable,
+      sortOrder: sortOrder !== undefined ? sortOrder : menu.sortOrder
+    });
 
     res.json({
       message: '메뉴가 성공적으로 수정되었습니다',
@@ -365,4 +357,3 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 module.exports = router;
-

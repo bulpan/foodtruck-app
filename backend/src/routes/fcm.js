@@ -48,6 +48,39 @@ router.post('/token', [
   }
 });
 
+// 특정 토큰 상태 조회 (앱용)
+router.get('/token/:token', async (req, res) => {
+  try {
+    const fcmToken = await FCMToken.findOne({
+      where: { token: req.params.token },
+      attributes: [
+        'id',
+        'deviceType',
+        'deviceId',
+        'isActive',
+        'notificationEnabled',
+        'locationNotificationEnabled',
+        'lastUsedAt'
+      ]
+    });
+
+    if (!fcmToken) {
+      return res.status(404).json({
+        error: '토큰을 찾을 수 없습니다'
+      });
+    }
+
+    res.json({
+      token: fcmToken
+    });
+  } catch (error) {
+    console.error('Get FCM token error:', error);
+    res.status(500).json({
+      error: 'FCM 토큰 조회 중 오류가 발생했습니다'
+    });
+  }
+});
+
 // FCM 토큰 삭제/비활성화 (ID로 삭제)
 router.delete('/token/:id', async (req, res) => {
   try {
@@ -187,4 +220,3 @@ router.get('/stats', async (req, res) => {
 });
 
 module.exports = router;
-
